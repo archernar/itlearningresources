@@ -1,0 +1,27 @@
+#!/usr/bin/ksh
+Tmp="/tmp/$$"
+TmpDir="/tmp/dir$$"
+trap 'rm -f "$Tmp" >/dev/null 2>&1' 0
+trap "exit 2" 1 2 3 13 15
+rm $Tmp  >/dev/null 2>&1
+
+LOCAL=""
+while getopts "l" arg
+do
+	case $arg in
+            l) LOCAL="yes" ;;
+        esac
+done
+ANON=`date`
+print $ANON
+
+git add README.md 
+git add pushit
+git add learn_dev.html
+
+git commit -m "Update"
+
+if [ "$LOCAL" == "" ] ; then
+     git push -u origin master
+fi
+
