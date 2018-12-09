@@ -18,6 +18,8 @@ print $ANON
 git add README.md 
 git add pushit
 git add learn_dev.html
+git add learn.js
+git add plugins.js
 
 git commit -m "Update"
 
