@@ -29,6 +29,15 @@ git add vjs.js
 
 
 
+git add backtotop.css
+git add FeedEk.js
+git add learn_style.css
+git add theme.css
+git add video.css
+git add con.png
+
+
+
 git commit -m "Update"
 
 if [ "$LOCAL" == "" ] ; then

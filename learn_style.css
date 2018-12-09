@@ -1,0 +1,194 @@
+
+        .submenulink a {
+            text-decoration: none;
+        }
+        .submenulink a:link {
+            text-decoration: none;
+        }
+        .submenulink a:hover {
+            text-decoration: underline;
+        }
+        .submenulink a:visted {
+            text-decoration: none;
+        }
+        .submenulink a:active {
+            text-decoration: none;
+        }
+
+        .stitle {
+            font-size: 20px;
+            font-weight: normal;
+            color: #000000;
+            text-align: left;
+            text-decoration: underline;
+            padding-bottom: 4px;
+            padding-left: 14px;
+            padding-top: 8px;
+        }
+       .main_title {
+            background: #000000;
+            color: #ffffff;
+            font-size: 24px;
+            padding: 12px;
+        }
+       .main_title_small {
+            background: #000000;
+            color: #ffffff;
+            font-size: 12px;
+            padding: 6px;
+        }
+       .main_title_small a {
+            background: #000000;
+            color: #ffffff;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .tlinksbold a {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            padding: 2px;
+            padding-top:   40px;
+            padding-left: 12px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #000000;
+        }
+        .tlinksbold a:link {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000000;
+        }
+        .tlinksbold a:hover {
+            font-size: 14px;
+            font-weight: bold;
+            color: Blue;
+            text-decoration: none;
+        }
+        .tlinksbold a:visted {
+            font-size: 14px;
+            padding: 2px;
+            color: #000000;
+            text-decoration: none;
+        }
+        .tlinksbold a:active {
+            font-size: 14px;
+            padding: 2px;
+            color: #000000;
+            text-decoration: none;
+        }
+
+
+        .awslinks td {
+            font-size: 12px;
+            font-weight: bold;
+            vertical-align: top;
+            text-align: left;
+        }
+        .awslinks a {
+            xxfont-family: Roboto; 
+            font-family: Helvetica; 
+            font-size: 10px;
+            color: #000000;
+            text-decoration: none;
+            font-weight: normal;
+        }
+        .awslinks a:link {
+            color: #000000;
+            text-decoration: none;
+        }
+        .awslinks a:hover {
+            color: Blue;
+            text-decoration: none;
+        }
+        .awslinks a:visted {
+            color: #000000;
+            text-decoration: none;
+        }
+        .awslinks a:active {
+            color: #000000;
+            text-decoration: none;
+        }
+
+        .tlinks {
+            xxfont-family: Roboto; 
+            font-family: Helvetica; 
+            font-size: 16px;
+            padding: 2px;
+        }
+        body {
+            font-family: Verdana,Arial,sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+
+            padding: 2px;
+        }
+        table {
+            border-collapse: collapse;
+	    padding: 0px 0px 0px 0px;
+        }
+        .smalllinks {
+        }
+        .smalllinks td {
+            padding-top: 3px;
+            padding-right: 3px;
+            padding-bottom: 3px;
+            padding-left: 12px;
+        }
+        .links {
+            xxwidth: 970px;
+        }
+        .links td {
+            padding-top: 3px;
+            padding-right: 3px;
+            padding-bottom: 3px;
+            padding-left: 12px;
+        }
+        .links a {
+            color: #000000;
+            text-decoration: none;
+            text-decoration: underline;
+        }
+        .links a:link {
+            color: #000000;
+            text-decoration: none;
+            text-decoration: underline;
+        }
+        .links a:visited {
+            color: #000000;
+            text-decoration: none;
+            text-decoration: underline;
+        }
+        .links a:hover {
+            color: #0096D6;
+            text-decoration: underline;
+        }
+        .links a:active {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+        .nflink {
+            font-size: 65%;
+        }
+
+
+        #title_header {
+            float: top;
+            width: 1870px;
+            background: #000000;
+        }
+        .quote {
+            font-size: 14px;
+            color: #ffffff;
+            text-align: left;
+            padding: 1px;
+        }
+        .link_color {
+            font-size: 8px;
+            color: #ffffff;
+        }
+
+	#aws_link_text {
+	     padding 0px;
+	}
