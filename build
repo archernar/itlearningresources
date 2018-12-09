@@ -1,0 +1,166 @@
+#!/usr/bin/ksh
+Tmp="/tmp/$$"
+TmpDir="/tmp/dir$$"
+trap 'rm -f "$Tmp" >/dev/null 2>&1' 0
+trap "exit 2" 1 2 3 13 15
+rm $Tmp  >/dev/null 2>&1
+
+putfile() {
+             print $1
+             aws --profile MESTESHOME s3                   cp ./$1 s3://www.itlearningresources.com/$1  --acl public-read
+             aws --profile MESTESHOME s3                   cp ./$1 s3://www.awslearningresources.com/$1 --acl public-read
+             # aws --profile EBS s3                        cp ./$1 s3://docsaws/$1                      --acl public-read
+             return true;
+}
+
+
+if [ $# -eq 0 ] ; then
+                 putfile "learn_dev.html"
+                 putfile "backtotop.css"
+                 putfile "learn.js"
+                 putfile "plugins_dev.js"
+                 putfile "plugins.js"
+                 putfile "learn_style.css"
+                 putfile "TitleLookupObject.js"
+fi
+
+while getopts "adlqzpn" arg
+do
+	case $arg in
+            n)
+                 putfile "ahab.html"
+                 ;;
+            p)
+                 putfile "plugins.js"
+                 ;;
+            z)
+                 aws --profile MESTESHOME s3 cp ./learn_dev.html s3://www.awslearningresources.com/learn.html  --acl public-read
+                 putfile "learn_dev.html"
+                 putfile "bootstrap.css"
+                 putfile "learn.js"
+                 putfile "plugins.js"
+                 ;;
+            a)
+                 putfile "learn_dev.html"
+                 putfile "jquery331min.js"
+                 ;;
+            d)
+                 aws --profile MESTESHOME s3 cp ./learn_dev.html s3://www.awslearningresources.com/learn.html  --acl public-read
+                 putfile "backtotop.css"
+                 putfile "learn.js"
+                 putfile "plugins_dev.js"
+                 putfile "plugins.js"
+                 putfile "learn_style.css"
+                 putfile "TitleLookupObject.js"
+                 ;;
+            l)
+                 putfile "learn_dev.html"
+                 putfile "backtotop.css"
+                 putfile "learn.js"
+                 putfile "plugins_dev.js"
+                 putfile "plugins.js"
+                 putfile "learn_style.css"
+                 putfile "TitleLookupObject.js"
+                 ;;
+            q)
+                 putfile "learn_dev.html"
+                 putfile "plugins.js"
+                 ;;
+	    *)
+	    	ls
+		exit 0
+		;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+
+#putfile "learn_dev.html"
+#putfile "learn.js"
+#putfile "vjs.js"
+#putfile "plugins.js"
+#putfile "bootstrap.css"
+#putfile "learn_style.css"
+#putfile "plugins_dev.js"
+#putfile "learn.html"
+#putfile "learn.css"
+#putfile "FeedEk.js"
+#putfile "FeedEk_dev.js"
+#putfile "learn.html"
+#putfile "loader.gif"
+#putfile "transparent.gif"
+#putfile "con.png"
+#putfile "learn.js"
+#putfile "ready.js"
+#putfile "FeedEk.js"
+#putfile "video.css"
+#putfile "theme.css"
+#putfile "jquery-1.12.4.min.js"
+#putfile "jquery-ui-1.12.1.min.js"
+#putfile "images/ui-icons_444444_256x240.png"
+#putfile "images/ui-icons_777620_256x240.png"
+#putfile "images/ui-icons_cc0000_256x240.png"
+#putfile "images/ui-icons_555555_256x240.png"  
+#putfile "images/ui-icons_777777_256x240.png"  
+#putfile "images/ui-icons_ffffff_256x240.png"
+
+#aws --profile DTCCLAB s3 ls s3://docsaws
+#aws --profile DTCCLAB s3 cp ./ww.jpg s3://docsaws/ww.jpg --acl public-read
+#aws --profile DTCCLAB s3 cp ./favs.jpg s3://docsaws/favs.jpg --acl public-read
+#aws --debug --profile EBS s3 cp ./intro.html s3://docsaws/intro.html --acl public-read
+# aws --debug --profile EBS s3 cp ./ed.html s3://docsaws/ed.html --acl public-read
+#aws --profile DTCCLAB s3 cp ./alexa.json s3://docsalexa/alexa.json --acl public-read
+#aws --profile DTCCLAB s3 cp ./alexa2.json s3://docsalexa/alexa2.json --acl public-read
+#aws --debug --profile EBS s3 cp ./links.html s3://docsaws/links.html --acl public-read
+# aws --debug --profile EBS s3 cp ./reinvent_2016.html s3://docsaws/reinvent_2016.html --acl public-read
+
+#putfile "ksh.html"
+#putfile "plugins.js"
+#putfile "learn.css"
+#putfile "learn.js"
+#putfile "vjs.js"
+#putfile "rarrow.gif"
+#putfile "learn.html"
+
+#putfile "style.css"
+# putfile "video.js"
+#putfile "test.html"
+# putfile "zed.js"
+#putimage "ui-icons_444444_256x240.png"
+#putimage "ui-icons_777620_256x240.png"
+#putimage "ui-icons_cc0000_256x240.png"
+#putimage "ui-icons_555555_256x240.png"  
+#putimage "ui-icons_777777_256x240.png"  
+#putimage "ui-icons_ffffff_256x240.png"
+
+#            aws --profile mestes s3 cp ./$1 s3://happyahab/aws/$1                --acl public-read
+#            print s3://happyahab/aws/$1
+putfileall() {
+             print $1
+             aws --profile EBS --region "eu-west-2"  s3    cp ./$1 s3://docsaws-europe-london/$1        --acl public-read
+             aws --profile EBS s3                          cp ./$1 s3://docsaws/$1                      --acl public-read
+             aws --profile EBS s3                          cp ./$1 s3://docsaws-us-standard/$1          --acl public-read
+             aws --profile EBS --region "us-west-2" s3     cp ./$1 s3://docsaws-us-oregon/$1            --acl public-read
+             aws --profile EBS --region "us-east-2"  s3    cp ./$1 s3://docsaws-us-ohio/$1              --acl public-read
+             aws --profile EBS --region "ap-south-1" s3    cp ./$1 s3://docsaws-asia-mumbai/$1          --acl public-read
+             return true;
+}
+
+putimage() {
+             print $1
+             print s3://docsaws/$1
+             print s3://happyahab/aws/$1
+             aws --profile EBS s3    cp ./images/$1 s3://docsaws/images/$1       --acl public-read
+             aws --profile mestes s3 cp ./images/$1 s3://happyahab/aws/images/$1 --acl public-read
+             return true;
+}
+putfilemy() {
+             print $1
+             aws --profile cfudcs3 cp ./$1 s3://cfudc/learnaws/$1 --acl public-read
+             return true;
+}
+putfile2() {
+             print $1
+             aws --profile EBS s3 cp ./$1 s3://opd123/$1 --acl public-read
+             return true;
+}

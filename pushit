@@ -20,6 +20,14 @@ git add pushit
 git add learn_dev.html
 git add learn.js
 git add plugins.js
+git add bootstrap.css
+git add build
+git add jquery-1.12.4.min.js
+git add jquery331min.js
+git add jquery-ui-1.12.1.min.js
+git add vjs.js
+
+
 
 git commit -m "Update"
 
