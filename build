@@ -35,14 +35,35 @@ do
                  ;;
             z)
                  aws --profile MESTESHOME s3 cp ./learn_dev.html s3://www.awslearningresources.com/learn.html  --acl public-read
+                 yui-compressor --type js -o learn.min.js learn.js
+                 yui-compressor --type js -o plugins.min.js plugins.js
+                 yui-compressor --type js -o vjs.min.js vjs.js
+                 yui-compressor --type js -o FeedEk.min.js FeedEk.js
+
+                 cat bootstrap.css    > learn.css
+                 cat learn_style.css >> learn.css
+                 cat video.css       >> learn.css
+                 cat theme.css       >> learn.css
+                 cat backtotop.css   >> learn.css
+                 yui-compressor --type css -o learn.min.css learn.css
+
+
+                 putfile "learn.js"
+                 putfile "learn.min.js"
                  putfile "learn_dev.html"
                  putfile "bootstrap.css"
-                 putfile "learn.js"
                  putfile "plugins.js"
+                 putfile "plugins.min.js"
+                 putfile "vjs.js"
+                 putfile "vjs.min.js"
+                 putfile "jquery331min.js"
+                 putfile "hal.jpg"
+                 putfile "con.png"
+                 putfile "FeedEk.js"
+                 putfile "FeedEk.min.js"
                  ;;
             a)
                  putfile "learn_dev.html"
-                 putfile "jquery331min.js"
                  ;;
             d)
                  aws --profile MESTESHOME s3 cp ./learn_dev.html s3://www.awslearningresources.com/learn.html  --acl public-read
@@ -54,13 +75,7 @@ do
                  putfile "TitleLookupObject.js"
                  ;;
             l)
-                 putfile "learn_dev.html"
-                 putfile "backtotop.css"
                  putfile "learn.js"
-                 putfile "plugins_dev.js"
-                 putfile "plugins.js"
-                 putfile "learn_style.css"
-                 putfile "TitleLookupObject.js"
                  ;;
             q)
                  putfile "learn_dev.html"

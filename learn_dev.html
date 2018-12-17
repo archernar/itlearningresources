@@ -9,24 +9,26 @@
     <meta name="GOOGLEBOT" content="NOARCHIVE">
     <script type="text/javascript" src="jquery331min.js"></script>
     <script type="text/javascript" src="jquery-ui-1.12.1.min.js"></script>
-    <script type="text/javascript" src="learn.js"></script>
-    <script type="text/javascript" src="vjs.js"></script>
-    <script type="text/javascript" src="FeedEk.js"></script>
-    <script type="text/javascript" src="plugins.js"></script>
+    <script type="text/javascript" src="learn.min.js"></script>
+    <script type="text/javascript" src="vjs.min.js"></script>
+    <script type="text/javascript" src="FeedEk.min.js"></script>
+    <script type="text/javascript" src="plugins.min.js"></script>
 
     <link rel='icon'       type='image/png' href='con.png'>
 
     <!--
     <script type="text/javascript" src="jquery-1.12.4.min.js"></script>
     <link rel='stylesheet' type='text/css'  href='https://fonts.googleapis.com/css?family=Roboto'>
+
     -->
-
-
     <link rel="stylesheet" href="bootstrap.css">
     <link rel='stylesheet' type='text/css'  href='learn_style.css'>
     <link rel='stylesheet' type='text/css'  href='video.css'>
     <link rel="stylesheet" type='text/css'  href="theme.css">
     <link rel="stylesheet" type='text/css'  href="backtotop.css">
+
+
+
     <title>IT Learning Resources</title>
     <style>
         .w3-button{display:inline-block;outline:0;padding:4px 8px;vertical-align:middle;overflow:hidden;text-decoration:none;
@@ -274,7 +276,6 @@ function simplefiter() {
             var title = "";
             var unmodifiedtitle = "";
 
-            title = YTT[id] + "<BR>" + id;
             title = YTT[id];
             unmodifiedtitle = title;
 if (title == null) {
@@ -367,7 +368,6 @@ function randomString(len) {
      return randomString;
 }
 
-
         function ytimg(id, desc) {
 //          |---------------------|-----------|--------------------------------------------------|
 //          | Thumbnail Name      | Size (px) | URL                                              |
@@ -379,15 +379,17 @@ function randomString(len) {
 //          | High Quality        | 480x360   | https://i1.ytimg.com/vi/<VIDEO ID>/hqdefault.jpg |
 //          | Medium Quality      | 320x180   | https://i1.ytimg.com/vi/<VIDEO ID>/mqdefault.jpg |
 //          | Normal Quality      | 120x90    | https://i1.ytimg.com/vi/<VIDEO ID>/default.jpg   |
+//          |                     |           | https://i.ytimg.com/vi/IDVAR/sddefault.jpg       |
 //          |---------------------|-----------|--------------------------------------------------|
 
+             var thumb = "";
              var link  = "<a vi-name='VINAMEVAR' desc='DESCVAR' data-id='IDVAR' class='narg youtube' href='https://www.youtube.com/watch?v=IDVAR'>"
              link =  link.replace(/IDVAR/g, id);
              link =  link.replace(/DESCVAR/g, desc);
              link =  link.replace(/VINAMEVAR/g, ViddIndexName);
 
-             var thumb = "<img class='videoimagei topmiddle' src='https://i.ytimg.com/vi/IDVAR/sddefault.jpg'>";
-             thumb = "<img class='videoimagei topmiddle' src='http://i.ytimg.com/vi/IDVAR/default.jpg'>";
+             thumb = "<img class='videoimagei topmiddle' waldo='here' src='con.png' srcthing='http://i.ytimg.com/vi/IDVAR/hqdefault.jpg'>";
+             thumb = "<img class='videoimagei topmiddle' waldo='here' src='hal.jpg' srcthing='http://img.youtube.com/vi/IDVAR/hqdefault.jpg'>";
              thumb =  thumb.replace(/IDVAR/g, id);
 
              var out   = "<div class='videodivyy topmiddle boxyyy'>" +link+thumb+ "<div zid='VINAMEVAR' desc='" +desc+ "' class='videotitle topmiddle' vid='" +id+"' id='" +randomStr() +"'>" +desc+ "</div></a></div>"
@@ -522,6 +524,14 @@ function mySearchFunction(input_id, table_id, td_pos) {
 
         function readyEnd() {
              var input, n;
+           //  THIS LOADS THE IMAGES ON THE DEGAULT PAGE 
+           $( "#LEARN_TABLE").find('img').each(function() {
+                     var sz  = $(this).attr("srcthing");
+                     $(this).attr("src",sz);
+           });
+
+
+
              $( "#INDEX_SEARCHA" ).click(function() { mySearchFunction("myInput", "SL_INDEX", 2); });
              $( "#INDEX_SEARCHRESETA" ).click(function() { mySearchResetFunction(); 
                               document.getElementById("sitesearch").value = "";
@@ -540,8 +550,8 @@ function mySearchFunction(input_id, table_id, td_pos) {
 
              mySorter("#SL_INDEX","tr","desc");
              mySorter("#DEEP","li","desc");
-             mySorter("#START","li","desc");
-             mySorter("#AWSSUMMITS","li","desc");
+             mySorter("#LEARN","li","desc");
+             mySorter("#SUMMITS","li","desc");
              mySorter("#DEV","li","desc");
              mySorter("#GENIUS","li","desc");
              mySorter("#FOOD","li","desc");
@@ -593,11 +603,26 @@ function getParameterByName(name, url) {
            $s.find('a').attr("target","_self");
            $s.find('a').click(function(e) { 
                 var $s = $(this);
+                var tname  = "#" + $(this).attr("tname");
                 e.preventDefault();
                 $s.parent().parent().children().removeClass("active");
                 $s.parent().addClass("active");
                 $("#client_area").children().attr('class','').addClass("collapse");
-                $( $s.attr("href") ).attr('class','').addClass("collapse show");
+                // $( $s.attr("href") ).attr('class','').addClass("collapse show");
+                $( $s.attr("href") ).attr('class','');
+
+                $( $s.attr("href") ).addClass("collapse show");
+                $( tname).find('img').each(function() {
+                     var sz  = $(this).attr("src");
+                     if (sz == "hal.jpg") {
+                          sz  = $(this).attr("srcthing");
+                          $(this).attr("src",sz);
+                     }
+                });
+                var nothing = "";
+
+                nothing = "";
+
            });
 
            // THIS SETS THE DEFAULT TAB
@@ -608,7 +633,6 @@ function getParameterByName(name, url) {
            }
            $("#tabbar").find("li").removeClass("active");
            $(szTab).addClass("active").find('a').get(0).click();
-
 
 
            var foo = getParameterByName('t');
@@ -706,8 +730,44 @@ function getParameterByName(name, url) {
      .margsvl("AIS Sessions")
      .margsv(gr4,"YR_gpjyiP3w","SWiPVMaFbiI","lft4areXvpk","NmujkgNax4M","mQsi5PpbZ54")
      .margsvl("DVC Sessions")
-     .margsv(gr4,"tYJDfsTklH0","6EhtbhFKHWk","pnwNtlwFYus");
+     .margsv(gr4,"tYJDfsTklH0","6EhtbhFKHWk","pnwNtlwFYus")
 
+     .margsvl("ADT Sessions")
+     .margsv(gr4,"S0KI9YRvusM","PYuCJqf9uP4")
+     .margsvl("ALX Sessions")
+     .margsv(gr4,"B0aMlEPhFF4","0z1jsO1gcRA","7fWkXlXJ0iM","MEJFxo0CAYs","tzJ_SHObBMk","MsibLQOdqlQ","A5dKs0bTFKI","KQuMrfePbDQ","hcbCQju5zbk")
+     .margsvl("AMT Sessions")
+     .margsv(gr4,"kWnXAXAYzOM","vccM1dPF3pE")
+     .margsvl("ANT Sessions")
+     .margsv(gr4,"QZ4LAZCbsrQ","gGJ4zxeG9PI","owJ-ipdTbko","MS1zleTPmA0","ISl9sTzxoSo","nsiLMqg654s","PitJL9vOotc","fSjAfp-uqSs","jKPlGznbfZ0","s_FjVRfKJL4","z2LxhuL54nM","xcyNB5hki2o","rJaijdRf7KI","RxYtS0nOYow","JsNR8uBVSiA","24F_Rx5IlHM","v5lkNHib7bw","95kQkS51VnU","zhsVfsykBHc","jhYIxM2KiLs","TJDtQom7SAA","uV4lzz1Z0C8","Ewv8GQ8KCyI","7TBiXZlIo0I","S_xeHvP7uMo","u_7xMcZl3D0")
+     .margsvl("ARV Sessions")
+     .margsv(gr4,"70T0Z1Mvflw","D6DqC2pqhfQ","zxInUAL-dMY")
+     .margsvl("BAP Sessions")
+     .margsv(gr4,"Spko2ZQXjsE","xNIyc_inOhM","hVmy-JiP9lI","DTSIW4LebaE","vIdw0_AzzDA","eK-P1cv50N8","vFG1FBsUGD0","g1B9B17Zfvk")
+     .margsvl("GAM Sessions")
+     .margsv(gr4,"wqz7AunrzcU")
+     .margsvl("HLC Sessions")
+     .margsv(gr4,"DY4rczIYZws")
+     .margsvl("LFS Sessions")
+     .margsv(gr4,"830o6r9eJrk")
+     .margsvl("MAE Sessions")
+     .margsv(gr4,"b5XeQYi_5UU","pFSLaHRXfaw","7YD_NCg8Hgk","v6BQITlUO70")
+     .margsvl("MOB Sessions")
+     .margsv(gr4,"rDrKVEjVXUE","2U4RsbFO4bA","38Y-XvMYpfA","9y1hDKJQIRE","9Eq3CQvC870","FvS1eDt7Hv8","CwLB0BRwIqE","0H5F0PI2-SU")
+     .margsvl("OIG Sessions")
+     .margsv(gr4,"c7kTXuwoENY")
+     .margsvl("PUT Sessions")
+     .margsv(gr4,"KbvOL1dRG8I","YkLeepisXOM","uL4GvNg3w2s")
+     .margsvl("RET Sessions")
+     .margsv(gr4,"0B9H9weE3FM")
+     .margsvl("ROB Sessions")
+     .margsv(gr4,"SW8x-OIVo1I","HAela66zov0")
+     .margsvl("WIN Sessions")
+     .margsv(gr4,"fvko7rxTlhA","wHtAv9zkoZk")
+     .margsvl("WPS Sessions")
+     .margsv(gr4,"sRDM55vsQlU","sm0oGh2sIb0","23aC4yA82uY","KXelfBpJtDY")
+     .margsvl("WPT Sessions")
+     .margsv(gr4,"mSodwybagmA");
 
            var $reinvent2018 = $('#REINVENT2018_TABLE_ANCHORS');
            var arrayLength = myAnchorArray.length;
@@ -912,8 +972,8 @@ function getParameterByName(name, url) {
 
 
 
-           setViddIndexName("AWSSUMMITS");
-           $('#AWSSUMMITS_TABLE')
+           setViddIndexName("SUMMITS");
+           $('#SUMMITS_TABLE')
 
 
                 .margsvl("New York City Summit 2018")
@@ -935,6 +995,19 @@ function getParameterByName(name, url) {
            resetViddIndexName();
            setViddIndexName("DEEP");
            $('#M_TABLE')
+                       .margsvl("AWS Products")
+                       .margsv(gr4,"OGwpXBGUspg","bRshzwK9ApI","cGbxVNIccNU","BNMo_ojD-0M","HBUgyxVMb7k","1DtBiHdPKVU","iU1HpZ-qPqQ","DIWyvC_glLc","DGQGYgiYdnA",
+          "W5BDD3cpTEQ","0KKFG1_eIP4","im4pENONU90","vm1y8yu-4xY","C_eT0xRNjCs","VGKbTnzyD_o","GoNsuTqeMto","IRG7ThJ4mNk","h6k-cQXLB-w",
+          "0kmgnzfYKX4","bxSD1Nha2k8","pi9t4-VDzf8","j0FJhzx63G0","9xbtq362Scs","qNojanBn1NY","zWLMCFBEI8Q","cYD0OU8Jdws","EKaJENJqD8E",
+          "5siD210Grr4","mzIdKGCOf1g","h4ZNA7Tw8y8","J0bZHCmlaq0","ja6n5etN8hk","7lDWXtNjVyQ","3QFmcYwW5J8","wY7FOFaPNuE","Ry_a_PvXmX8",
+          "oMzyZ49pykU","A9kKy6WhqVA","KDiXnSt7RfE","7uIY0zINEHM","0i3fUOtyKa8","KBM5llt07eE","-JDLpSsO45A","rss0CJ0bw40","GQdhLkSrL9w",
+          "Hps-9nTueKQ","4MNJzBDAFRM","PX4du-bG5yw","YxcIj_SLflw","UyOOnwvwWa0","Dxe5aiUHoS8","ouia1Sc5QGo","SsXDDqlItTY","9uc2DSZ1wL8",
+          "YiaPjILR9zw","3Wq-ghtB0XQ","xhc1boyBkJw","i71kp-wXvsI","yl69vPn5nzc","_oWa4fWAqTY","XNTsmRe8k7Q","ICdabdrC964","FcH8ovrNd9k",
+          "4GFAQ2UuQy4","21oIarLiAKU","ZFl3Qm-DBrg","Mr0ZOnjwsXk","mJo0KL9VNic","T3QEWT5tEH8","1wLMLwjCqN4","Omppm_YUG2g","eOBq__h4OJ4",
+          "PAHU8tPA7xs","zBqjh61QcB4","3fkGCM0feC0","g8LnNXtOONk","8ETrqmbhnLw","N3saR9D7hq8","Wx-ain8UryM","PUVX84xbwCI","rKpKHulqYOQ",
+          "4bJ5YvWR6rk","BhNfhHXvhhc","ZFdX3xcDOzg","SrwxAScdyT0","abTy-Yyo6lI","FU3tUKkKgzQ","S6Ja55n-o0M","2eAjaNo476o",
+          "Ar3Q-cJehyg","jSVY-SVcCAM","MbEfiX4sMXc","MmJnl5dGJ5A","x20Qx7lWSLQ","nLPdDQdiSKk","lb9qPhxIVNI","OzE0ZHrg0fM",
+          "cj_LoG6C2xk")
                        .margsvl("AWS In-Depth")
                        .margsv(gr4,"WDDkLOT8SCk","sjpP2ynkCbo","xvXy2BiaWrQ","zSNZsWowFY0",
                        "_xtnVIA2TQM","85U4ib50A9A","ghuFQTCer7I","g0M0PN2bFFA", "sMP2LsgtGQM","pks5c_S5Tk8","ooMA9J7suh8","S9gbsfGaJ_c",
@@ -960,6 +1033,10 @@ function getParameterByName(name, url) {
            $('#COMPSCI_TABLE')
                       .margsvl("Quantum Computing")
                       .margsv(gr4,"S52rxZG-zi0")
+                      .margsvl("Java Programming Lectures")
+                      .margsv(gr4,"k6U-i4gXkLM", "Pij6J0HsYFA", "X6ilT3uUOBo", "SXR9CDof7qw", "Pfo7r6bjSqI", "hVHqs38fPe8", "tuRYbBvOMRo", "ewd7Lf2dr5Q", "UNHQ7CRsEtU", 
+                                  "kDhR4Zm53zc", "DkPsD58nUIE", "udnyuHzJsjM", "ZKBUu_ahSR4", "le8tpXQyYcM", "y81AhLQN-NI", "Q8SoG1OIveU", "ZbIpjf0QEPI",  
+                                  "IZaAUwW7OsU", "ENrAsRoR97I", "SuOIpJnn888", "WGDbIKtjmSs", "raTzkzML31w", "2q--tAPkVXI") 
                       .margsvl("Introduction to Computational Thinking and Data Science")
                       .margsv(gr4, 
                                 "C1lhuz6pZC0", "uK5yvoXnkSk", "V_TulH374hw", "-1BnXEwHUok", "6wUD_gp5WeE", "OgO1gpXSUzU", "rUxP7TM8-wo", "soZv_KKax3E", 
@@ -1006,9 +1083,6 @@ function getParameterByName(name, url) {
 
 
 
-           $('#THINK_TABLE')
-                      .margsvl("Think More")
-                      .margsval("http://rationallyspeakingpodcast.org/", "Rationally Speaking Podcast");
 
                       resetViddIndexName();
                       setViddIndexName("AI");
@@ -1035,6 +1109,20 @@ function getParameterByName(name, url) {
                       resetViddIndexName();
                       setViddIndexName("GENIUS");
            $('#GENIUS_TABLE')
+                      .margsvl("Think More")
+                      .margsval("http://rationallyspeakingpodcast.org/", "Rationally Speaking Podcast")
+                      .margsvl("Numbers")
+                      .margsv(gr4,"ZMkIiFs35HQ", "O4ndIDcDSGc","F8KGidsuxgY")
+                      .margsvl("Single Variable Calculus")
+                      .margsv(gr4,"jbIQW0gkgxo","ryLdyDrBfvI","kCPVBl953eY","4sTKcvYMNxk","5q_3FDOkVRQ","9v25gg2qJYE","eHJuAByQf5A","BSAA0akmPEU","eRCN3daFCmU",
+                                  "twzGBqPeW0M","YN7k_bXXggY","sRIDVAcoG5A","4Q37iOyBq44","-MI0b4h3rS0","60VGKnYBpbg","hjZhPczMkL4","1RLctDS2hUQ","Pd2xP5zDsRw",
+                                  "_JXPe2J069c","ShGBRUx2ub8","R9a_NHXrBcg","jBkXbAgMj6s","zUEuKrxgHws","Bv9kVDcj7yo","CXKoCMVqM9s","HgEqXhsIq_g","aeXp1zC6Hls",
+                                  "TpWQlKHPyJ4","XRkgBWbWvg4","BGE3wb7H2PA","PNTnmH6jsRI","KhwQKE_tld0","MK_0QHbUnIA","wOHrNt9ScYs","--lPz7VFnKI")
+                      .margsvl("Early Universe")
+                      .margsv(gr4,
+                               "ANCN7vr9FVk", "4OinSH6sAUo", "tJ2AJJMcQXs", "wuPEmfon9lg", "45RQrWHzovU", "vKLqWj0FRyc", "m00PjHTq6jU", "OtJFD9HNnoc", "U9n-Y_ZC-2M", "YfbXB_MSkSY", 
+                               "ARuzDX55Xnk", "dBhMcn7UDs0", "eUYIcR1VGns", "-yIKKST-_Mw", "moyD_yeviMY", "6b83DypBeYg", "KY91PsqCy_8", "MKPswx4hjec", 
+                               "U_Ot1PTuUv4", "RgScJ20EnW8", "PK1KNojfvMQ", "seBwiL9InII", "PsfyE1-s9Rs") 
                       .margsvl("Richard Feynman")
                       .margsv(gr4,
                               "ZcpwnozMh2U",
@@ -1129,9 +1217,9 @@ function getParameterByName(name, url) {
                  "ThcaW4MVGLY", "tSRlNwaUgPQ", "vz2DGSBBpXg", "WhCIuGjhH-0", "wiRt3mY7Rrw", "WqirNEFPh5Y");
 
                       resetViddIndexName();
-                      setViddIndexName("START");
+                      setViddIndexName("LEARN");
 
-           $('#START_TABLE')
+           $('#LEARN_TABLE')
                .margsv(gr4,"jOhbTAU4OPI","mZ5H8sn_2ZI", "TsRBftzZsQo","SrwxAScdyT0", "Ul6FW4UANGc", 
                          "op_9NfAVedY","rKpKHulqYOQ", "_oWa4fWAqTY", "eOBq__h4OJ4","0iQBAss5u38");
 
@@ -1151,10 +1239,10 @@ function getParameterByName(name, url) {
            $("#S_TABLE").find('td').css({"padding":"5px"});
 
 
-           $("#START_TABLE").find('img').tune("imgwidth250");
+           $("#LEARN_TABLE").find('img').tune("imgwidth250");
            $("#REINVENT2018_TABLE").find('img').tune("imgwidth250");
            $("#REINVENT2017_TABLE").find('img').tune("imgwidth250");
-           $("#AWSSUMMITS_TABLE").find('img').tune("imgwidth250");
+           $("#SUMMITS_TABLE").find('img').tune("imgwidth250");
            $("#M_TABLE").find('img').tune("imgwidth250");
            $("#S_TABLE").find('img').tune("imgwidth160");
            $("#AD_TABLE").find('img').tune("imgwidth250");
@@ -1307,7 +1395,7 @@ function getParameterByName(name, url) {
               -->
           </td>
           <td class='main_title_small' valign='middle' align='left'><b><div id='videocount'></div></b></td>
-          <td class='main_title' valign='middle' align='right' width='10%'><b>XEI</b></td>
+          <td class='main_title' valign='middle' align='right' width='10%'><b>XEI_F</b></td>
 </tr>
 <tr>
 <td id='main_title' class="main_title" colspan=100>
@@ -1326,19 +1414,18 @@ function getParameterByName(name, url) {
 
 
 <ul id="tabbar" class="nav nav-tabs padtop">
-    <li id="LEARNTAB" class="active"><a id='T1' data-toggle="tab" href="#tabs-1"><div class='backer'>Start Learning</div> AWS</a></li>
-    <li id="AWSREINVENTTAB2018">     <a data-toggle="tab" href="#tabs-2018"><div class='backer'>AWS</div> ReInvent 2018</a></li>
-    <li id="AWSREINVENTTAB">         <a data-toggle="tab" href="#tabs-2017"><div class='backer'>AWS</div> Past ReInvents</a></li>
-    <li id="AWSSUMMITSTAB">          <a data-toggle="tab" href="#tabs-6"><div class='backer'>AWS</div> Summits</a></li>
-    <li id="AWSINDEPTHTAB">          <a id='T3' data-toggle="tab" href="#tabs-2"> <div class='backer'>AWS</div> In-Depth</a></li>
-    <li id="LINUXTAB">               <a data-toggle="tab" href="#tabs-211"> <div class='backer'>LEARNING</div>Linux</a></li>
-    <li id="TOOLSTAB">               <a data-toggle="tab" href="#tabs-9"><div class='backer'>DEVELOP</div>Tools</a></li>
-    <li id="APITAB">                 <a data-toggle="tab" href="#tabs-911"><div class='backer'>DEVELOP</div>APIs</a></li>
-    <li id="AIMLTAB">                <a data-toggle="tab" href="#tabs-AI"><div class='backer'>LEARN</div>AI, ML</a></li>
-    <li id="COMPSCITAB">             <a data-toggle="tab" href="#tabs-COMPSCI"><div class='backer'>TOPICS IN</div>CompSci</a></li>
-    <li id="THINKTAB">               <a data-toggle="tab" href="#tabs-THINK"><div class='backer'>THINK</div>More</a></li>
-    <li id="GENIUSTAB">              <a id='T212' data-toggle="tab" href="#tabs-212"> <div class='backer'>JUST</div>Genius</a></li>
-    <li id="FOODTAB">                <a id='TFOOD' data-toggle="tab" href="#tabs-FOOD"> <div class='backer'>GOOD</div>Food</a></li>
+    <li id="LEARNTAB" class="active"><a tname='LEARN_TABLE' id='T1' data-toggle="tab" href="#tabs-1"><div class='backer'>Start Learning</div> AWS</a></li>
+    <li id="AWSREINVENTTAB2018">     <a tname='REINVENT2018_TABLE' data-toggle="tab" href="#tabs-2018"><div class='backer'>AWS</div> ReInvent 2018</a></li>
+    <li id="AWSREINVENTTAB">         <a tname='REINVENT2017_TABLE' data-toggle="tab" href="#tabs-2017"><div class='backer'>AWS</div> Past ReInvents</a></li>
+    <li id="SUMMITSTAB">             <a tname='SUMMITS_TABLE'       data-toggle="tab" href="#tabs-6"><div class='backer'>AWS</div> Summits</a></li>
+    <li id="AWSINDEPTHTAB">          <a tname='M_TABLE' id='T3' data-toggle="tab" href="#tabs-2"> <div class='backer'>AWS</div> In-Depth</a></li>
+    <li id="LINUXTAB">               <a tname='LINUX_TABLE'        data-toggle="tab" href="#tabs-211"> <div class='backer'>LEARNING</div>Linux</a></li>
+    <li id="TOOLSTAB">               <a tname='AD_TABLE'           data-toggle="tab" href="#tabs-9"><div class='backer'>DEVELOP</div>Tools</a></li>
+    <li id="APITAB">                 <a tname='API_TABLE'          data-toggle="tab" href="#tabs-911"><div class='backer'>DEVELOP</div>APIs</a></li>
+    <li id="AIMLTAB">                <a tname='AI_TABLE'           data-toggle="tab" href="#tabs-AI"><div class='backer'>LEARN</div>AI, ML</a></li>
+    <li id="COMPSCITAB">             <a tname="COMPSCI_TABLE"      data-toggle="tab" href="#tabs-COMPSCI"><div class='backer'>TOPICS IN</div>CompSci</a></li>
+    <li id="GENIUSTAB">              <a tname="GENIUS_TABLE"  id='T212' data-toggle="tab" href="#tabs-212"> <div class='backer'>TOPICS IN</div>Science</a></li>
+    <li id="FOODTAB">                <a tname="FOOD_TABLE"    id='TFOOD' data-toggle="tab" href="#tabs-FOOD"> <div class='backer'>GOOD</div>Food</a></li>
 
 
     <!--
@@ -1384,14 +1471,6 @@ function getParameterByName(name, url) {
      <table class="topleft" width='100%'><tbody id='SL_INDEX'></tbody></table>
 </div>
 
-<div id="tabs-THINK">
-     <table width='100%' class="topmiddle">
-     <tr>
-          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='THINK_TABLE'></tbody></table></td>
-          <td width='30%' class="topleft"><ul class='nobull' id='THINK'></ul></td>
-     </tr>
-     </table>
-</div>
 <!--
     <script type="text/javascript">
            tabTable("tabs-COMPSCI",  "COMPSCI_TABLE",  "COMPSCI");
@@ -1527,8 +1606,8 @@ http://stackoverflow.com/questions/443700/div-with-horizontal-scrolling-only
 <div id="tabs-1">
      <table width='100%' class="topmiddle">
      <tr>
-          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='START_TABLE'></tbody></table></td>
-          <td width='30%' class="topleft"><ul class='nobull' id='START'></ul></td>
+          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='LEARN_TABLE'></tbody></table></td>
+          <td width='30%' class="topleft"><ul class='nobull' id='LEARN'></ul></td>
      </tr>
      </table>
 </div>
@@ -1626,8 +1705,8 @@ http://stackoverflow.com/questions/443700/div-with-horizontal-scrolling-only
 <div id="tabs-6">
      <table width='100%' class="topmiddle">
      <tr>
-          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='AWSSUMMITS_TABLE'></tbody></table></td>
-          <td width='30%' class="topleft"><ul class='nobull' id='AWSSUMMITS'></ul></td>
+          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='SUMMITS_TABLE'></tbody></table></td>
+          <td width='30%' class="topleft"><ul class='nobull' id='SUMMITS'></ul></td>
      </tr>
      </table>
 
@@ -4106,8 +4185,8 @@ http://stackoverflow.com/questions/443700/div-with-horizontal-scrolling-only
                          "Note 6/10/17: New Start Learning video added: \'Insurance and Financial Services Journey to Cloud (ENT314)\'" +
                          "</font>"
                       );
--->
 <script type="text/javascript" id="clustrmaps" src="//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=150&d=ijR3OiR9-x6Z4qmZj7FW9pwUhp9PVlV1xXeRRO_8LXs"></script>
+-->
 <div id='enders'></div>
 </body>
 
