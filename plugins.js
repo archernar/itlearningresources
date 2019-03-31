@@ -85,6 +85,58 @@ var margsvl_label = "";
     };
 }( jQuery ));
 
+(function ( $ ) {
+    $.fn.nork = function() {
+        var c = "\"";
+        var sz = "";
+        var f = "";
+        var s = "";
+        var n = arguments[0];
+        var cs = 0;
+        var m = 0;
+        var mrows = 0;
+        var id = "";
+        var res = "";
+        var re = /[0-9,a-z,A-Z,_-]+/
+        var replre = /^.*[?]/
+        for (var i = 1; i < arguments.length; i=i+2) {
+             id  = arguments[i];
+             YTT[id]=arguments[i+1];
+             m = i % n; 
+             if ( m == 1 ) {
+                 sz = sz + "<tr>"
+                 mrows++
+             }
+             res = id.substring(0, 1);
+             f = " topmiddle ";
+             s = "";
+             if ( res == " " ) {
+                 res = id.substr(1);
+                 f = " middleleft ";
+                 cs = n-1;
+                 s = " colspan=" + cs.toString() + " ";
+             } else {
+                 res = ytimg(arguments[i], "----");
+             }
+             f = " madmiddle ";
+             sz = sz + "<td " + s + " class='" + f + "slimtd'>" + res + "</td>";
+             if ( m == 0 ) {
+                 sz = sz + "</tr>"
+                 if ( mrows == 3 ) {
+                      // sz = sz + "<tr><td align='middle' colspan=30>" +  margsvl_label + "</td></tr>";
+                      mrows = 0;
+                 } else {
+                      // sz = sz + "<tr><td align='middle' colspan=30>" +  margsvl_label + "</td></tr>";
+                      // sz = sz + "<tr><td align='middle' colspan=30>" +  "-"  + "</td></tr>";
+                 }
+             }
+        }
+        if ( m != 0 ) sz = sz + "</tr>"
+        this.append(sz);
+        return this;
+    };
+}( jQuery ));
+
 
 (function ( $ ) {
     $.fn.margsv = function() {
@@ -106,7 +158,6 @@ var margsvl_label = "";
         }
         for (var i = 1; i < arguments.length; i++) {
              id  = arguments[i];
-//             console.log( dq(id) + "," + dq(YTT[id]) );
              m = i % n; 
              if ( m == 1 ) {
                  sz = sz + "<tr>"
@@ -121,13 +172,8 @@ var margsvl_label = "";
                  cs = n-1;
                  s = " colspan=" + cs.toString() + " ";
              } else {
-                 // res = YTT[ arguments[i] ];
                  res = ytimg(arguments[i], "----");
-                 // res = yttitle(arguments[i], "----");
              }
-             // sz = sz + "<td class='topmiddle slimtd'>" + ytimg(arguments[i], "----") + "</td>";
-             //
-             //
              f = " madmiddle ";
              sz = sz + "<td " + s + " class='" + f + "slimtd'>" + res + "</td>";
              if ( m == 0 ) {

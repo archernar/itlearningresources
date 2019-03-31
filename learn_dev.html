@@ -156,6 +156,8 @@
         var myAnchorArray = [];
         var myCounter = 0;
         var gr4=4;
+        var gr6=6;
+        var gr8=8;
         if ( sizeW() < 1400 ) {
              gr4=3;
         }
@@ -246,6 +248,21 @@ function filterTitle() {
 }
 function simplefiter() { 
      var title = arguments[0]; 
+     title = title.replace(/(MIT [0-9]+[.][0-9]+[ ])/, "$1<BR>");
+     title = title.replace(/(Tutorial [#][0-9]+ )/, "$1<BR>");
+     title = title.replace(/( [-] )/, " ");
+     title = title.replace(/([-] )/, " ");
+     title = title.replace(/(Chapter [0-9]+ )/, "$1<BR>");
+     title = title.replace(/Beginner/, "Bg");
+     title = title.replace(/Beginners/, "Bg");
+     title = title.replace(/Electronics/, "Elec");
+     title = title.replace(/ELEC/, "Elec");
+     title = title.replace(/Summit Series/, "Summit");
+     title = title.replace(/Tutorial/, "Tut");
+     title = title.replace(/tutorial/, "Tut");
+     title = title.replace(/Chapter/, "Chpt");
+     title = title.replace(/chapter/, "Chpt");
+     title = title.replace(/Lecture /, "");
      title = title.replace(/Architectures/, "Archs");
      title = title.replace(/Architecture/,  "Arch");
      title = title.replace(/Applications/,  "Appls");
@@ -259,6 +276,8 @@ function simplefiter() {
      title = title.replace(/Development/,   "Dev");
      title = title.replace(/Deployment/,    "Dply");
      title = title.replace(/Performance/,   "Perf");
+     title = title.replace(/ [(]1080p[)]/,   "");
+     title = title.replace(/[(]1080p[)]/,   "");
      title = title.replace(/^AWS /,         "");
      title = title.replace(/^re:Invent 2018 /,         "");
      title = title.replace(/^reInvent 2018 /,         "");
@@ -267,12 +286,26 @@ function simplefiter() {
      title = title.replace(/^- /,         "");
      title = title.replace(/^ - /,         "");
      title = title.replace(/^ -/,         "");
+     title = title.replace(/New York/,"NYC");
+     title = title.replace(/Summit 2018 NYC/,"Summit NYC 2018");
+     title = title.replace(/(Summit NYC 2018)/, "$1<BR>");
+     title = title.replace(/(NYC Summit 2018)/, "$1<BR>");
+     title = title.replace(/([(][A-Z][A-Z][A-Z][0-9][0-9].*[)])/, "<font size='-2'>$1</font>");
+     title = title.replace(/([(][A-Z][A-Z][A-Z][A-Z][A-Z][A-Z][0-9][0-9].*[)])/, "<font size='-2'>$1</font>");
+     title = title.replace(/ [:] /, "");
      return title;
 }
+//#             statusCode: {
+//#                 404: function() {
+//#                       console.log( "Error " + id + " 404 Page Not Found" );
+//#                 }
+//#             },
 	function setYouTubeTitle() {
+            // Example url:   https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=mZ5H8sn_2ZI&format=json
             var id = arguments[0]; 
             var sel = arguments[1]; 
             var zid = arguments[2]; 
+            console.log("Seek: " + id);
             var title = "";
             var unmodifiedtitle = "";
 
@@ -288,18 +321,14 @@ if (title == null) {
                 format: "json"
             },
             dataType: "jsonp",
-            statusCode: {
-                404: function() {
-                      console.log( "Page Not Found" );
-                }
-            },
             error: function (request, status, error) {
-                      console.log( "Page Not Found" );
+                      console.log( "Error " + id + " Page Not Found" );
             },
             success: function (data) {
                 var szTitle = "";
                 var unmodifiedszTitle = "";
                 var regex;
+                console.log("Find: " + data.query.results.json.title);
                 if (data && data.query && data.query.results && data.query.results.json) {
                     szTitle = data.query.results.json.title;
                     unmodifiedszTitle = szTitle;
@@ -345,9 +374,17 @@ else {
         title = filterTitle(title,id);
         title = simplefiter(title);
         $("#"+sel).empty().append(title).attr("desc",title);
-                    unmodifiedtitle = unmodifiedtitle.replace(/re:Invent 2018: /g, "");
-                    unmodifiedtitle = unmodifiedtitle.replace(/re:Invent 2018 - /g, "");
-        $("#"+zid).append(videoIndexItemLinkLI(id,unmodifiedtitle));
+             unmodifiedtitle = unmodifiedtitle.replace(/re:Invent 2018: /g, "");
+             unmodifiedtitle = unmodifiedtitle.replace(/re:Invent 2018 - /g, "");
+             unmodifiedtitle = unmodifiedtitle.replace(/([(][A-Z]+[0-9][0-9].*[)])/, "");
+             unmodifiedtitle = unmodifiedtitle.replace(/AWS/, "");
+             unmodifiedtitle = unmodifiedtitle.replace(/Amazon/, "");
+             unmodifiedtitle = unmodifiedtitle.replace(/(^.*[:] )/, "");
+             unmodifiedtitle = unmodifiedtitle.replace(/(New York)/, "NYC");
+             unmodifiedtitle = unmodifiedtitle.replace(/(San Francisco)/, "SF");
+             $("#"+zid).append(videoIndexItemLinkLI(id,unmodifiedtitle));
+
+
         if (!mySet.has(id)) { 
              $("#SL_INDEX").append(videoIndexItemLinkTR(id,unmodifiedtitle,zid));
         }
@@ -392,7 +429,9 @@ function randomString(len) {
              thumb = "<img class='videoimagei topmiddle' waldo='here' src='hal.jpg' srcthing='http://img.youtube.com/vi/IDVAR/hqdefault.jpg'>";
              thumb =  thumb.replace(/IDVAR/g, id);
 
-             var out   = "<div class='videodivyy topmiddle boxyyy'>" +link+thumb+ "<div zid='VINAMEVAR' desc='" +desc+ "' class='videotitle topmiddle' vid='" +id+"' id='" +randomStr() +"'>" +desc+ "</div></a></div>"
+             desc = filterTitle(desc,id);
+             desc = simplefiter(desc);
+             var out   = "<div class='videodivyy topmiddle boxyyy'>" +link+thumb+ "<div zid='VINAMEVAR' desc='" +desc+ "' class='VINAMEVAR videotitle topmiddle' vid='" +id+"' id='" +randomStr() +"'>" +desc+ "</div></a></div>"
              out =  out.replace(/VINAMEVAR/g, ViddIndexName); 
 
              return out;
@@ -552,8 +591,10 @@ function mySearchFunction(input_id, table_id, td_pos) {
              mySorter("#DEEP","li","desc");
              mySorter("#LEARN","li","desc");
              mySorter("#SUMMITS","li","desc");
-             mySorter("#DEV","li","desc");
+             mySorter("#AD","li","desc");
              mySorter("#GENIUS","li","desc");
+             mySorter("#JAVA","li","desc");
+
              mySorter("#FOOD","li","desc");
              mySorter("#LINUX","li","desc");
              mySorter("#REINVENT2017","li","desc");
@@ -1031,8 +1072,9 @@ function getParameterByName(name, url) {
                       resetViddIndexName();
                       setViddIndexName("COMPSCI");
            $('#COMPSCI_TABLE')
+
                       .margsvl("Quantum Computing")
-                      .margsv(gr4,"S52rxZG-zi0")
+                      .margsv(gr4,"S52rxZG-zi0", "QeUMFo8sODk","F_Riqjdh2oM")
                       .margsvl("Java Programming Lectures")
                       .margsv(gr4,"k6U-i4gXkLM", "Pij6J0HsYFA", "X6ilT3uUOBo", "SXR9CDof7qw", "Pfo7r6bjSqI", "hVHqs38fPe8", "tuRYbBvOMRo", "ewd7Lf2dr5Q", "UNHQ7CRsEtU", 
                                   "kDhR4Zm53zc", "DkPsD58nUIE", "udnyuHzJsjM", "ZKBUu_ahSR4", "le8tpXQyYcM", "y81AhLQN-NI", "Q8SoG1OIveU", "ZbIpjf0QEPI",  
@@ -1041,7 +1083,10 @@ function getParameterByName(name, url) {
                       .margsv(gr4, 
                                 "C1lhuz6pZC0", "uK5yvoXnkSk", "V_TulH374hw", "-1BnXEwHUok", "6wUD_gp5WeE", "OgO1gpXSUzU", "rUxP7TM8-wo", "soZv_KKax3E", 
                                 "vIFKGFl1Cn8", "fQvg-hh9dUw", "h0e2HAPTGF4", "esmzYhuFnds", "eg8DJYwdMyg", "K2SC-WPdT6k", "iOZVbILaIZc") 
-
+                      .margsvl("Joy of Computing")
+                      .margsv(gr4,"ok_KcxqVrOk","7TFc_73EYq0","aLnY1o8cnUg","YWnG6aqVw8s","E4rSsWGRJAw","iEAawx4yLYY","9ZzNua3rSDo","iiAhHEuUgy8","Rc042PPVERM","479rzmLZUsc",
+                                  "F6ORxYLfJpU","zvJUduRTEdw","TpycGBLSriU","zonv2X1g_mQ","CUuikvUV2-c","VrLwFMgoxlw","hSeKlgzm5dQ","XjinTtsyy5M","2kYKnYq5d6g","MroUlbiKi0U",
+                                  "5B2qlpqpFaw","K9AoPrvAyeI","DzTQv6PVhEQ","u5iiHSh4f9g","MkPMErI1NHM","89gXMbv8bt0")
                       .margsvl("Introduction to Computer Science and Python")
                       .margsv(gr4, 
                                   "ytpJdnlu9ug", "Y6J8I056Ffw", "F-_PKUUM-qY", "EFCdr_43qmU", "0jljZRnHwOI", "w4uxYDPsjbw", "lniF6ys2CIk", "jjbWNcIjmzc",
@@ -1082,6 +1127,16 @@ function getParameterByName(name, url) {
                       .margsv(gr4,"YX40hbAHx3s", "-rPPqm44xLs","mr1FMrwi6Ew","GekQqFZm7mA", "eis11j_iGMs");
 
 
+                      resetViddIndexName();
+                      setViddIndexName("JAVA");
+           $('#JAVA_TABLE')
+                      .margsvl("Java Course")
+                      .margsv(gr4,"HMUkS0sJr70","oqnLQVFaqYI","zKFjT0I8ZlI","vnm5pBEWyOw","I0Yh4zvPjfo","VbJTCjxp4_Q","8h9qA2VldIg","yTubh2LTK_c","RVHBwmWiRDA","zT9R0wAP8p0","lGZeDFS54_Y","f18OTVaHrvE","lFFVe-AQaGA","QnE-ihJDm4g","cBQlsuARCfQ","MfcYZWZUJbg","yCVgSXKwomI")
+
+     .margsvl("Sessions")
+     .margsv(gr4,"TBWX97e1E9g","yYN8u90MKCg","qZ2pb6BljLk","efvZmFd1prA","1HTsLK_m2ao","EWj60p8esD0","rGlJiUO-dZA","_pUz-GJcdRU","eNPX2pTiaHI","bQTFXlZWzKw","IEqvmsqjpT0","HLwijvzWNKo","RxeDe6BsTMI","Lsdaztp3_lw","1PPDoAKbaNA","h2tVne5nDUg","F-CkaU8aQZI","G2Xd5avyk_0","s_PfopWcMwI","3XB3in9Xqy8","3ifwR5feRQI","qVdRxODXBcU","wApG8SHBJ24","h3Xeo14Kn_8","dKnRUuYVR0Q","IMhiGyxF4as","JmiyAlvm6Ds","mgnWYBaJuUk","ya_kEknUNIE","y9SvMg5CxA4","o9F73FU2vzs","D_WDuwnaobg","X81XIVaMWCQ","Em-AhbqVe48","eiaWMJt1qhE","zy6LZ3QRDu4","02HlbJ18aYc","mIMxKY_t7J4","wFgeUC5dw_4","mSbFrQfgq7A","j-zAbYs9J7w","iZcfMa2Fagg","3s9ufjnxITk","IuIX8H_avn8","_HnJ501VK3M","wxgdTDpNM6k","q-oQ5D91TAk","MmKgTeEd8yM","HWoVxBcvy1s","ydQWhluoBXM","235mse79MCw","T6FxSiYQ7nI","4wWLEeQSXLQ","sSbcAFqpw-o","lebZd9bDnc8","fK0fxjbjdQA","8KNwjOsdn8I","upmRIZwAHAY","UWIFtzUjDLw","S1xCzB4d9G8","MfqbEYyg3J8","ptsNLcQYxCQ","8A3ziZPZbgQ","vNHpsC5ng_E","yRJ1rRoMnIM","-NCgRD9-C6o","wiQdrH2YpT4","ub0DXaeV6hA","xbjAsdAK4xQ","NZaXM67fxbs","9XnsOpjclUg","AFbZhRL0Uz8","agnblS47F18","j40kRwSm4VE","7Pj5kAhVBlg","qG286LQM6BU","B1Y8fcYrz5o","9jIgSsIfh_8","aR1B8MlwbRI","VKIzUuMdmag","2HUnoKyC9l0","0vV-R2926ss","MGEx35FjBuo","cHg5bWW4nUI","jDX6x8qmjbA","6CVymSJQuJE","CQEPlGFYTr8","8DxIpdKd41A","jOnxYT8Iaoo","pL4mOUDi54o","svJQu6LUSTs","dTVVa2gfht8","C5glFtpuy0U","WPvGqX-TXP0"
+
+           );
 
 
                       resetViddIndexName();
@@ -1108,23 +1163,45 @@ function getParameterByName(name, url) {
 
                       resetViddIndexName();
                       setViddIndexName("GENIUS");
+                      var grA = 6;
+
            $('#GENIUS_TABLE')
+     .margsvl("Basic Electronics Course(s)")
+     .margsvl("Sessions")
+     .margsv(grA,"qxqZJH3SfN4")
+
+
+     .margsv(grA,"0HXEI_Lk3Qo","F_5sV8s9ZEA","naTnyUMtPhs","CTk6P9vB_90","dQcHMsKCCCg","AWLJADJTWHU","Zy_uv_r0t3I","e2qCGpZ8wQ0","d4Z8VI3myBw",
+                 "_S-kbHdduB4","2Ua5XrpSUn8","bQWnvOnFzwg","WsoE5doLZg8","OSzisG7IjiM")
+
+     .margsv(grA,"SpqwAasxY7U","5Ro7oVKbTYM","P5-41Ysi5DQ","FynA8LhHoFE","grkC_AX3n-Q","_YSvSZz4rwM","80n-81kNTt0","vqVk10ityNE","F6h-4M-tqyE",
+                 "4nPZ5kau-VY","rsg3zisZSFk","pGD4M8_ZgfQ","YZevdHb24eg","YbcS5H0fNZc","9UmlXd9Idhk","hL1mhJts9sU","NEjsEfbi6IU","wk46FJjBzSw",
+                 "hXE-_bij214","8eQC7K7gylU","mxMo0rgpfeU","7MZkPr5g5PM","4jgaaTEmVAQ","i6kxQcdW2c0","k59-0dEXZNo","ULyWCNkGEbA","AfQxyVuLeCs","ECXzSHjE5Xk")
+
+
+     .margsv(grA, "r-X9coYTOV4","r3MFuAdkHEM","-HpIzM11xJI","PqjwxoUa9Z4","KAgU0PDcsH4","NZXq4HPJwT8","YlqWTID1-4s","E5AbNQVhmU8","p5iXLloIfqs",
+                   "swHFbTApMZg","1XACmWnK0MU","XnJXySO94kU","QbVCABiqQJo","haaRTKm8ePQ","QUEHpfP0wCE","bigUxBWtJDo","DYn3tn00VK0","DLirSFg2ELo",
+                   "OIqvKMqg2Gw","JuVhr422hlc","cnPa3_rB9LU","uuRQZbXOLnw","DxD6GCnetCU","IbGrNgx6-lg","9lCD-gCh8JU")
+
+
+     .margsvl("Electronics")
+     .margsv(grA,"wknnLi56J_0","0vMvCVyOp9g","QR8qsygs1Kw","3I_e7gIyfQg","iH9_xtulyws","VSpB3HivkhY","TBt-kxYfync","NfcgA1axPLo","cxkVxi9P0EA","YCSNWi3UHf4","ozdjvGuaCvA","GmzfJa2GS7c","O1UagNkcxi4","y0Q0ERSP24A","iuMngik0GR8","2te13V_YsPU","wJU7AJgERG8","cyhzpFqXwdA","5QaKiXRa-n0","JCPXckfT-6g","ZUxDXXBO3eA","EoWMF3VkI6U","8rRRvgjLjZU","iYafyPZ15g8","rVPjQou42i8","i2U49usFo10","0yhbof6_s64","4ObzEft2R_g","IrB-FPcv1Dc","saxYilLJ7yw","bEm9LN-BXLY","YzrKIYNPn4o","NgwXkUt3XxQ","LXGtE3X2k7Y","8xONZcBJh5A","BNfGoy5dqbg","Yo6JI_bzUzo","IjJWWGPjc-w","qIfo_-d82Co","hUIgAu3QQWQ","7jRl_XtyRCo","OBM5T5_kgdI","ic_yEUV7Y3c","Gw-rUCwLoQ0","MUfMPjMAwx8","S6Uh2Je_JdE","Fzq68nXrWLM","CEhBN5_fO5o","Te5YYVZiOKs")
                       .margsvl("Think More")
                       .margsval("http://rationallyspeakingpodcast.org/", "Rationally Speaking Podcast")
                       .margsvl("Numbers")
-                      .margsv(gr4,"ZMkIiFs35HQ", "O4ndIDcDSGc","F8KGidsuxgY")
+                      .margsv(grA,"ZMkIiFs35HQ", "O4ndIDcDSGc","F8KGidsuxgY")
                       .margsvl("Single Variable Calculus")
-                      .margsv(gr4,"jbIQW0gkgxo","ryLdyDrBfvI","kCPVBl953eY","4sTKcvYMNxk","5q_3FDOkVRQ","9v25gg2qJYE","eHJuAByQf5A","BSAA0akmPEU","eRCN3daFCmU",
+                      .margsv(grA,"jbIQW0gkgxo","ryLdyDrBfvI","kCPVBl953eY","4sTKcvYMNxk","5q_3FDOkVRQ","9v25gg2qJYE","eHJuAByQf5A","BSAA0akmPEU","eRCN3daFCmU",
                                   "twzGBqPeW0M","YN7k_bXXggY","sRIDVAcoG5A","4Q37iOyBq44","-MI0b4h3rS0","60VGKnYBpbg","hjZhPczMkL4","1RLctDS2hUQ","Pd2xP5zDsRw",
                                   "_JXPe2J069c","ShGBRUx2ub8","R9a_NHXrBcg","jBkXbAgMj6s","zUEuKrxgHws","Bv9kVDcj7yo","CXKoCMVqM9s","HgEqXhsIq_g","aeXp1zC6Hls",
                                   "TpWQlKHPyJ4","XRkgBWbWvg4","BGE3wb7H2PA","PNTnmH6jsRI","KhwQKE_tld0","MK_0QHbUnIA","wOHrNt9ScYs","--lPz7VFnKI")
                       .margsvl("Early Universe")
-                      .margsv(gr4,
+                      .margsv(grA,
                                "ANCN7vr9FVk", "4OinSH6sAUo", "tJ2AJJMcQXs", "wuPEmfon9lg", "45RQrWHzovU", "vKLqWj0FRyc", "m00PjHTq6jU", "OtJFD9HNnoc", "U9n-Y_ZC-2M", "YfbXB_MSkSY", 
                                "ARuzDX55Xnk", "dBhMcn7UDs0", "eUYIcR1VGns", "-yIKKST-_Mw", "moyD_yeviMY", "6b83DypBeYg", "KY91PsqCy_8", "MKPswx4hjec", 
                                "U_Ot1PTuUv4", "RgScJ20EnW8", "PK1KNojfvMQ", "seBwiL9InII", "PsfyE1-s9Rs") 
                       .margsvl("Richard Feynman")
-                      .margsv(gr4,
+                      .margsv(grA,
                               "ZcpwnozMh2U",
                               "4eRCygdW--c", "EKWGGDXe5MA", 
                               "xNF_3KdpdrY",
@@ -1138,19 +1215,19 @@ function getParameterByName(name, url) {
                               "2mIk3wBJDgE")
 
                       .margsvl("David Butler - How Small Is It?")
-                      .margsv(gr4, "zKbZeUvPnWI", "aTJGsbDkcVY", "diVZIBYww-k", "wAsceiIMY2I", "xG_YtASz7gY", "AHWgnBOQx8U")
+                      .margsv(grA, "zKbZeUvPnWI", "aTJGsbDkcVY", "diVZIBYww-k", "wAsceiIMY2I", "xG_YtASz7gY", "AHWgnBOQx8U")
                       .margsvl("David Butler - How Far Away Is It?")
-                      .margsv(gr4, "HgNJwg2GISs", "XkuTINYgTF8",
+                      .margsv(grA, "HgNJwg2GISs", "XkuTINYgTF8",
                                   "t3_VkTfCKv0", "krJjQbdGnrQ", "mTtksRyLfFA", 
                                   "ePD3Kxzf-4M", "OnzZye5tGdY", "7d5ANwI-Ws0",
                                   "q7prQTS_N3Y", "IhP1GnAvm0w","sUvFN8VoQsg", "zmlQhxOmR14",
                                   "KPBcDoqH6ys","RbRB_SqBRjM", "sUvFN8VoQsg", "SEaEgWxkzNw", "_LwkTsj12Pc")
                       .margsvl("David Butler - Dark Matter")
-                      .margsv(gr4, "8PVcbyAVGNI", "PHS241aGUHU", "XlieTVRBT_g", "ZZaHnk_RDfo")
+                      .margsv(grA, "8PVcbyAVGNI", "PHS241aGUHU", "XlieTVRBT_g", "ZZaHnk_RDfo")
                       .margsvl("Leonard Susskind")
-                      .margsv(gr4, "hbmf0bB38h0", "JqNg819PiZY")
+                      .margsv(grA, "hbmf0bB38h0", "JqNg819PiZY")
                       .margsvl("Other")
-                      .margsv(gr4, "4a0FbQdH3dY", "zNVQfWC_evg");
+                      .margsv(grA, "4a0FbQdH3dY", "zNVQfWC_evg");
 
 
                       resetViddIndexName();
@@ -1160,39 +1237,49 @@ function getParameterByName(name, url) {
                       .margsv(gr4,"xggucT_xl5U", "PbwQWw7xSOM", "wC5hxY0RItQ", "bgzWvbvERV4", "-EmZpoZX7ag", "6kwmW_p_Tig",
                                 "G3FQc5hcV2U", "qsTKxD7pkPk")
                       .margsvl("AWS API Gateway")
-                      .margsv(gr4,"2LT5mHqKL7g", "ZBxWZ9bgd44");
+                      .nork(gr4,"2LT5mHqKL7g","Moe","ZBxWZ9bgd44","Larry");
 
                       resetViddIndexName();
-                      setViddIndexName("DEV");
+                      setViddIndexName("AD");
+                      var grA = 4;
            $('#AD_TABLE')
+                      .margsvl("i3 Window Manager")
+                      .margsv(grA,"j1I63wGcvU4","8-S0cWnLBKg","ARKIwOlazKI","uD3qSgsQPRg")
+
+                      .margsvl("Vim & Tmux")
+                      .margsv(grA,"v0W7JkzQAzA","1alWK5ByNMc","5r6yzFEXajQ","Nim4_f5QUxA","2pqipq-UEwQ","SkdrYWhh-8s","aHm36-na4-4","YD9aFIvlQYs","ayc_qpB-93o",
+                                "BHhA_ZKjyxo","norO25P7xHg") 
+                      .margsv(grA,"MAHC9eZbx4o","oqYQ7IeDs0E","OgQW07saWb0","QcOxU1sOOuw","WrRbLEAgI5M","xSNmu4CQDas","mXHVHVYdbuQ","uYSN6vVPr6w","YnLL9kUrWk0","WeppptWfV-0","0aEv1Nj0IPg","1JY7oIlH9g0","YwMgnmZNWXA","7Bx_mLDBtRc","QGQROe8ACpY","fTyfevqIuJA","VjOcINs6QWs","sZoQrO4Zzxg","_fDJ84_BLKg","Ipkn3tXKrrA","iNVyCPPYFzc","n1cKtZfwOgQ","vLqfkEl4T_U","wRII9nHCixU","T8z0E_1wrvI","ogeVqNOStQs","N0RL_J0LT9A","dWkV9ZfBg5g","2svdeMGyw7A","FTzzObIq1EI","BOdTsZ7jg-M","rKHEAy2sy9A","PYketjc9aus","BvjcW885uHw","cu4EydV9zNk","fm33-Pas7vI","SW-dKIO3IOI","Dzbw_9rI-Yg","1vZmJa0Xi1Q","uglorjY0Ntg","xlqDCY05Hpk","7GpwgbK_Ei0","A_jF7fDMg7Y","wQ9uB8I0cCg","DBUuhvS8nZ8","FWIZhzy-RJs","Bsg-43PitrM","ujFFdXe3HtI","VBLh56J89do","19h34aP-fN4","9zffUQsbxgE","YH3MnY52e9c","obY1um6ehDM","YYeuRJ9nzG0","hdgovJPDXV8","blqvk-eth3E","vOO6XTeSVao","BNnSjJOpXDk","f-bvmPYqZkM","VHPY6bUboAQ","3jDafvUESbs","Av2pDIY7nRY","__0Dquj7y9g")
+                      .margsvl("Git")
+                      .margsv(grA,"HVsySz-h9r4","FdZecVxzJbk","KLEDKgMmbBI","iCGrKFH2oeo","kjBA2WISteM","tcd4txbTtAY")
+                      .margsv(grA,"MJUJ4wbFm_A")
+                      .margsvl("Jenkins")
+                      .margsv(grA,"vQSpztWcGmw")
+
+
+                      .margsvl("Tools")
+                      .margsv("DHICqIYV33k")
+
+                      .margsvl("Derek Banas Videos")
+                      .margsv(grA,"xbjAsdAK4xQ","qG286LQM6BU","kkYIMZw9gzQ","nBD4xhH5vIE","ugWu3gyte4I","Z149x12sXsw","H0btE8sxWQ0","gu6TfGZXUZs","OPxeCiy0RdY","Q46mGS81B_k","QO_Jlz1qpDw","Gf8JKkiNYkE","3zKvDF1cUYc","JdEijZ9XJmM","wbIl0NgVN4A","HnFyJQLV--k","NDmLWdTMupM","I6jIORI7K2k","MoKeZOdAESU","WPlM9kjTRA8","7uK9H56AF3I","ViNnfoE56V8","5HILZon7pVE","4iUo46s4eC4","V6mKVRU1evU","9AHxuoYyJJk","S3SoEP1a-1U","gyoYqyeXqpk","_9Y8aC5AnEU","x27hsbiqdP8","zbwaQnp8D_U","2Qw1hkwsJFQ","gqOEoUR5RHg","9jIgSsIfh_8","9XnsOpjclUg","Rub-JsjMhWY","9K4N6MO_R1Y","7pLldfZunJI","ywNZAebgEZw","IdwJdJw65tU","TGOXttOoI0U","IaTzi_bsuJU","ZOKLjJF54Xc","N5HgK1bTLOg","madHxNSnnYU","ZzVxgJmLAsE","ERJeRkUb51I","gwD9awr3NNo","0p0JLFZj2C8","0iUPKZzONJg","0iUPKZzONJg","hOVSKuFTUiI","HKqMqFJr4SY","GAvhe6oe-_4","decfmj7b5Vg","pVxJT3VxD0c","lisiwUZJXqQ","jbwjbbc5PjI","G-BRSwClK_4","RaHm_pSxqLY","OdDkFPO_nto","bBG2o905sRQ","-vjQ3gW3Dd8","nXvy5900m3M","PYzqi0eOxIg","zv8OdxQuUl8","IBr78sxWN2M","N7MRxREJ4-U","6uIc4PtB9BM","jDX6x8qmjbA","ciGyHkDuPAE","vhYK3pDUijk","LwYGPc-6sa0","7Pj5kAhVBlg","2HUnoKyC9l0","fvH865tKOLE","zjMRxbyQglA","8EDJfrD_G8A","FBSG2H_R0jI","DxFP-Wjqtsc","mqLI2oN6rXQ","I-rTKuEhrCM","CUxH_rWSI1k","OLjyCy-7U2U","RQGlMq3ahAs","j40kRwSm4VE","4n_50wpp8ik","TQhu1k6Dujk","Ky59C5geOtg","Wm8Eq0HIISA","y2YtMdNVElI","C5glFtpuy0U","Jakoi0G8lBg","XYJ_AUOw4aE","pBNOavRoNL0","Iagbv974GlQ","IEhwc2q1zG4","xDCKcNBFsuI","c7eNDJN758U","B1Y8fcYrz5o","r_t3zjRx4cU","h-wS-ZAfXRw","vV6FWtJ_yeU","0vV-R2926ss","__2UgFNYgf8","czFBARHgp68","ZUXtGQkJcQ0","r63f51ce84A","CF9S4QZuV30","B98jc8hdu9g","lV5p6W5cd5Y","4HuAnM6b2d8","02_H3LjqMr8","YHyNKK9rrzU","o975QaZFbps","7Szqx2oLO9g","5urUZUWoTLo","jgT_bt97nDA","yFuuE4lkXPU","DMa5_tSWg3E","Ghnrxgk-jCc","wwcWNyt8Uyk","rhj4_KBD6BQ","Js2Ab4Bznjs","RwJ4FZFePmk","W3xHIN15hP8","8PMFDHvNdX0","45gq0Q8GFMM","awgBNiCZs8I","LGEz9s3MZpk","2PPE0eZEbJ8","ZLp3bl45avE","pLShM_dGb2U","ef-6NZjBtW0","XeYc3Rx4jrQ","Yk-S8GKNKxM","OY8dRInKaqY","CrkPokBIvEA","tXpw4cEvecY","s402kpNGfhU","un4wvPA9Gfs","kDyJN7qQETA","nOCXXHGMezU","Fkxz0Tvhbd4","Fzy3HIgRw80","sSHUP6xDRHU","ySoTkwoXSd4","_qqTAjBaeJ0","zUIOEXssTSE","kWHvdKGLg_c","xdvVKywGlc0","svJQu6LUSTs","boj0f_O3i88","6CVymSJQuJE","VKIzUuMdmag","l5AXcXAP4r8","h2tVne5nDUg","QWVBu_GlUgI","o9F73FU2vzs","mN5ib1XasSA","IEqvmsqjpT0","EWj60p8esD0","M6lYob8STMI","TBWX97e1E9g","B4vqVDeERhI","3XB3in9Xqy8","1PPDoAKbaNA","RxeDe6BsTMI","_pUz-GJcdRU","WPvGqX-TXP0","1HTsLK_m2ao","qZ2pb6BljLk","eFCn6udv3gQ","upmRIZwAHAY","IuIX8H_avn8","yYN8u90MKCg","Lsdaztp3_lw","3ifwR5feRQI","ydQWhluoBXM","wFgeUC5dw_4","D_WDuwnaobg","eNPX2pTiaHI","neuDuf_i8Sg","Em-AhbqVe48","s_PfopWcMwI","f5OD9CKrZEw","efvZmFd1prA","rGlJiUO-dZA","UcOxGmj45AA","IlRyO9dXsYE","F-CkaU8aQZI","JUOyKSZScW0","agnblS47F18","xVnW7ZMqBus","_cLvpJY2deo","Bkc7AUQ6uU4","6wEqQvvcwyc","fju9ii8YsGs","BWXggB-T1jQ","_iRIPJHrdXg","_iRIPJHrdXg","sE67bP2PnOo","j9PqNe3J_Cc","B79miUFD_ss","H_oGi8uuDpA","swQEbZ6ez1I","1Xa_iDqvg94","EukxMIsNeqU","qmWCT_OgrKQ","WRRigB8nMU0","1AGyBuVCTeE","-wikR15AYWY","ADvbXr6kLNw","QUavLM-fA0I","vWXGkS10qeE","nwjAHQERL08","1GAC6KQUPeg","4BHdqd2Fg9g","d8kCdLCi6Lk","-tbWoZSi3LU","R1PcJfzsUU0","SGu0OSukq-s","Ggh_y-33Eso","yCA5Wzdkfag","02edODXdHgs","DHgLq9w4OKo","qgZVAznwX38","A1HUzrvS-Pw","lzQdhfmlPFI","195KUinjBpU","iR5wyCaIayk","ymSq4wHrqyU","0KmkBcUoQ7Q","4NEOA524Vh4","iMacxZQMPXs","CQEPlGFYTr8","G8DcQsYQsGE","NSSTkkKRabI","Avv-Y_ePYA0","jOnxYT8Iaoo","CB9G5Dvv-EE","5B7mJtiwbMg","-0X8mr6Q8Ew","dTVVa2gfht8","exez1RmGe6s","yPu6qV5byu4","Do_Hsb_Hs3c","O8wwnhdkPE4","5esQqZIJ83g","OQjPcS1tkDQ","fJW65Wo7IHI","5YaF8xTmxs4","wiQdrH2YpT4","WEghIXs8F6c","BDo0lL_MqYo","7TF00hJI78Y","mpQts3ezPVg","SO3UjhVyrJ8","SykxWpFwMGs","AFbZhRL0Uz8","N4mEzFDjqtA","Ap_DlSrT-iE","I96uPDifZ1w","txGRU7OrTZo","F-ha0F2yLqA","uzgU2XzhnHY","MHn3ZTWcyXk","s3FozVfd7q4","T7tVJIRA8hk","DRR9fOXkfRE","9fHSbiCISOA","GY7Ps8fqGdc","eY1HCqe9MBc","Dji9ALCgfpM","U1EFgCNLDB8","wz3kElLbEHE","DzFt0YkZo8M","hwrnmQumtPw","NZaXM67fxbs","9X7Xb54VfoM","63BBWWsqsT0","QjICgmk31js","dBnOn17pI7c","JvGZh_BdF-8","MGEx35FjBuo","-NCgRD9-C6o","dKaojOZ-az8","6Zf79Ns8_oY","aR1B8MlwbRI","Vy6ylTDI3z8","OX6EatNSNpM","uvvR55PVGiQ","-PR_XqW9JJU","3cmzqZzwNDM","nTtQwGoUUNc","KQUGFFN4M90","_6TFVzBW7oo","TL4ABTx_RtE","cxG-qWthxt4","XFTAIj2N2Lc","--JVO9xOyno","pL4mOUDi54o","8UUCUqt9oY0","gjU-JEY0gRc","3FkWddODLno","iqNiINZ4Sxg","KzFqke8g0aM","tB5ozZJbD34","8FtkKadUSAo","mMVqcTNsCrE","tAN-1xUsftg")
                       .margsvl("Derek Banas on AngularJS")
-                      .margsv(gr4, "OPxeCiy0RdY", "gu6TfGZXUZs","BTVSIYeiCss","h_JaD1wnt6Y" )
+                      .margsv(grA, "OPxeCiy0RdY", "gu6TfGZXUZs","BTVSIYeiCss","h_JaD1wnt6Y" )
                       .margsvl("Derek Banas on JavaScript")
-                      .margsv(gr4, "_cLvpJY2deo", "6wEqQvvcwyc", "xVnW7ZMqBus", "2PjUaNNMjfQ", "Bkc7AUQ6uU4",
+                      .margsv(grA, "_cLvpJY2deo", "6wEqQvvcwyc", "xVnW7ZMqBus", "2PjUaNNMjfQ", "Bkc7AUQ6uU4",
                                  "44P2s6bZ8Js", "fQqT0VdG4mo", "Ufb9B8BEMPY", "sACXO0n9Lgw", "fju9ii8YsGs", "O8wwnhdkPE4")
 
                       .margsvl("Derek Banas on JQuery")
-                      .margsv(gr4, "_iRIPJHrdXg", "XRRgBrw9NRw", "rDtirLUlJ4o", "qrFf7Xee4N0", "8c69M0iGLhg",
+                      .margsv(grA, "_iRIPJHrdXg", "XRRgBrw9NRw", "rDtirLUlJ4o", "qrFf7Xee4N0", "8c69M0iGLhg",
                                  "uDD7Qn0-taI", "O8C86NHhFZg", "TEJff4smDKw", "BWXggB-T1jQ")
                       .margsvl("Derek Banas on MondoDB")
-                      .margsv(gr4, "-0X8mr6Q8Ew","5B7mJtiwbMg","CB9G5Dvv-EE","mpkmFGuC9NQ")
+                      .margsv(grA, "-0X8mr6Q8Ew","5B7mJtiwbMg","CB9G5Dvv-EE","mpkmFGuC9NQ")
 
 
 
-                      .margsvl("VIM & TMUX")
-                      .margsv(gr4,"5r6yzFEXajQ","Nim4_f5QUxA","2pqipq-UEwQ","SkdrYWhh-8s","aHm36-na4-4","YD9aFIvlQYs","ayc_qpB-93o",
-                                "BHhA_ZKjyxo","norO25P7xHg") 
-                      
-                      .margsv(gr4,"MAHC9eZbx4o","oqYQ7IeDs0E","OgQW07saWb0","QcOxU1sOOuw","WrRbLEAgI5M","xSNmu4CQDas","mXHVHVYdbuQ","uYSN6vVPr6w","YnLL9kUrWk0","WeppptWfV-0","0aEv1Nj0IPg","1JY7oIlH9g0","YwMgnmZNWXA","7Bx_mLDBtRc","QGQROe8ACpY","fTyfevqIuJA","VjOcINs6QWs","sZoQrO4Zzxg","_fDJ84_BLKg","Ipkn3tXKrrA","iNVyCPPYFzc","n1cKtZfwOgQ","vLqfkEl4T_U","wRII9nHCixU","T8z0E_1wrvI","ogeVqNOStQs","N0RL_J0LT9A","dWkV9ZfBg5g","2svdeMGyw7A","FTzzObIq1EI","BOdTsZ7jg-M","rKHEAy2sy9A","PYketjc9aus","BvjcW885uHw","cu4EydV9zNk","fm33-Pas7vI","SW-dKIO3IOI","Dzbw_9rI-Yg","1vZmJa0Xi1Q","uglorjY0Ntg","xlqDCY05Hpk","7GpwgbK_Ei0","A_jF7fDMg7Y","wQ9uB8I0cCg","DBUuhvS8nZ8","FWIZhzy-RJs","Bsg-43PitrM","ujFFdXe3HtI","VBLh56J89do","19h34aP-fN4","9zffUQsbxgE","YH3MnY52e9c","obY1um6ehDM","YYeuRJ9nzG0","hdgovJPDXV8","blqvk-eth3E","vOO6XTeSVao","BNnSjJOpXDk","f-bvmPYqZkM","VHPY6bUboAQ","3jDafvUESbs","Av2pDIY7nRY","__0Dquj7y9g")
-                      .margsvl("Git")
-                      .margsv(gr4,"HVsySz-h9r4","FdZecVxzJbk","KLEDKgMmbBI","iCGrKFH2oeo","kjBA2WISteM","tcd4txbTtAY")
-                      .margsv(gr4,"MJUJ4wbFm_A")
-                      .margsvl("Jenkins")
-                      .margsv(gr4,"vQSpztWcGmw")
                       .margsvl("MicroServices")
-                      .margsv(gr4,"CZ3wIuvmHeM")
+                      .margsv(grA,"CZ3wIuvmHeM")
                       .margsvl("Martin Fowler")
-                      .margsv(gr4,"URlnxbaHhTs","aoMfbgF2D_4","2yko4TbC8cI","Avs70dZ3Vlk","GE6lbPLEAzc");
+                      .margsv(grA,"URlnxbaHhTs","aoMfbgF2D_4","2yko4TbC8cI","Avs70dZ3Vlk","GE6lbPLEAzc");
 
                       resetViddIndexName();
                       setViddIndexName("LINUX");
@@ -1239,16 +1326,18 @@ function getParameterByName(name, url) {
            $("#S_TABLE").find('td').css({"padding":"5px"});
 
 
-           $("#LEARN_TABLE").find('img').tune("imgwidth250");
+           $("#LEARN_TABLE").find('img').tune("imgwidth240");
            $("#REINVENT2018_TABLE").find('img').tune("imgwidth250");
            $("#REINVENT2017_TABLE").find('img').tune("imgwidth250");
            $("#SUMMITS_TABLE").find('img').tune("imgwidth250");
            $("#M_TABLE").find('img').tune("imgwidth250");
            $("#S_TABLE").find('img').tune("imgwidth160");
-           $("#AD_TABLE").find('img').tune("imgwidth250");
+           $("#AD_TABLE").find('img').tune("imgwidth160");
            $("#LINUX_TABLE").find('img').tune("imgwidth250");
            $("#API_TABLE").find('img').tune("imgwidth250");
-           $("#GENIUS_TABLE").find('img').tune("imgwidth250");
+           $("#GENIUS_TABLE").find('img').tune("imgwidth120");
+           $("#JAVA_TABLE").find('img').tune("imgwidth250");
+
            $("#COMPSCI_TABLE").find('img').tune("imgwidth250");
            $("#AI_TABLE").find('img').tune("imgwidth250");
            $("#FOOD_TABLE").find('img').tune("imgwidth250");
@@ -1280,10 +1369,15 @@ function getParameterByName(name, url) {
 	        setYouTubeTitle(thisVID,thisID,thisZID);
            });
            // var fsize = parseInt( $(".videotitle").css('font-size') ) - 0;
-           $sel.css({"font-size" : "100%"}).css({"color" : "Black"});
-           // $sel.css({"color" : "Green"});
+           // SET TITLE FONT SIZE
+           $sel.css({"font-size" : "90%"}).css({"color" : "Black"});
+           //$sel.css({"color" : "Green"});
            //$(".boxy").css('border', '33px solid black');
            //$("#REINVENT2018_TABLE").css('border', '3px solid red');
+           
+           $(".GENIUS").css({"font-size" : "60%"});
+           $(".AD").css({"font-size" : "80%"});
+           
            $(".boxy").css('width', '150px');
            $(".narg").css({
                      "font-family": "Helvetica, Tahoma",
@@ -1419,13 +1513,18 @@ function getParameterByName(name, url) {
     <li id="AWSREINVENTTAB">         <a tname='REINVENT2017_TABLE' data-toggle="tab" href="#tabs-2017"><div class='backer'>AWS</div> Past ReInvents</a></li>
     <li id="SUMMITSTAB">             <a tname='SUMMITS_TABLE'       data-toggle="tab" href="#tabs-6"><div class='backer'>AWS</div> Summits</a></li>
     <li id="AWSINDEPTHTAB">          <a tname='M_TABLE' id='T3' data-toggle="tab" href="#tabs-2"> <div class='backer'>AWS</div> In-Depth</a></li>
-    <li id="LINUXTAB">               <a tname='LINUX_TABLE'        data-toggle="tab" href="#tabs-211"> <div class='backer'>LEARNING</div>Linux</a></li>
-    <li id="TOOLSTAB">               <a tname='AD_TABLE'           data-toggle="tab" href="#tabs-9"><div class='backer'>DEVELOP</div>Tools</a></li>
-    <li id="APITAB">                 <a tname='API_TABLE'          data-toggle="tab" href="#tabs-911"><div class='backer'>DEVELOP</div>APIs</a></li>
-    <li id="AIMLTAB">                <a tname='AI_TABLE'           data-toggle="tab" href="#tabs-AI"><div class='backer'>LEARN</div>AI, ML</a></li>
-    <li id="COMPSCITAB">             <a tname="COMPSCI_TABLE"      data-toggle="tab" href="#tabs-COMPSCI"><div class='backer'>TOPICS IN</div>CompSci</a></li>
-    <li id="GENIUSTAB">              <a tname="GENIUS_TABLE"  id='T212' data-toggle="tab" href="#tabs-212"> <div class='backer'>TOPICS IN</div>Science</a></li>
-    <li id="FOODTAB">                <a tname="FOOD_TABLE"    id='TFOOD' data-toggle="tab" href="#tabs-FOOD"> <div class='backer'>GOOD</div>Food</a></li>
+    <li id="TOOLSTAB">               <a tname='AD_TABLE'                  data-toggle="tab" href="#tabs-9"><div class='backer'>DEVELOPER</div>Tools-Skills</a></li>
+    <li id="COMPSCITAB">             <a tname="COMPSCI_TABLE"             data-toggle="tab" href="#tabs-COMPSCI"><div class='backer'>TOPICS IN</div>CompSci</a></li>
+
+    <li id="GENIUSTAB">              <a tname="GENIUS_TABLE"  id='T212'   data-toggle="tab" href="#tabs-212"><div class='backer'>TOPICS IN</div>Science</a></li>
+    <li id="LINUXTAB">               <a tname='LINUX_TABLE'               data-toggle="tab" href="#tabs-211"> <div class='backer'>LEARN</div>Linux</a></li>
+    <li id="JAVATAB">                <a tname="JAVA_TABLE"    id='TJAVA'  data-toggle="tab" href="#tabs-JAVA"><div class='backer'>LEARN</div>Java</a></li>
+    <li id="APITAB">                 <a tname='API_TABLE'                 data-toggle="tab" href="#tabs-911"><div class='backer'>LEARN</div>APIs</a></li>
+    <li id="AIMLTAB">                <a tname='AI_TABLE'                  data-toggle="tab" href="#tabs-AI"><div class='backer'>LEARN</div>AI, ML</a></li>
+
+    <li id="FOODTAB">                <a tname="FOOD_TABLE"    id='TFOOD' data-toggle="tab" href="#tabs-FOOD"> <div class='backer'>Good</div>Food</a></li>
+    <li id="NUMBERSTAB">             <a tname="NUMBERS_TABLE" id='TNUMBERS' data-toggle="tab" href="#tabs-NUMBERS"> <div class='backer'>A Bunch Of</div>Stuff</a></li>
+    <li id="WORDSTAB">               <a tname="WORDS_TABLE"   id='TWORDS' data-toggle="tab" href="#tabs-WORDS"> <div class='backer'>A Few</div>Words</a></li>
 
 
     <!--
@@ -1434,7 +1533,7 @@ function getParameterByName(name, url) {
     -->
 
     <li><a id='T100' data-toggle="tab" href="#tabs-100">
-        <div class='backer'>VIDEO</div>
+        <div class='backer'>SITE</div>
         Index</a></li>
   </ul>
   &nbsp;<BR>
@@ -1442,6 +1541,15 @@ function getParameterByName(name, url) {
 <div id="client_area" class="tab-content">
 <div id="tabs-0">
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</div>
+
+<div id="tabs-JAVA">
+     <table width='100%' class="topmiddle">
+     <tr>
+          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='JAVA_TABLE'></tbody></table></td>
+          <td width='30%' class="topleft"><ul class='nobull' id='JAVA'></ul></td>
+     </tr>
+     </table>
 </div>
 
 <div id="tabs-100">
@@ -1523,6 +1631,1377 @@ function getParameterByName(name, url) {
      </table>
 </div>
 
+<div id="tabs-WORDS">
+<pre>
+Excerpts from  "Ode on Intimations of Immortality from Recollections of Early Childhood"
+--  William Wordsworth, 1770 - 1850
+
+
+There was a time when meadow, grove, and stream, 
+The earth, and every common sight
+            To me did seem
+            Apparelled in celestial light,
+The glory and the freshness of a dream.
+It is not now as it hath been of yore;—
+            Turn wheresoe’er I may,
+             By night or day,
+The things which I have seen I now can see no more.
+
+The rainbow comes and goes, 
+And lovely is the rose; 
+The moon doth with delight
+Look round her when the heavens are bare;
+            Waters on a starry night
+            Are beautiful and fair;
+The sunshine is a glorious birth;
+ But yet I know, where’er I go,
+That there hath past away a glory from the earth.
+
+But there’s a tree, of many, one, 
+A single field which I have look’d upon, 
+Both of them speak of something that is gone:
+              The pansy at my feet
+              Doth the same tale repeat:
+Whither is fled the visionary gleam? 
+Where is it now, the glory and the dream?
+</pre>
+
+</div>
+<div id="tabs-NUMBERS">
+    <pre> 
+      y                  x         Description (Energy in Joules)
+    10                  2      
+   -23        ==        -76        Boltzman constant, arguably the small energy change possible
+     3        ==         10        One BTU, depending on the temperature
+    10        ==         33        Kinetic energy of an Airbus A380 at cruising speed
+    15        ==         50        Mass energy in 1 Kilogram of antimatter (or matter)
+    19        ==         63        World Electricity Generation in Watt/Hours/Year
+    20        ==         66        Total world annual energy consumption in 2010 (5*10E20)
+    24        ==         80        Total energy from the Sun that strikes the face of the Earth each year
+    25        ==         83        Energy released by a typical solar flare
+    26        ==         86        Total energy output of the Sun each second
+    30        ==         100       Gravitational binding energy of Mercury
+    31        ==         103       Total energy output of the Sun each day
+    35        ==         116       Total energy output of the Sun each year
+    40        ==         133       Theoretical total mass energy of the Moon
+    44        ==         146       Approximate lifetime energy output of the Sun
+    45        ==         149       Brightest observed Hypernova
+    47        ==         156       Theoretical mass energy of the Sun
+    59        ==         196       Total mass energy of the Milky Way, including dark matter and dark energy
+    69        ==         229       Estimated total mass-energy of the observable universe
+    90        ==         299       Number of Protons in the Universe (not counting dark matter)
+     4.7      ==         16        Width in bits of a 16 bit encryption key
+     9.5      ==         32        Width in bits of a 32 bit encryption key
+    19.4      ==         64        Width in bits of a 64 bit encryption key
+    38.5      ==         128       Width in bits of a 128 bit encryption key
+    77.0      ==         256       Width in bits of a 256 bit encryption key
+   154.0      ==         512       Width in bits of a 512 bit encryption key
+   308.4      ==         1,024     Width in bits of a 1024 bit encryption key
+ 1,233        ==         4,096     Width in bits of a 4096 bit encryption key
+   -18        ==         -61       16 bit key width divided by the Boltzman constant
+   -14        ==         -45       32 bit key width divided by the Boltzman constant
+    -4        ==         -12       64 bit key width divided by the Boltzman constant
+    16        ==         51        128 bit key width divided by the Boltzman constant
+    54        ==         179       256 bit key width divided by the Boltzman constant
+   131        ==         435       512 bit key width divided by the Boltzman constant
+   285        ==         948       1024 bit key width divided by the Boltzman constant
+ 1,210        ==         4,020     4096 bit key width divided by the Boltzman constant
+</pre>
+<br>
+<br>
+VimTip1: <a href='http://vim.wikia.com/wiki/Searching'>Searching</a><br>
+VimTip2: <a href='http://vim.wikia.com/wiki/Easy_edit_of_files_in_the_same_directory'>Easy edit of files in the same directory</a><br>
+VimTip3: <a href='http://vim.wikia.com/wiki/Compile_Java_with_Jikes'>Compile Java with Jikes</a><br>
+VimTip4: <a href='http://vim.wikia.com/wiki/Any_word_completion'>Any word completion</a><br>
+VimTip6: <a href='http://vim.wikia.com/wiki/Moving_to_matching_braces'>Moving to matching braces</a><br>
+VimTip7: <a href='http://vim.wikia.com/wiki/Jumping_to_the_start_and_end_of_a_code_block'>Jumping to the start and end of a code block</a><br>
+VimTip8: <a href='http://vim.wikia.com/wiki/Jumping_to_the_declaration_of_a_local/global_variable'>Jumping to the declaration of a local</a><br>
+VimTip9: <a href='http://vim.wikia.com/wiki/Displaying_a_variable/macro_definition'>Displaying a variable</a><br>
+VimTip10: <a href='http://vim.wikia.com/wiki/Jumping_to_previously_visited_locations'>Jumping to previously visited locations</a><br>
+VimTip11: <a href='http://vim.wikia.com/wiki/Any_word_completion'>Any word completion</a><br>
+VimTip12: <a href='http://vim.wikia.com/wiki/Converting_tabs_to_spaces'>Converting tabs to spaces</a><br>
+VimTip14: <a href='http://vim.wikia.com/wiki/Highlight_all_search_pattern_matches'>Highlight all search pattern matches</a><br>
+VimTip15: <a href='http://vim.wikia.com/wiki/Displaying_status_line_always'>Displaying status line always</a><br>
+VimTip16: <a href='http://vim.wikia.com/wiki/Avoiding_the_%22Hit_ENTER_to_continue%22_prompts'>Avoiding the %22Hit ENTER to continue%22 prompts</a><br>
+VimTip17: <a href='http://vim.wikia.com/wiki/Erasing_previously_entered_characters_in_insert_mode'>Erasing previously entered characters in insert mode</a><br>
+VimTip18: <a href='http://vim.wikia.com/wiki/Cleanup_your_HTML'>Cleanup your HTML</a><br>
+VimTip19: <a href='http://vim.wikia.com/wiki/Display_line_numbers'>Display line numbers</a><br>
+VimTip20: <a href='http://vim.wikia.com/wiki/Remove_swap_and_backup_files_from_your_working_directory'>Remove swap and backup files from your working directory</a><br>
+VimTip21: <a href='http://vim.wikia.com/wiki/Easy_pasting_to_Windows_applications'>Easy pasting to Windows applications</a><br>
+VimTip22: <a href='http://vim.wikia.com/wiki/Handle_common_command_typos'>Handle common command typos</a><br>
+VimTip23: <a href='http://vim.wikia.com/wiki/Vim_xterm_title'>Vim xterm title</a><br>
+VimTip24: <a href='http://vim.wikia.com/wiki/Changing_the_default_syntax_highlighting'>Changing the default syntax highlighting</a><br>
+VimTip25: <a href='http://vim.wikia.com/wiki/Color_highlighting_on_telnet'>Color highlighting on telnet</a><br>
+VimTip26: <a href='http://vim.wikia.com/wiki/File_format'>File format</a><br>
+VimTip27: <a href='http://vim.wikia.com/wiki/Convert_between_hex_and_decimal'>Convert between hex and decimal</a><br>
+VimTip28: <a href='http://vim.wikia.com/wiki/Insert_line_numbers'>Insert line numbers</a><br>
+VimTip29: <a href='http://vim.wikia.com/wiki/Reverse_order_of_lines'>Reverse order of lines</a><br>
+VimTip30: <a href='http://vim.wikia.com/wiki/Increasing_or_decreasing_numbers'>Increasing or decreasing numbers</a><br>
+VimTip31: <a href='http://vim.wikia.com/wiki/Search_and_replace'>Search and replace</a><br>
+VimTip32: <a href='http://vim.wikia.com/wiki/Write_your_own_Vim_function'>Write your own Vim function</a><br>
+VimTip33: <a href='http://vim.wikia.com/wiki/Toggle_off_the_line-number_when_enter_on-line_help'>Toggle off the line-number when enter on-line help</a><br>
+VimTip34: <a href='http://vim.wikia.com/wiki/Control_the_position_of_the_new_window'>Control the position of the new window</a><br>
+VimTip35: <a href='http://vim.wikia.com/wiki/Translate_between_single_line_and_block_comments'>Translate between single line and block comments</a><br>
+VimTip36: <a href='http://vim.wikia.com/wiki/Using_Gnu-info_help_in_vim'>Using Gnu-info help in vim</a><br>
+VimTip37: <a href='http://vim.wikia.com/wiki/Managing_set_options'>Managing set options</a><br>
+VimTip38: <a href='http://vim.wikia.com/wiki/Move_cursor_by_display_lines_when_wrapping'>Move cursor by display lines when wrapping</a><br>
+VimTip39: <a href='http://vim.wikia.com/wiki/Undo_and_Redo'>Undo and Redo</a><br>
+VimTip40: <a href='http://vim.wikia.com/wiki/Insert_a_file'>Insert a file</a><br>
+VimTip41: <a href='http://vim.wikia.com/wiki/Command-history_facilities_for_Oracle/sqlplus_user'>Command-history facilities for Oracle</a><br>
+VimTip42: <a href='http://vim.wikia.com/wiki/Using_marks'>Using marks</a><br>
+VimTip43: <a href='http://vim.wikia.com/wiki/Using_abbreviations'>Using abbreviations</a><br>
+VimTip44: <a href='http://vim.wikia.com/wiki/Repeat_last_change'>Repeat last change</a><br>
+VimTip45: <a href='http://vim.wikia.com/wiki/Using_command-line_history'>Using command-line history</a><br>
+VimTip46: <a href='http://vim.wikia.com/wiki/Where_to_download_Vim'>Where to download Vim</a><br>
+VimTip47: <a href='http://vim.wikia.com/wiki/Swapping_characters,_words_and_lines'>Swapping characters, words and lines</a><br>
+VimTip48: <a href='http://vim.wikia.com/wiki/Moving_around'>Moving around</a><br>
+VimTip49: <a href='http://vim.wikia.com/wiki/Switching_case_of_characters'>Switching case of characters</a><br>
+VimTip50: <a href='http://vim.wikia.com/wiki/Recovering_files'>Recovering files</a><br>
+VimTip51: <a href='http://vim.wikia.com/wiki/Entering_special_characters'>Entering special characters</a><br>
+VimTip52: <a href='http://vim.wikia.com/wiki/Scrolling_synchronously'>Scrolling synchronously</a><br>
+VimTip53: <a href='http://vim.wikia.com/wiki/Better_colors_for_syntax_highlighting'>Better colors for syntax highlighting</a><br>
+VimTip54: <a href='http://vim.wikia.com/wiki/View_a_Java_Class_File_using_a_decompiler'>View a Java Class File using a decompiler</a><br>
+VimTip58: <a href='http://vim.wikia.com/wiki/How_to_avoid_obliterating_window_layout'>How to avoid obliterating window layout</a><br>
+VimTip63: <a href='http://vim.wikia.com/wiki/Applying_substitutes_to_a_visual_block'>Applying substitutes to a visual block</a><br>
+VimTip64: <a href='http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file'>Set working directory to the current file</a><br>
+VimTip65: <a href='http://vim.wikia.com/wiki/Insert_line_numbers'>Insert line numbers</a><br>
+VimTip66: <a href='http://vim.wikia.com/wiki/Transfer_text_between_two_Vim_instances'>Transfer text between two Vim instances</a><br>
+VimTip67: <a href='http://vim.wikia.com/wiki/Showing_the_ASCII_value_of_the_current_character'>Showing the ASCII value of the current character</a><br>
+VimTip68: <a href='http://vim.wikia.com/wiki/Backspace_and_delete_problems'>Backspace and delete problems</a><br>
+VimTip69: <a href='http://vim.wikia.com/wiki/Repeat_last_change'>Repeat last change</a><br>
+VimTip70: <a href='http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers'>Run a command in multiple buffers</a><br>
+VimTip71: <a href='http://vim.wikia.com/wiki/Transfer_text_between_two_gvim_sessions_using_clipboard'>Transfer text between two gvim sessions using clipboard</a><br>
+VimTip72: <a href='http://vim.wikia.com/wiki/Remove_unwanted_empty_lines'>Remove unwanted empty lines</a><br>
+VimTip73: <a href='http://vim.wikia.com/wiki/Using_vim_as_calculator'>Using vim as calculator</a><br>
+VimTip74: <a href='http://vim.wikia.com/wiki/Using_Vim_as_an_outline_processor'>Using Vim as an outline processor</a><br>
+VimTip75: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_Windows'>Map caps lock to escape in Windows</a><br>
+VimTip76: <a href='http://vim.wikia.com/wiki/Show_only_lines_in_quickfix_list_for_current_buffer'>Show only lines in quickfix list for current buffer</a><br>
+VimTip78: <a href='http://vim.wikia.com/wiki/Rotating_mail_signatures'>Rotating mail signatures</a><br>
+VimTip79: <a href='http://vim.wikia.com/wiki/Use_grep_to_get_a_clickable_list_of_function_names'>Use grep to get a clickable list of function names</a><br>
+VimTip80: <a href='http://vim.wikia.com/wiki/Restore_cursor_to_file_position_in_previous_editing_session'>Restore cursor to file position in previous editing session</a><br>
+VimTip81: <a href='http://vim.wikia.com/wiki/Substitute_characters_and_lines_easily'>Substitute characters and lines easily</a><br>
+VimTip82: <a href='http://vim.wikia.com/wiki/Letting_variable_values_be_overwritten_in_a_script'>Letting variable values be overwritten in a script</a><br>
+VimTip83: <a href='http://vim.wikia.com/wiki/Indenting_source_code'>Indenting source code</a><br>
+VimTip84: <a href='http://vim.wikia.com/wiki/Repeat_command_on_each_line_in_visual_block'>Repeat command on each line in visual block</a><br>
+VimTip85: <a href='http://vim.wikia.com/wiki/How_to_mimic_the_vim_6.0_plugin_feature_with_older_versions'>How to mimic the vim 6.0 plugin feature with older versions</a><br>
+VimTip86: <a href='http://vim.wikia.com/wiki/Helps_undo_1_line_when_entered_many'>Helps undo 1 line when entered many</a><br>
+VimTip87: <a href='http://vim.wikia.com/wiki/Get_vim_5.x_window_in_vim_6.x'>Get vim 5.x window in vim 6.x</a><br>
+VimTip88: <a href='http://vim.wikia.com/wiki/Maximize_or_set_initial_window_size'>Maximize or set initial window size</a><br>
+VimTip89: <a href='http://vim.wikia.com/wiki/Hide_toolbar_or_menus_to_see_more_text'>Hide toolbar or menus to see more text</a><br>
+VimTip90: <a href='http://vim.wikia.com/wiki/Encryption'>Encryption</a><br>
+VimTip91: <a href='http://vim.wikia.com/wiki/Dictionary_completions'>Dictionary completions</a><br>
+VimTip92: <a href='http://vim.wikia.com/wiki/Compress_Vim_doc_files_to_save_space'>Compress Vim doc files to save space</a><br>
+VimTip94: <a href='http://vim.wikia.com/wiki/Browsing_programs_with_tags'>Browsing programs with tags</a><br>
+VimTip95: <a href='http://vim.wikia.com/wiki/Capture_ex_command_output'>Capture ex command output</a><br>
+VimTip96: <a href='http://vim.wikia.com/wiki/Integrate_gvim_with_AutoCad_MTEXT'>Integrate gvim with AutoCad MTEXT</a><br>
+VimTip97: <a href='http://vim.wikia.com/wiki/Insert_current_date_or_time'>Insert current date or time</a><br>
+VimTip99: <a href='http://vim.wikia.com/wiki/Identify_the_syntax_highlighting_group_used_at_the_cursor'>Identify the syntax highlighting group used at the cursor</a><br>
+VimTip100: <a href='http://vim.wikia.com/wiki/Jump_to_tag_(help_topic)_with_German_keyboard'>Jump to tag (help topic) with German keyboard</a><br>
+VimTip102: <a href='http://vim.wikia.com/wiki/Smart_mapping_for_tab_completion'>Smart mapping for tab completion</a><br>
+VimTip103: <a href='http://vim.wikia.com/wiki/Move_to_next/previous_line_with_same_indentation'>Move to next</a><br>
+VimTip104: <a href='http://vim.wikia.com/wiki/Capture_SQL_query_output'>Capture SQL query output</a><br>
+VimTip105: <a href='http://vim.wikia.com/wiki/Combining_move_and_scroll'>Combining move and scroll</a><br>
+VimTip106: <a href='http://vim.wikia.com/wiki/Insert_mail_signatures_from_a_rotating_file'>Insert mail signatures from a rotating file</a><br>
+VimTip107: <a href='http://vim.wikia.com/wiki/Convert_enum_to_string_table'>Convert enum to string table</a><br>
+VimTip108: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip111: <a href='http://vim.wikia.com/wiki/Printing_with_syntax_highlighting_independent_of_your_normal_highlighting'>Printing with syntax highlighting independent of your normal highlighting</a><br>
+VimTip112: <a href='http://vim.wikia.com/wiki/Move_to_next/previous_line_with_same_indentation'>Move to next</a><br>
+VimTip113: <a href='http://vim.wikia.com/wiki/Integrate_Vim_with_a_dictionary'>Integrate Vim with a dictionary</a><br>
+VimTip117: <a href='http://vim.wikia.com/wiki/Search_all_files_in_project_quickly'>Search all files in project quickly</a><br>
+VimTip118: <a href='http://vim.wikia.com/wiki/Use_gvim_to_view_page_source_in_Internet_Explorer'>Use gvim to view page source in Internet Explorer</a><br>
+VimTip119: <a href='http://vim.wikia.com/wiki/Explorer_startup_and_shutdown'>Explorer startup and shutdown</a><br>
+VimTip120: <a href='http://vim.wikia.com/wiki/Compile_Java_with_Sun_JDK_javac'>Compile Java with Sun JDK javac</a><br>
+VimTip121: <a href='http://vim.wikia.com/wiki/Using_vim_as_a_syntax-highlighting_pager'>Using vim as a syntax-highlighting pager</a><br>
+VimTip122: <a href='http://vim.wikia.com/wiki/Skip_blank_lines_when_folding_text'>Skip blank lines when folding text</a><br>
+VimTip123: <a href='http://vim.wikia.com/wiki/Search_for_current_word_in_multiple_files'>Search for current word in multiple files</a><br>
+VimTip124: <a href='http://vim.wikia.com/wiki/Number_a_group_of_lines'>Number a group of lines</a><br>
+VimTip125: <a href='http://vim.wikia.com/wiki/Comment_your_code_blocks_automatically'>Comment your code blocks automatically</a><br>
+VimTip126: <a href='http://vim.wikia.com/wiki/Syntax_highlighting_in_xterm'>Syntax highlighting in xterm</a><br>
+VimTip127: <a href='http://vim.wikia.com/wiki/Preview_current_HTML_file'>Preview current HTML file</a><br>
+VimTip128: <a href='http://vim.wikia.com/wiki/Use_Unix_command-line_tools_in_Windows'>Use Unix command-line tools in Windows</a><br>
+VimTip129: <a href='http://vim.wikia.com/wiki/Removing_automatic_comment_leaders'>Removing automatic comment leaders</a><br>
+VimTip130: <a href='http://vim.wikia.com/wiki/File_type_plugins'>File type plugins</a><br>
+VimTip131: <a href='http://vim.wikia.com/wiki/Scroll_alternate_window'>Scroll alternate window</a><br>
+VimTip132: <a href='http://vim.wikia.com/wiki/Window_zooming_convenience'>Window zooming convenience</a><br>
+VimTip133: <a href='http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers'>Run a command in multiple buffers</a><br>
+VimTip134: <a href='http://vim.wikia.com/wiki/View_Source_in_IE6_using_VIM'>View Source in IE6 using VIM</a><br>
+VimTip135: <a href='http://vim.wikia.com/wiki/Vim_buffer_FAQ'>Vim buffer FAQ</a><br>
+VimTip137: <a href='http://vim.wikia.com/wiki/Automatically_wrap_left_and_right'>Automatically wrap left and right</a><br>
+VimTip138: <a href='http://vim.wikia.com/wiki/Getting_name_of_the_function'>Getting name of the function</a><br>
+VimTip139: <a href='http://vim.wikia.com/wiki/Align_text_plugin'>Align text plugin</a><br>
+VimTip140: <a href='http://vim.wikia.com/wiki/Using_embedded_Perl_interpreter'>Using embedded Perl interpreter</a><br>
+VimTip141: <a href='http://vim.wikia.com/wiki/Add_your_function_heading_with_a_keystroke'>Add your function heading with a keystroke</a><br>
+VimTip143: <a href='http://vim.wikia.com/wiki/Syntax_folding_for_Java'>Syntax folding for Java</a><br>
+VimTip144: <a href='http://vim.wikia.com/wiki/Recording_keys_for_repeated_jobs'>Recording keys for repeated jobs</a><br>
+VimTip146: <a href='http://vim.wikia.com/wiki/Opening_multiple_files_from_a_single_command-line'>Opening multiple files from a single command-line</a><br>
+VimTip147: <a href='http://vim.wikia.com/wiki/How_to_write_a_plugin'>How to write a plugin</a><br>
+VimTip148: <a href='http://vim.wikia.com/wiki/Make_great_use_of_those_homemade_menus'>Make great use of those homemade menus</a><br>
+VimTip149: <a href='http://vim.wikia.com/wiki/Update_the_diff_view_automatically'>Update the diff view automatically</a><br>
+VimTip150: <a href='http://vim.wikia.com/wiki/Generating_a_column_of_increasing_numbers'>Generating a column of increasing numbers</a><br>
+VimTip153: <a href='http://vim.wikia.com/wiki/Making_Parenthesis_And_Brackets_Handling_Easier'>Making Parenthesis And Brackets Handling Easier</a><br>
+VimTip154: <a href='http://vim.wikia.com/wiki/Mappings_to_facilitate_the_creation_of_text'>Mappings to facilitate the creation of text</a><br>
+VimTip155: <a href='http://vim.wikia.com/wiki/Decompile_Java_.class_files_automatically'>Decompile Java .class files automatically</a><br>
+VimTip156: <a href='http://vim.wikia.com/wiki/Describe_a_SQL_table_from_Vim'>Describe a SQL table from Vim</a><br>
+VimTip158: <a href='http://vim.wikia.com/wiki/Using_Computer_Modern_TT_as_a_gvim_font_under_Windows'>Using Computer Modern TT as a gvim font under Windows</a><br>
+VimTip159: <a href='http://vim.wikia.com/wiki/Keystroke_Saving_Substituting_and_Searching'>Keystroke Saving Substituting and Searching</a><br>
+VimTip164: <a href='http://vim.wikia.com/wiki/Make_non-ASCII_characters_displayed_on_console'>Make non-ASCII characters displayed on console</a><br>
+VimTip165: <a href='http://vim.wikia.com/wiki/Deleting_a_buffer_without_closing_the_window'>Deleting a buffer without closing the window</a><br>
+VimTip166: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_XWindows'>Map caps lock to escape in XWindows</a><br>
+VimTip167: <a href='http://vim.wikia.com/wiki/Using_vim_as_a_man-page_viewer_under_Unix'>Using vim as a man-page viewer under Unix</a><br>
+VimTip168: <a href='http://vim.wikia.com/wiki/Viewing_the_actual_XPM_data_in_GVIM'>Viewing the actual XPM data in GVIM</a><br>
+VimTip171: <a href='http://vim.wikia.com/wiki/Search_for_visually_selected_text'>Search for visually selected text</a><br>
+VimTip172: <a href='http://vim.wikia.com/wiki/Using_Ispell_on_a_highlighted_region'>Using Ispell on a highlighted region</a><br>
+VimTip173: <a href='http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily'>Switch between Vim window splits easily</a><br>
+VimTip174: <a href='http://vim.wikia.com/wiki/Footnotes'>Footnotes</a><br>
+VimTip175: <a href='http://vim.wikia.com/wiki/Set_Vim_as_your_default_editor_for_Unix'>Set Vim as your default editor for Unix</a><br>
+VimTip176: <a href='http://vim.wikia.com/wiki/Autocheckout_from_perforce'>Autocheckout from perforce</a><br>
+VimTip178: <a href='http://vim.wikia.com/wiki/Create_a_color_scheme_based_on_another'>Create a color scheme based on another</a><br>
+VimTip180: <a href='http://vim.wikia.com/wiki/Reload_your_filetype/syntax_plugin'>Reload your filetype</a><br>
+VimTip181: <a href='http://vim.wikia.com/wiki/Get_the_vim_patched_source'>Get the vim patched source</a><br>
+VimTip182: <a href='http://vim.wikia.com/wiki/Keep_your_cursor_centered_vertically_on_the_screen'>Keep your cursor centered vertically on the screen</a><br>
+VimTip184: <a href='http://vim.wikia.com/wiki/How_to_obscure_text_instantaneously'>How to obscure text instantaneously</a><br>
+VimTip185: <a href='http://vim.wikia.com/wiki/Make_vim_the_editor_for_files_with_unregistered_extensions_in_Windows'>Make vim the editor for files with unregistered extensions in Windows</a><br>
+VimTip188: <a href='http://vim.wikia.com/wiki/Search_patterns'>Search patterns</a><br>
+VimTip189: <a href='http://vim.wikia.com/wiki/Map_Ctrl-Backspace_to_delete_previous_word'>Map Ctrl-Backspace to delete previous word</a><br>
+VimTip191: <a href='http://vim.wikia.com/wiki/Transposing'>Transposing</a><br>
+VimTip193: <a href='http://vim.wikia.com/wiki/Insert_current_filename'>Insert current filename</a><br>
+VimTip194: <a href='http://vim.wikia.com/wiki/Inserting_text_in_multiple_lines'>Inserting text in multiple lines</a><br>
+VimTip195: <a href='http://vim.wikia.com/wiki/Switching_between_files'>Switching between files</a><br>
+VimTip196: <a href='http://vim.wikia.com/wiki/FileName_Completion_in_Shell_Scripts'>FileName Completion in Shell Scripts</a><br>
+VimTip197: <a href='http://vim.wikia.com/wiki/Open_file_in_already_running_vim_from_elsewhere'>Open file in already running vim from elsewhere</a><br>
+VimTip198: <a href='http://vim.wikia.com/wiki/Pasting_code_with_syntax_coloring_in_emails'>Pasting code with syntax coloring in emails</a><br>
+VimTip199: <a href='http://vim.wikia.com/wiki/Maximize_window_and_return_to_previous_split_structure'>Maximize window and return to previous split structure</a><br>
+VimTip201: <a href='http://vim.wikia.com/wiki/Best_Vim_Tips#Easter_eggs'>Best Vim Tips#Easter eggs</a><br>
+VimTip202: <a href='http://vim.wikia.com/wiki/Debugging_window_autocommands'>Debugging window autocommands</a><br>
+VimTip203: <a href='http://vim.wikia.com/wiki/Automatically_open_the_quickfix_window_on_:make'>Automatically open the quickfix window on :make</a><br>
+VimTip205: <a href='http://vim.wikia.com/wiki/Sum_numbers'>Sum numbers</a><br>
+VimTip206: <a href='http://vim.wikia.com/wiki/Highlight_doubled_word_errors_in_text'>Highlight doubled word errors in text</a><br>
+VimTip207: <a href='http://vim.wikia.com/wiki/Editing_databases_with_Vim/Perl/DBI'>Editing databases with Vim</a><br>
+VimTip208: <a href='http://vim.wikia.com/wiki/Alter_the_display_of_buffers_in_the_buffers_menu'>Alter the display of buffers in the buffers menu</a><br>
+VimTip209: <a href='http://vim.wikia.com/wiki/Jumping_to_previously_visited_locations'>Jumping to previously visited locations</a><br>
+VimTip210: <a href='http://vim.wikia.com/wiki/Make-compile_current_buffer'>Make-compile current buffer</a><br>
+VimTip211: <a href='http://vim.wikia.com/wiki/Switch_color_schemes'>Switch color schemes</a><br>
+VimTip212: <a href='http://vim.wikia.com/wiki/Setting_file_attributes_without_reloading_a_buffer'>Setting file attributes without reloading a buffer</a><br>
+VimTip213: <a href='http://vim.wikia.com/wiki/Delete_all_lines_containing_a_pattern'>Delete all lines containing a pattern</a><br>
+VimTip214: <a href='http://vim.wikia.com/wiki/Current_buffer_based_menus'>Current buffer based menus</a><br>
+VimTip215: <a href='http://vim.wikia.com/wiki/Edit_configuration_files_for_a_filetype'>Edit configuration files for a filetype</a><br>
+VimTip216: <a href='http://vim.wikia.com/wiki/Calculate_equations_from_within_vim'>Calculate equations from within vim</a><br>
+VimTip217: <a href='http://vim.wikia.com/wiki/Translate_HTML_entity_numbers_to_text'>Translate HTML entity numbers to text</a><br>
+VimTip218: <a href='http://vim.wikia.com/wiki/Check_for_comments_independent_of_filetype'>Check for comments independent of filetype</a><br>
+VimTip219: <a href='http://vim.wikia.com/wiki/Run_make_from_command_line_and_open_Vim_on_errors'>Run make from command line and open Vim on errors</a><br>
+VimTip220: <a href='http://vim.wikia.com/wiki/Search_for_lines_not_containing_pattern_and_other_helpful_searches'>Search for lines not containing pattern and other helpful searches</a><br>
+VimTip222: <a href='http://vim.wikia.com/wiki/Building_vim_with_color_on_HP-UX'>Building vim with color on HP-UX</a><br>
+VimTip223: <a href='http://vim.wikia.com/wiki/Reverse_selected_text'>Reverse selected text</a><br>
+VimTip224: <a href='http://vim.wikia.com/wiki/Shifting_blocks_visually'>Shifting blocks visually</a><br>
+VimTip225: <a href='http://vim.wikia.com/wiki/Vim_can_interact_with_xdvi'>Vim can interact with xdvi</a><br>
+VimTip226: <a href='http://vim.wikia.com/wiki/Open_file_under_cursor'>Open file under cursor</a><br>
+VimTip227: <a href='http://vim.wikia.com/wiki/Power_of_g'>Power of g</a><br>
+VimTip228: <a href='http://vim.wikia.com/wiki/Deleting_nested_reply_threads_in_emails'>Deleting nested reply threads in emails</a><br>
+VimTip230: <a href='http://vim.wikia.com/wiki/Copy_current_file_to_another_location_from_within_vim'>Copy current file to another location from within vim</a><br>
+VimTip231: <a href='http://vim.wikia.com/wiki/Change_the_color_scheme_to_show_where_you_are'>Change the color scheme to show where you are</a><br>
+VimTip232: <a href='http://vim.wikia.com/wiki/Search_JDK_help_for_keyword_at_cursor'>Search JDK help for keyword at cursor</a><br>
+VimTip234: <a href='http://vim.wikia.com/wiki/Command_line_tricks'>Command line tricks</a><br>
+VimTip235: <a href='http://vim.wikia.com/wiki/Highlight_current_word_to_find_cursor'>Highlight current word to find cursor</a><br>
+VimTip236: <a href='http://vim.wikia.com/wiki/Menu_for_inserting_special_characters'>Menu for inserting special characters</a><br>
+VimTip237: <a href='http://vim.wikia.com/wiki/Using_vertical_splits'>Using vertical splits</a><br>
+VimTip238: <a href='http://vim.wikia.com/wiki/Very_basic_session_persistence'>Very basic session persistence</a><br>
+VimTip239: <a href='http://vim.wikia.com/wiki/Scroll_using_arrow_keys_like_in_a_web_browser'>Scroll using arrow keys like in a web browser</a><br>
+VimTip240: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip241: <a href='http://vim.wikia.com/wiki/Hide_fold_markers'>Hide fold markers</a><br>
+VimTip242: <a href='http://vim.wikia.com/wiki/Search_across_multiple_lines'>Search across multiple lines</a><br>
+VimTip243: <a href='http://vim.wikia.com/wiki/Develop_vim_modules_on_Win'>Develop vim modules on Win</a><br>
+VimTip244: <a href='http://vim.wikia.com/wiki/Debug_unexpected_option_settings'>Debug unexpected option settings</a><br>
+VimTip246: <a href='http://vim.wikia.com/wiki/Working_with_Unicode'>Working with Unicode</a><br>
+VimTip247: <a href='http://vim.wikia.com/wiki/Preexisting_code_indentation'>Preexisting code indentation</a><br>
+VimTip248: <a href='http://vim.wikia.com/wiki/Auto-save_current_buffer_periodically'>Auto-save current buffer periodically</a><br>
+VimTip249: <a href='http://vim.wikia.com/wiki/Insert_if/endif_around_block_of_code'>Insert if</a><br>
+VimTip250: <a href='http://vim.wikia.com/wiki/One_big_window'>One big window</a><br>
+VimTip251: <a href='http://vim.wikia.com/wiki/Align_endif_with_corresponding_if_or_ifdef_directive'>Align endif with corresponding if or ifdef directive</a><br>
+VimTip253: <a href='http://vim.wikia.com/wiki/Specify_a_column_with_bar'>Specify a column with bar</a><br>
+VimTip254: <a href='http://vim.wikia.com/wiki/Matching_optional_parts_of_a_word'>Matching optional parts of a word</a><br>
+VimTip255: <a href='http://vim.wikia.com/wiki/Arbitrary_tags_for_file_names'>Arbitrary tags for file names</a><br>
+VimTip256: <a href='http://vim.wikia.com/wiki/Preview_current_HTML_file'>Preview current HTML file</a><br>
+VimTip258: <a href='http://vim.wikia.com/wiki/Show_the_length_of_the_current_word'>Show the length of the current word</a><br>
+VimTip259: <a href='http://vim.wikia.com/wiki/Hide_toolbar_or_menus_to_see_more_text'>Hide toolbar or menus to see more text</a><br>
+VimTip261: <a href='http://vim.wikia.com/wiki/Close_windows_from_gvim_popup_menu'>Close windows from gvim popup menu</a><br>
+VimTip262: <a href='http://vim.wikia.com/wiki/Change_the_gvim_mouse_arrow_cursor'>Change the gvim mouse arrow cursor</a><br>
+VimTip263: <a href='http://vim.wikia.com/wiki/Highlight_current_line'>Highlight current line</a><br>
+VimTip264: <a href='http://vim.wikia.com/wiki/Make-compile_current_buffer'>Make-compile current buffer</a><br>
+VimTip265: <a href='http://vim.wikia.com/wiki/Fast_help_in_full_window'>Fast help in full window</a><br>
+VimTip266: <a href='http://vim.wikia.com/wiki/Command_line_switch_to_source_a_script'>Command line switch to source a script</a><br>
+VimTip267: <a href='http://vim.wikia.com/wiki/Selectively_displaying_abbreviations'>Selectively displaying abbreviations</a><br>
+VimTip268: <a href='http://vim.wikia.com/wiki/Get_cursor_position_as_byte_percentage_instead_of_line_percentage'>Get cursor position as byte percentage instead of line percentage</a><br>
+VimTip269: <a href='http://vim.wikia.com/wiki/Fix_syntax_highlighting'>Fix syntax highlighting</a><br>
+VimTip270: <a href='http://vim.wikia.com/wiki/Insert_a_single_character'>Insert a single character</a><br>
+VimTip271: <a href='http://vim.wikia.com/wiki/Easy_(un)commenting_out_of_source_code'>Easy (un)commenting out of source code</a><br>
+VimTip272: <a href='http://vim.wikia.com/wiki/Format_pasted_text_automatically'>Format pasted text automatically</a><br>
+VimTip273: <a href='http://vim.wikia.com/wiki/Fix_email_quotations_with_long_lines'>Fix email quotations with long lines</a><br>
+VimTip275: <a href='http://vim.wikia.com/wiki/Compiling_LaTeX_from_Vim'>Compiling LaTeX from Vim</a><br>
+VimTip277: <a href='http://vim.wikia.com/wiki/Function_signature_previewer'>Function signature previewer</a><br>
+VimTip278: <a href='http://vim.wikia.com/wiki/All_the_right_moves'>All the right moves</a><br>
+VimTip279: <a href='http://vim.wikia.com/wiki/Set_Vim_as_the_default_editor_for_unknown_file_types_in_Windows'>Set Vim as the default editor for unknown file types in Windows</a><br>
+VimTip280: <a href='http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework'>Integration with PyUnit testing framework</a><br>
+VimTip281: <a href='http://vim.wikia.com/wiki/Keep_your_cursor_centered_vertically_on_the_screen'>Keep your cursor centered vertically on the screen</a><br>
+VimTip282: <a href='http://vim.wikia.com/wiki/Folding_with_Regular_Expression'>Folding with Regular Expression</a><br>
+VimTip283: <a href='http://vim.wikia.com/wiki/Turn_on_syntax_coloring_in_Mac_OS_X'>Turn on syntax coloring in Mac OS X</a><br>
+VimTip284: <a href='http://vim.wikia.com/wiki/Print_syntax_highlighted_buffer_in_one_color'>Print syntax highlighted buffer in one color</a><br>
+VimTip285: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip286: <a href='http://vim.wikia.com/wiki/Recover_overwritten_file'>Recover overwritten file</a><br>
+VimTip287: <a href='http://vim.wikia.com/wiki/Increasing_or_decreasing_numbers'>Increasing or decreasing numbers</a><br>
+VimTip288: <a href='http://vim.wikia.com/wiki/Generate_Java_setters_and_getters_automatically'>Generate Java setters and getters automatically</a><br>
+VimTip289: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip290: <a href='http://vim.wikia.com/wiki/Use_integrated_spell_checking'>Use integrated spell checking</a><br>
+VimTip291: <a href='http://vim.wikia.com/wiki/Any_word_completion'>Any word completion</a><br>
+VimTip293: <a href='http://vim.wikia.com/wiki/Remember_where_you_had_ended_reading_help'>Remember where you had ended reading help</a><br>
+VimTip294: <a href='http://vim.wikia.com/wiki/Map_Ctrl-S_to_save_current_or_new_files'>Map Ctrl-S to save current or new files</a><br>
+VimTip295: <a href='http://vim.wikia.com/wiki/Line/word/file/whatever_completion'>Line</a><br>
+VimTip297: <a href='http://vim.wikia.com/wiki/Start_in_insert_mode_without_losing_your_escape_key'>Start in insert mode without losing your escape key</a><br>
+VimTip298: <a href='http://vim.wikia.com/wiki/Changing_case_with_regular_expressions'>Changing case with regular expressions</a><br>
+VimTip299: <a href='http://vim.wikia.com/wiki/Open_file_under_cursor'>Open file under cursor</a><br>
+VimTip301: <a href='http://vim.wikia.com/wiki/Edit_file_found_by_whereis'>Edit file found by whereis</a><br>
+VimTip302: <a href='http://vim.wikia.com/wiki/Use_gvim_in_kmail'>Use gvim in kmail</a><br>
+VimTip303: <a href='http://vim.wikia.com/wiki/Statusline_tab_level_ruler'>Statusline tab level ruler</a><br>
+VimTip304: <a href='http://vim.wikia.com/wiki/Syntax_folding_for_Java'>Syntax folding for Java</a><br>
+VimTip305: <a href='http://vim.wikia.com/wiki/Best_Vim_Tips'>Best Vim Tips</a><br>
+VimTip306: <a href='http://vim.wikia.com/wiki/Open_a_web-browser_with_the_URL_in_the_current_line'>Open a web-browser with the URL in the current line</a><br>
+VimTip308: <a href='http://vim.wikia.com/wiki/Move_through_wrapped_lines'>Move through wrapped lines</a><br>
+VimTip309: <a href='http://vim.wikia.com/wiki/Close_vim_you_left_open_remotely'>Close vim you left open remotely</a><br>
+VimTip311: <a href='http://vim.wikia.com/wiki/Open_the_folder_containing_the_currently_open_file'>Open the folder containing the currently open file</a><br>
+VimTip312: <a href='http://vim.wikia.com/wiki/Copy,_cut_and_paste'>Copy, cut and paste</a><br>
+VimTip313: <a href='http://vim.wikia.com/wiki/Printing_using_kprinter'>Printing using kprinter</a><br>
+VimTip314: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip315: <a href='http://vim.wikia.com/wiki/Smart_home'>Smart home</a><br>
+VimTip316: <a href='http://vim.wikia.com/wiki/Using_normal_command_in_a_script_for_searching'>Using normal command in a script for searching</a><br>
+VimTip317: <a href='http://vim.wikia.com/wiki/Vim_key_bindings_for_web_browsers'>Vim key bindings for web browsers</a><br>
+VimTip318: <a href='http://vim.wikia.com/wiki/Brackets_and_parentheses_in_Perl'>Brackets and parentheses in Perl</a><br>
+VimTip319: <a href='http://vim.wikia.com/wiki/Simple_text_alignment'>Simple text alignment</a><br>
+VimTip320: <a href='http://vim.wikia.com/wiki/Page_up/down_and_keep_cursor_position'>Page up</a><br>
+VimTip322: <a href='http://vim.wikia.com/wiki/Text_template_with_placeholders'>Text template with placeholders</a><br>
+VimTip323: <a href='http://vim.wikia.com/wiki/Using_folders_with_latex'>Using folders with latex</a><br>
+VimTip324: <a href='http://vim.wikia.com/wiki/Search_and_replace_in_multiple_buffers'>Search and replace in multiple buffers</a><br>
+VimTip325: <a href='http://vim.wikia.com/wiki/Errorformat_for_java/ant/junit/cygwin/bash'>Errorformat for java</a><br>
+VimTip327: <a href='http://vim.wikia.com/wiki/Short_mappings_for_common_tasks'>Short mappings for common tasks</a><br>
+VimTip328: <a href='http://vim.wikia.com/wiki/Vim_in_Microsoft_Visual_Foxpro'>Vim in Microsoft Visual Foxpro</a><br>
+VimTip330: <a href='http://vim.wikia.com/wiki/How_to_stop_auto_indenting'>How to stop auto indenting</a><br>
+VimTip331: <a href='http://vim.wikia.com/wiki/Modeline_magic'>Modeline magic</a><br>
+VimTip332: <a href='http://vim.wikia.com/wiki/Make_footnotes_in_vim'>Make footnotes in vim</a><br>
+VimTip333: <a href='http://vim.wikia.com/wiki/Syntax-based_folding'>Syntax-based folding</a><br>
+VimTip334: <a href='http://vim.wikia.com/wiki/Loading_scripts_in_vimrc_safely'>Loading scripts in vimrc safely</a><br>
+VimTip335: <a href='http://vim.wikia.com/wiki/Copy_C%2B%2B_function_declaration_into_implementation_file'>Copy C%2B%2B function declaration into implementation file</a><br>
+VimTip336: <a href='http://vim.wikia.com/wiki/Jump_to_a_line_number'>Jump to a line number</a><br>
+VimTip337: <a href='http://vim.wikia.com/wiki/Editing_remote_files_via_scp_in_vim'>Editing remote files via scp in vim</a><br>
+VimTip338: <a href='http://vim.wikia.com/wiki/Vim_and_cscope_and_cygwin'>Vim and cscope and cygwin</a><br>
+VimTip341: <a href='http://vim.wikia.com/wiki/Switch_color_schemes'>Switch color schemes</a><br>
+VimTip342: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_XWindows'>Map caps lock to escape in XWindows</a><br>
+VimTip343: <a href='http://vim.wikia.com/wiki/Faster_loading_of_large_files'>Faster loading of large files</a><br>
+VimTip344: <a href='http://vim.wikia.com/wiki/Cut_or_copy_lines_without_counting_the_lines'>Cut or copy lines without counting the lines</a><br>
+VimTip345: <a href='http://vim.wikia.com/wiki/Quickfix_and_Visual_Studio_and_cygwin'>Quickfix and Visual Studio and cygwin</a><br>
+VimTip346: <a href='http://vim.wikia.com/wiki/Wrap_text_in_HTML/XML_tags_after_prompting_for_the_tag_name'>Wrap text in HTML</a><br>
+VimTip347: <a href='http://vim.wikia.com/wiki/Format_paragraph_without_changing_the_cursor_position'>Format paragraph without changing the cursor position</a><br>
+VimTip348: <a href='http://vim.wikia.com/wiki/Quickly_insert_a_single_word'>Quickly insert a single word</a><br>
+VimTip349: <a href='http://vim.wikia.com/wiki/Format_your_xml_document_using_xmllint'>Format your xml document using xmllint</a><br>
+VimTip350: <a href='http://vim.wikia.com/wiki/Insert_a_non_commented_line_despite_formatoptions'>Insert a non commented line despite formatoptions</a><br>
+VimTip351: <a href='http://vim.wikia.com/wiki/Using_quickfix_in_a_different_way'>Using quickfix in a different way</a><br>
+VimTip352: <a href='http://vim.wikia.com/wiki/Disabling_cabbrev'>Disabling cabbrev</a><br>
+VimTip353: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_Windows'>Map caps lock to escape in Windows</a><br>
+VimTip354: <a href='http://vim.wikia.com/wiki/Find_in_files_within_Vim'>Find in files within Vim</a><br>
+VimTip355: <a href='http://vim.wikia.com/wiki/Comment_Lines_according_to_a_given_filetype'>Comment Lines according to a given filetype</a><br>
+VimTip356: <a href='http://vim.wikia.com/wiki/Quick_yank_and_paste'>Quick yank and paste</a><br>
+VimTip357: <a href='http://vim.wikia.com/wiki/Adding_a_console_to_gdbvim'>Adding a console to gdbvim</a><br>
+VimTip358: <a href='http://vim.wikia.com/wiki/Switch_color_schemes'>Switch color schemes</a><br>
+VimTip361: <a href='http://vim.wikia.com/wiki/Vim_can_interact_with_xdvi'>Vim can interact with xdvi</a><br>
+VimTip362: <a href='http://vim.wikia.com/wiki/ColdFusion_and_matchit'>ColdFusion and matchit</a><br>
+VimTip363: <a href='http://vim.wikia.com/wiki/Fast_start_up_in_a_telnet_session'>Fast start up in a telnet session</a><br>
+VimTip364: <a href='http://vim.wikia.com/wiki/Automatic_file_type_detection_with_fully_qualified_ClearCase_names'>Automatic file type detection with fully qualified ClearCase names</a><br>
+VimTip366: <a href='http://vim.wikia.com/wiki/Really_basic_RCS_interaction_from_within_vim'>Really basic RCS interaction from within vim</a><br>
+VimTip367: <a href='http://vim.wikia.com/wiki/Understanding_VIMRUNTIME'>Understanding VIMRUNTIME</a><br>
+VimTip368: <a href='http://vim.wikia.com/wiki/Integrate_gvim_with_Visual_Studio'>Integrate gvim with Visual Studio</a><br>
+VimTip369: <a href='http://vim.wikia.com/wiki/Comment/UnComment_visually_selected_text'>Comment</a><br>
+VimTip370: <a href='http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file'>Set working directory to the current file</a><br>
+VimTip371: <a href='http://vim.wikia.com/wiki/Encrypt_a_file_without_leaving_traces'>Encrypt a file without leaving traces</a><br>
+VimTip373: <a href='http://vim.wikia.com/wiki/Search_and_replace_in_multiple_buffers'>Search and replace in multiple buffers</a><br>
+VimTip374: <a href='http://vim.wikia.com/wiki/Use_filter_commands_to_process_text'>Use filter commands to process text</a><br>
+VimTip375: <a href='http://vim.wikia.com/wiki/Use_eval_to_create_dynamic_templates'>Use eval to create dynamic templates</a><br>
+VimTip376: <a href='http://vim.wikia.com/wiki/Building_Vim'>Building Vim</a><br>
+VimTip377: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_XWindows'>Map caps lock to escape in XWindows</a><br>
+VimTip378: <a href='http://vim.wikia.com/wiki/Auto_insert_Java_class_template_when_editing_a_new_Java_file'>Auto insert Java class template when editing a new Java file</a><br>
+VimTip380: <a href='http://vim.wikia.com/wiki/Using_gvim_as_frontend_for_dbx'>Using gvim as frontend for dbx</a><br>
+VimTip381: <a href='http://vim.wikia.com/wiki/Running_the_win32-version_of_Vim_from_cygwin'>Running the win32-version of Vim from cygwin</a><br>
+VimTip382: <a href='http://vim.wikia.com/wiki/Search_and_replace_in_multiple_buffers'>Search and replace in multiple buffers</a><br>
+VimTip383: <a href='http://vim.wikia.com/wiki/Jump_to_a_function_from_where_it_is_called'>Jump to a function from where it is called</a><br>
+VimTip384: <a href='http://vim.wikia.com/wiki/Easily_switch_between_source_and_header_file'>Easily switch between source and header file</a><br>
+VimTip385: <a href='http://vim.wikia.com/wiki/Some_Java_tips'>Some Java tips</a><br>
+VimTip386: <a href='http://vim.wikia.com/wiki/Cut/copy_and_paste_using_visual_selection'>Cut</a><br>
+VimTip387: <a href='http://vim.wikia.com/wiki/Inserting_a_prefix_in_a_parameter_list'>Inserting a prefix in a parameter list</a><br>
+VimTip388: <a href='http://vim.wikia.com/wiki/Insert_C%2B%2B_or_LaTeX_or_other_comments_easily'>Insert C%2B%2B or LaTeX or other comments easily</a><br>
+VimTip389: <a href='http://vim.wikia.com/wiki/Search_only_in_unfolded_text'>Search only in unfolded text</a><br>
+VimTip390: <a href='http://vim.wikia.com/wiki/Combining_vimdiff_with_cvs_diff'>Combining vimdiff with cvs diff</a><br>
+VimTip391: <a href='http://vim.wikia.com/wiki/Simple_programmers_TODO_list_using_grep_and_quickfix'>Simple programmers TODO list using grep and quickfix</a><br>
+VimTip393: <a href='http://vim.wikia.com/wiki/Perl_compatible_regular_expressions'>Perl compatible regular expressions</a><br>
+VimTip394: <a href='http://vim.wikia.com/wiki/Internet_search_for_the_current_word'>Internet search for the current word</a><br>
+VimTip395: <a href='http://vim.wikia.com/wiki/Visual_marks'>Visual marks</a><br>
+VimTip396: <a href='http://vim.wikia.com/wiki/Highlight_unwanted_spaces'>Highlight unwanted spaces</a><br>
+VimTip397: <a href='http://vim.wikia.com/wiki/Mapping_to_quickly_browse_help'>Mapping to quickly browse help</a><br>
+VimTip398: <a href='http://vim.wikia.com/wiki/Macros'>Macros</a><br>
+VimTip399: <a href='http://vim.wikia.com/wiki/Fold_away_empty_lines'>Fold away empty lines</a><br>
+VimTip400: <a href='http://vim.wikia.com/wiki/Fast_scroll_mappings'>Fast scroll mappings</a><br>
+VimTip402: <a href='http://vim.wikia.com/wiki/Press_space_to_jump_between_windows_and_to_expand_them'>Press space to jump between windows and to expand them</a><br>
+VimTip404: <a href='http://vim.wikia.com/wiki/Tags_for_Mixed_Assembly_and_C'>Tags for Mixed Assembly and C</a><br>
+VimTip405: <a href='http://vim.wikia.com/wiki/ShowBlockName_one-liner_equivalent_for_one_coding_style'>ShowBlockName one-liner equivalent for one coding style</a><br>
+VimTip406: <a href='http://vim.wikia.com/wiki/Alternate_delimiters_for_the_replace_command'>Alternate delimiters for the replace command</a><br>
+VimTip407: <a href='http://vim.wikia.com/wiki/Automatically_generate_PHPdoc_comments'>Automatically generate PHPdoc comments</a><br>
+VimTip408: <a href='http://vim.wikia.com/wiki/Enhance_the_calendar_script_with_special_dates'>Enhance the calendar script with special dates</a><br>
+VimTip409: <a href='http://vim.wikia.com/wiki/Using_selected_text_in_a_command'>Using selected text in a command</a><br>
+VimTip410: <a href='http://vim.wikia.com/wiki/Allow_Inform_header_files_to_be_distinguished_from_C_headers'>Allow Inform header files to be distinguished from C headers</a><br>
+VimTip411: <a href='http://vim.wikia.com/wiki/How_to_initialize_plugins'>How to initialize plugins</a><br>
+VimTip413: <a href='http://vim.wikia.com/wiki/Drag_and_drop_file_names_into_the_Vim_command_line'>Drag and drop file names into the Vim command line</a><br>
+VimTip414: <a href='http://vim.wikia.com/wiki/Change_guifont_to_see_more_of_your_file'>Change guifont to see more of your file</a><br>
+VimTip416: <a href='http://vim.wikia.com/wiki/Running_diff'>Running diff</a><br>
+VimTip418: <a href='http://vim.wikia.com/wiki/Disable_beeping'>Disable beeping</a><br>
+VimTip419: <a href='http://vim.wikia.com/wiki/Auto-fold_Perl_subs'>Auto-fold Perl subs</a><br>
+VimTip420: <a href='http://vim.wikia.com/wiki/Hide_toolbar_or_menus_to_see_more_text'>Hide toolbar or menus to see more text</a><br>
+VimTip421: <a href='http://vim.wikia.com/wiki/Highlight_current_line'>Highlight current line</a><br>
+VimTip425: <a href='http://vim.wikia.com/wiki/Forcing_Syntax_Coloring_for_files_with_odd_extensions'>Forcing Syntax Coloring for files with odd extensions</a><br>
+VimTip426: <a href='http://vim.wikia.com/wiki/Protecting_a_file_from_accidental_changes'>Protecting a file from accidental changes</a><br>
+VimTip427: <a href='http://vim.wikia.com/wiki/Fast_window_resizing_with_plus/minus_keys'>Fast window resizing with plus</a><br>
+VimTip428: <a href='http://vim.wikia.com/wiki/Wordwise_Ctrl-Y_in_insert_mode'>Wordwise Ctrl-Y in insert mode</a><br>
+VimTip430: <a href='http://vim.wikia.com/wiki/Cycle_through_buffers_including_hidden_buffers'>Cycle through buffers including hidden buffers</a><br>
+VimTip431: <a href='http://vim.wikia.com/wiki/Change_between_backslash_and_forward_slash'>Change between backslash and forward slash</a><br>
+VimTip432: <a href='http://vim.wikia.com/wiki/Putting_the_current_file_on_the_Windows_clipboard'>Putting the current file on the Windows clipboard</a><br>
+VimTip434: <a href='http://vim.wikia.com/wiki/Auto_commands_for_C/C%2B%2B_editing'>Auto commands for C</a><br>
+VimTip436: <a href='http://vim.wikia.com/wiki/Recover_from_accidental_Ctrl-U'>Recover from accidental Ctrl-U</a><br>
+VimTip437: <a href='http://vim.wikia.com/wiki/Extending_keywords'>Extending keywords</a><br>
+VimTip438: <a href='http://vim.wikia.com/wiki/Search_and_replace_in_a_visual_selection'>Search and replace in a visual selection</a><br>
+VimTip440: <a href='http://vim.wikia.com/wiki/Automatic_formatting_of_paragraphs'>Automatic formatting of paragraphs</a><br>
+VimTip441: <a href='http://vim.wikia.com/wiki/Toggle_auto-wrap'>Toggle auto-wrap</a><br>
+VimTip443: <a href='http://vim.wikia.com/wiki/A_better_interfacing_of_(La)TeX_with_the_quickfix_mode'>A better interfacing of (La)TeX with the quickfix mode</a><br>
+VimTip444: <a href='http://vim.wikia.com/wiki/Show_entire_multiline_error_in_quickfix'>Show entire multiline error in quickfix</a><br>
+VimTip445: <a href='http://vim.wikia.com/wiki/Formatting_stuff'>Formatting stuff</a><br>
+VimTip446: <a href='http://vim.wikia.com/wiki/Quick_and_dirty_Postgres_query'>Quick and dirty Postgres query</a><br>
+VimTip448: <a href='http://vim.wikia.com/wiki/Convert_between_hex_and_decimal'>Convert between hex and decimal</a><br>
+VimTip449: <a href='http://vim.wikia.com/wiki/Fortran_highlighting_problems'>Fortran highlighting problems</a><br>
+VimTip450: <a href='http://vim.wikia.com/wiki/Working_with_multiple_sessions'>Working with multiple sessions</a><br>
+VimTip451: <a href='http://vim.wikia.com/wiki/KDE_Konsole_renameSession_to_edited_file_name'>KDE Konsole renameSession to edited file name</a><br>
+VimTip452: <a href='http://vim.wikia.com/wiki/Edit_multiple_files_from_a_list_of_file_names'>Edit multiple files from a list of file names</a><br>
+VimTip453: <a href='http://vim.wikia.com/wiki/Browsing_programs_with_tags'>Browsing programs with tags</a><br>
+VimTip454: <a href='http://vim.wikia.com/wiki/Fix_syntax_highlighting'>Fix syntax highlighting</a><br>
+VimTip457: <a href='http://vim.wikia.com/wiki/Follow_tag_in_new_window'>Follow tag in new window</a><br>
+VimTip458: <a href='http://vim.wikia.com/wiki/Use_the_quickfix_window_to_list_all_errors'>Use the quickfix window to list all errors</a><br>
+VimTip459: <a href='http://vim.wikia.com/wiki/Use_Ctrl-O_instead_of_Esc_in_insert_mode_mappings'>Use Ctrl-O instead of Esc in insert mode mappings</a><br>
+VimTip460: <a href='http://vim.wikia.com/wiki/See_the_tabs_in_your_file'>See the tabs in your file</a><br>
+VimTip461: <a href='http://vim.wikia.com/wiki/Open_a_Perl_module_from_its_module_name'>Open a Perl module from its module name</a><br>
+VimTip462: <a href='http://vim.wikia.com/wiki/Go_to_definition_using_g'>Go to definition using g</a><br>
+VimTip463: <a href='http://vim.wikia.com/wiki/Speed_up_developing_XSLT_files'>Speed up developing XSLT files</a><br>
+VimTip464: <a href='http://vim.wikia.com/wiki/Search_and_replace_the_word_under_the_cursor'>Search and replace the word under the cursor</a><br>
+VimTip465: <a href='http://vim.wikia.com/wiki/Generic_xml_imap_to_make_an_element_of_any_word_you_type'>Generic xml imap to make an element of any word you type</a><br>
+VimTip466: <a href='http://vim.wikia.com/wiki/Insert_a_single_character'>Insert a single character</a><br>
+VimTip467: <a href='http://vim.wikia.com/wiki/Append_output_of_an_external_command'>Append output of an external command</a><br>
+VimTip468: <a href='http://vim.wikia.com/wiki/Display_date-and-time_on_status_line'>Display date-and-time on status line</a><br>
+VimTip469: <a href='http://vim.wikia.com/wiki/Replace_the_file_name_extension'>Replace the file name extension</a><br>
+VimTip470: <a href='http://vim.wikia.com/wiki/Swapping_characters,_words_and_lines#Visual-mode_swapping'>Swapping characters, words and lines#Visual-mode swapping</a><br>
+VimTip471: <a href='http://vim.wikia.com/wiki/Using_the_mouse_for_Vim_in_an_xterm'>Using the mouse for Vim in an xterm</a><br>
+VimTip472: <a href='http://vim.wikia.com/wiki/Handy_option_flag_toggler'>Handy option flag toggler</a><br>
+VimTip473: <a href='http://vim.wikia.com/wiki/Compiler_for_perl'>Compiler for perl</a><br>
+VimTip474: <a href='http://vim.wikia.com/wiki/Have_._restore_the_cursor_position_a_la_emacs_in_viper_mode'>Have . restore the cursor position a la emacs in viper mode</a><br>
+VimTip475: <a href='http://vim.wikia.com/wiki/Wrap_visual_selection_with_fold_markers'>Wrap visual selection with fold markers</a><br>
+VimTip476: <a href='http://vim.wikia.com/wiki/Errorformat_and_makeprg'>Errorformat and makeprg</a><br>
+VimTip477: <a href='http://vim.wikia.com/wiki/Put_the_indentation_level_on_the_status_line'>Put the indentation level on the status line</a><br>
+VimTip478: <a href='http://vim.wikia.com/wiki/Copy_search_matches'>Copy search matches</a><br>
+VimTip479: <a href='http://vim.wikia.com/wiki/Replace_with_no_typing'>Replace with no typing</a><br>
+VimTip480: <a href='http://vim.wikia.com/wiki/Editing_files_on_an_ftp_server_listening_on_a_non-standard_port'>Editing files on an ftp server listening on a non-standard port</a><br>
+VimTip481: <a href='http://vim.wikia.com/wiki/Abbreviations_only_on_shortcut'>Abbreviations only on shortcut</a><br>
+VimTip482: <a href='http://vim.wikia.com/wiki/Keep_a_to-do_memo_file_with_links_as_in_Vim_help'>Keep a to-do memo file with links as in Vim help</a><br>
+VimTip483: <a href='http://vim.wikia.com/wiki/Search_using_quickfix_to_list_occurrences'>Search using quickfix to list occurrences</a><br>
+VimTip484: <a href='http://vim.wikia.com/wiki/Console-like_fonts_for_Windows_GVim'>Console-like fonts for Windows GVim</a><br>
+VimTip485: <a href='http://vim.wikia.com/wiki/Open_a_window_with_the_man_page_for_the_word_under_the_cursor'>Open a window with the man page for the word under the cursor</a><br>
+VimTip486: <a href='http://vim.wikia.com/wiki/Highlight_all_search_pattern_matches'>Highlight all search pattern matches</a><br>
+VimTip487: <a href='http://vim.wikia.com/wiki/Open_file_under_cursor'>Open file under cursor</a><br>
+VimTip488: <a href='http://vim.wikia.com/wiki/Start_with_a_wide_window_for_diff'>Start with a wide window for diff</a><br>
+VimTip489: <a href='http://vim.wikia.com/wiki/Section_jump_in_Latex'>Section jump in Latex</a><br>
+VimTip490: <a href='http://vim.wikia.com/wiki/Paste_registers_in_search_or_colon_commands_instead_of_using_the_clipboard'>Paste registers in search or colon commands instead of using the clipboard</a><br>
+VimTip492: <a href='http://vim.wikia.com/wiki/Jump_to_file_from_CVSDiff_output'>Jump to file from CVSDiff output</a><br>
+VimTip493: <a href='http://vim.wikia.com/wiki/Open_the_directory_for_the_current_file_in_Windows'>Open the directory for the current file in Windows</a><br>
+VimTip494: <a href='http://vim.wikia.com/wiki/Maximize_or_restore_window'>Maximize or restore window</a><br>
+VimTip495: <a href='http://vim.wikia.com/wiki/Backspace_key_using_puTTY_to_RH9_box'>Backspace key using puTTY to RH9 box</a><br>
+VimTip497: <a href='http://vim.wikia.com/wiki/Replace_a_word_with_yanked_text'>Replace a word with yanked text</a><br>
+VimTip498: <a href='http://vim.wikia.com/wiki/Completion_using_a_syntax_file'>Completion using a syntax file</a><br>
+VimTip502: <a href='http://vim.wikia.com/wiki/View_character_class'>View character class</a><br>
+VimTip503: <a href='http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings'>PuTTY numeric keypad mappings</a><br>
+VimTip506: <a href='http://vim.wikia.com/wiki/Open_Windows_Help_files_on_a_specific_topic'>Open Windows Help files on a specific topic</a><br>
+VimTip507: <a href='http://vim.wikia.com/wiki/Quick_window_resizing'>Quick window resizing</a><br>
+VimTip509: <a href='http://vim.wikia.com/wiki/Execute_commands_without_changing_the_search_register'>Execute commands without changing the search register</a><br>
+VimTip510: <a href='http://vim.wikia.com/wiki/Set_VIMRUNTIME_within_vimrc'>Set VIMRUNTIME within vimrc</a><br>
+VimTip514: <a href='http://vim.wikia.com/wiki/Automatic_insertion_of_C/C%2B%2B_header_gates'>Automatic insertion of C</a><br>
+VimTip515: <a href='http://vim.wikia.com/wiki/List_loaded_scripts'>List loaded scripts</a><br>
+VimTip516: <a href='http://vim.wikia.com/wiki/Search_patterns'>Search patterns</a><br>
+VimTip517: <a href='http://vim.wikia.com/wiki/Rejustify_roff_style_markup'>Rejustify roff style markup</a><br>
+VimTip518: <a href='http://vim.wikia.com/wiki/Errorformat_for_icc7'>Errorformat for icc7</a><br>
+VimTip519: <a href='http://vim.wikia.com/wiki/Folding_like_in_Visual_Basic_.NET'>Folding like in Visual Basic .NET</a><br>
+VimTip520: <a href='http://vim.wikia.com/wiki/Search_patterns'>Search patterns</a><br>
+VimTip522: <a href='http://vim.wikia.com/wiki/Fix_an_autoindent_error'>Fix an autoindent error</a><br>
+VimTip523: <a href='http://vim.wikia.com/wiki/Folding_functions_with_the_prototype_included'>Folding functions with the prototype included</a><br>
+VimTip524: <a href='http://vim.wikia.com/wiki/Evaluate_an_expression_in_any_mode'>Evaluate an expression in any mode</a><br>
+VimTip525: <a href='http://vim.wikia.com/wiki/JavaBeans_helper_function'>JavaBeans helper function</a><br>
+VimTip526: <a href='http://vim.wikia.com/wiki/Enhance_the_word_complete.vim_script'>Enhance the word complete.vim script</a><br>
+VimTip527: <a href='http://vim.wikia.com/wiki/Use_the_console_colors_in_gvim'>Use the console colors in gvim</a><br>
+VimTip528: <a href='http://vim.wikia.com/wiki/Make_search_results_appear_in_the_middle_of_the_screen'>Make search results appear in the middle of the screen</a><br>
+VimTip529: <a href='http://vim.wikia.com/wiki/Make_Shift-Tab_work'>Make Shift-Tab work</a><br>
+VimTip530: <a href='http://vim.wikia.com/wiki/Get_the_name_of_the_current_file'>Get the name of the current file</a><br>
+VimTip531: <a href='http://vim.wikia.com/wiki/Build_Vim_in_Windows_with_Cygwin'>Build Vim in Windows with Cygwin</a><br>
+VimTip533: <a href='http://vim.wikia.com/wiki/Page_1_of_123_in_header_of_hardcopy'>Page 1 of 123 in header of hardcopy</a><br>
+VimTip534: <a href='http://vim.wikia.com/wiki/For_verilog_users_only'>For verilog users only</a><br>
+VimTip535: <a href='http://vim.wikia.com/wiki/Working_with_only_one_term/console%3F'>Working with only one term</a><br>
+VimTip536: <a href='http://vim.wikia.com/wiki/Automatically_quit_Vim_if_quickfix_window_is_the_last'>Automatically quit Vim if quickfix window is the last</a><br>
+VimTip537: <a href='http://vim.wikia.com/wiki/Mimic_shift-arrow_to_select_text_in_terminals_without_shift-arrow'>Mimic shift-arrow to select text in terminals without shift-arrow</a><br>
+VimTip539: <a href='http://vim.wikia.com/wiki/Quick_access_to_Vim_tips_and_scripts_with_konqueror'>Quick access to Vim tips and scripts with konqueror</a><br>
+VimTip542: <a href='http://vim.wikia.com/wiki/Edit_remote_files_locally_via_SCP/RCP/FTP'>Edit remote files locally via SCP</a><br>
+VimTip543: <a href='http://vim.wikia.com/wiki/Internationalizing_the_Vim_editor'>Internationalizing the Vim editor</a><br>
+VimTip545: <a href='http://vim.wikia.com/wiki/Vim_goes_Greek_-_Greek_language_support_for_Vim_6.1'>Vim goes Greek - Greek language support for Vim 6.1</a><br>
+VimTip546: <a href='http://vim.wikia.com/wiki/Vim_goes_INTL_-_Translating_Messages,_Menus,_Encodings'>Vim goes INTL - Translating Messages, Menus, Encodings</a><br>
+VimTip547: <a href='http://vim.wikia.com/wiki/Smarter_Table_Editing'>Smarter Table Editing</a><br>
+VimTip548: <a href='http://vim.wikia.com/wiki/Using_H_and_L_keys_as_context_sensitive_pagedown/pageup'>Using H and L keys as context sensitive pagedown</a><br>
+VimTip550: <a href='http://vim.wikia.com/wiki/Fix_arrow_keys_that_display_A_B_C_D_on_remote_shell'>Fix arrow keys that display A B C D on remote shell</a><br>
+VimTip551: <a href='http://vim.wikia.com/wiki/Automatically_indent_an_XML_file_using_XSLT'>Automatically indent an XML file using XSLT</a><br>
+VimTip552: <a href='http://vim.wikia.com/wiki/Replace_buffer_list_when_switching'>Replace buffer list when switching</a><br>
+VimTip553: <a href='http://vim.wikia.com/wiki/Jumping_to_previously_visited_locations'>Jumping to previously visited locations</a><br>
+VimTip554: <a href='http://vim.wikia.com/wiki/Smarter_Table_Editing_II'>Smarter Table Editing II</a><br>
+VimTip555: <a href='http://vim.wikia.com/wiki/Vim_as_bookmark_manager'>Vim as bookmark manager</a><br>
+VimTip556: <a href='http://vim.wikia.com/wiki/Access_Python_Help'>Access Python Help</a><br>
+VimTip557: <a href='http://vim.wikia.com/wiki/Opening_several_files_in_vim_via_ListFile'>Opening several files in vim via ListFile</a><br>
+VimTip558: <a href='http://vim.wikia.com/wiki/Using_TagList_for_ANT_build_files'>Using TagList for ANT build files</a><br>
+VimTip559: <a href='http://vim.wikia.com/wiki/Use_Vim_to_expire_your_mail_so_Mutt_will_delete_them_later'>Use Vim to expire your mail so Mutt will delete them later</a><br>
+VimTip560: <a href='http://vim.wikia.com/wiki/Generate_calendar_file'>Generate calendar file</a><br>
+VimTip563: <a href='http://vim.wikia.com/wiki/List_lines_with_keyword_and_prompt_for_jump'>List lines with keyword and prompt for jump</a><br>
+VimTip564: <a href='http://vim.wikia.com/wiki/Mouse_wheel_for_scroll_only_-_disable_middle_button_paste'>Mouse wheel for scroll only - disable middle button paste</a><br>
+VimTip566: <a href='http://vim.wikia.com/wiki/Autocomplete_with_TAB_when_typing_words'>Autocomplete with TAB when typing words</a><br>
+VimTip567: <a href='http://vim.wikia.com/wiki/Edit_a_temporary_copy_of_the_current_file'>Edit a temporary copy of the current file</a><br>
+VimTip568: <a href='http://vim.wikia.com/wiki/Use_temporary_tags_file_when_browsing_new_source'>Use temporary tags file when browsing new source</a><br>
+VimTip569: <a href='http://vim.wikia.com/wiki/Insert_line_numbers_with_a_Perl_filter'>Insert line numbers with a Perl filter</a><br>
+VimTip570: <a href='http://vim.wikia.com/wiki/Align_text_into_a_table'>Align text into a table</a><br>
+VimTip571: <a href='http://vim.wikia.com/wiki/Source_vimrc_and_use_tags_in_a_parent_directory'>Source vimrc and use tags in a parent directory</a><br>
+VimTip572: <a href='http://vim.wikia.com/wiki/Auto_highlight_current_word_when_idle'>Auto highlight current word when idle</a><br>
+VimTip573: <a href='http://vim.wikia.com/wiki/Repeating_a_substitute_from_current_cursor_position'>Repeating a substitute from current cursor position</a><br>
+VimTip575: <a href='http://vim.wikia.com/wiki/Chop_long_lines'>Chop long lines</a><br>
+VimTip576: <a href='http://vim.wikia.com/wiki/Generate_all_Unicode_characters'>Generate all Unicode characters</a><br>
+VimTip577: <a href='http://vim.wikia.com/wiki/Access_vim@vim.org_using_Newsgroup_Reader'>Access vim@vim.org using Newsgroup Reader</a><br>
+VimTip578: <a href='http://vim.wikia.com/wiki/Ranges'>Ranges</a><br>
+VimTip579: <a href='http://vim.wikia.com/wiki/Copy_paragraphs_without_excess_newlines_to_MS_Word'>Copy paragraphs without excess newlines to MS Word</a><br>
+VimTip580: <a href='http://vim.wikia.com/wiki/Using_DDE_to_open_the_current_Vim_file_in_Visual_Studio'>Using DDE to open the current Vim file in Visual Studio</a><br>
+VimTip581: <a href='http://vim.wikia.com/wiki/Using_vim_to_view_source_and_edit_textarea_in_mozilla/firebird'>Using vim to view source and edit textarea in mozilla</a><br>
+VimTip582: <a href='http://vim.wikia.com/wiki/Quick_save'>Quick save</a><br>
+VimTip583: <a href='http://vim.wikia.com/wiki/Vim_as_XML_Editor'>Vim as XML Editor</a><br>
+VimTip584: <a href='http://vim.wikia.com/wiki/Par_text_reformatter'>Par text reformatter</a><br>
+VimTip586: <a href='http://vim.wikia.com/wiki/Smarter_pasting'>Smarter pasting</a><br>
+VimTip587: <a href='http://vim.wikia.com/wiki/Preview_current_HTML_file'>Preview current HTML file</a><br>
+VimTip588: <a href='http://vim.wikia.com/wiki/How_to_sort_using_visual_blocks'>How to sort using visual blocks</a><br>
+VimTip589: <a href='http://vim.wikia.com/wiki/Vim_as_a_refactoring_tool_and_some_examples_in_C_sharp'>Vim as a refactoring tool and some examples in C sharp</a><br>
+VimTip590: <a href='http://vim.wikia.com/wiki/Using_Vim_to_send_mail_on_Windows'>Using Vim to send mail on Windows</a><br>
+VimTip591: <a href='http://vim.wikia.com/wiki/Have_a_nice_and_easy_use_of_plugins'>Have a nice and easy use of plugins</a><br>
+VimTip593: <a href='http://vim.wikia.com/wiki/Basic_postfix_abbreviations'>Basic postfix abbreviations</a><br>
+VimTip595: <a href='http://vim.wikia.com/wiki/Suppressing_file_changed_warnings_in_a_specific_buffer'>Suppressing file changed warnings in a specific buffer</a><br>
+VimTip597: <a href='http://vim.wikia.com/wiki/Indent_a_code_block'>Indent a code block</a><br>
+VimTip598: <a href='http://vim.wikia.com/wiki/PHP_online_help'>PHP online help</a><br>
+VimTip600: <a href='http://vim.wikia.com/wiki/Copy_filename_to_clipboard'>Copy filename to clipboard</a><br>
+VimTip601: <a href='http://vim.wikia.com/wiki/Tags_that_jump_to_line_and_column'>Tags that jump to line and column</a><br>
+VimTip603: <a href='http://vim.wikia.com/wiki/Bookmarks_as_menu_item'>Bookmarks as menu item</a><br>
+VimTip604: <a href='http://vim.wikia.com/wiki/Insert_in_normal_mode'>Insert in normal mode</a><br>
+VimTip605: <a href='http://vim.wikia.com/wiki/Replace_a_word_with_yanked_text'>Replace a word with yanked text</a><br>
+VimTip606: <a href='http://vim.wikia.com/wiki/View_man_pages_in_Vim'>View man pages in Vim</a><br>
+VimTip607: <a href='http://vim.wikia.com/wiki/Opening_gvim_atop_a_console_window'>Opening gvim atop a console window</a><br>
+VimTip608: <a href='http://vim.wikia.com/wiki/Evaluate_current_line_using_Python'>Evaluate current line using Python</a><br>
+VimTip609: <a href='http://vim.wikia.com/wiki/Execute_Python_from_within_current_file'>Execute Python from within current file</a><br>
+VimTip610: <a href='http://vim.wikia.com/wiki/Use_abbreviations_for_frequently-used_words'>Use abbreviations for frequently-used words</a><br>
+VimTip611: <a href='http://vim.wikia.com/wiki/Faster_loading_of_large_files'>Faster loading of large files</a><br>
+VimTip613: <a href='http://vim.wikia.com/wiki/Open_the_last_edited_file'>Open the last edited file</a><br>
+VimTip614: <a href='http://vim.wikia.com/wiki/Perldoc_function_and_module_keyboard_mappings'>Perldoc function and module keyboard mappings</a><br>
+VimTip615: <a href='http://vim.wikia.com/wiki/Moving_to_the_next_word_in_insert_mode'>Moving to the next word in insert mode</a><br>
+VimTip616: <a href='http://vim.wikia.com/wiki/Have_Vim_check_automatically_if_the_file_has_changed_externally'>Have Vim check automatically if the file has changed externally</a><br>
+VimTip618: <a href='http://vim.wikia.com/wiki/How_to_make_and_submit_a_patch'>How to make and submit a patch</a><br>
+VimTip619: <a href='http://vim.wikia.com/wiki/How_to_make_a_keymap'>How to make a keymap</a><br>
+VimTip621: <a href='http://vim.wikia.com/wiki/Pasting_code_with_syntax_coloring_in_emails'>Pasting code with syntax coloring in emails</a><br>
+VimTip622: <a href='http://vim.wikia.com/wiki/Deleting_a_buffer_without_closing_the_window'>Deleting a buffer without closing the window</a><br>
+VimTip623: <a href='http://vim.wikia.com/wiki/External_paste_buffer'>External paste buffer</a><br>
+VimTip624: <a href='http://vim.wikia.com/wiki/Insert_template_files_into_buffer'>Insert template files into buffer</a><br>
+VimTip625: <a href='http://vim.wikia.com/wiki/Typing_print_statements_faster'>Typing print statements faster</a><br>
+VimTip626: <a href='http://vim.wikia.com/wiki/Open_vimrc_file'>Open vimrc file</a><br>
+VimTip627: <a href='http://vim.wikia.com/wiki/Compiling_LaTeX_from_Vim'>Compiling LaTeX from Vim</a><br>
+VimTip628: <a href='http://vim.wikia.com/wiki/Execute_commands_from_buffer_text_under_Windows'>Execute commands from buffer text under Windows</a><br>
+VimTip630: <a href='http://vim.wikia.com/wiki/Automatically_append_closing_characters'>Automatically append closing characters</a><br>
+VimTip631: <a href='http://vim.wikia.com/wiki/Disabling_IME_input_in_Windows'>Disabling IME input in Windows</a><br>
+VimTip632: <a href='http://vim.wikia.com/wiki/Setting_the_font_in_the_GUI'>Setting the font in the GUI</a><br>
+VimTip634: <a href='http://vim.wikia.com/wiki/View_all_colors_available_to_gvim'>View all colors available to gvim</a><br>
+VimTip635: <a href='http://vim.wikia.com/wiki/Getting_colors_to_work_on_solaris'>Getting colors to work on solaris</a><br>
+VimTip636: <a href='http://vim.wikia.com/wiki/Adding_Vim_to_MS-Windows_File_Explorer_Menu'>Adding Vim to MS-Windows File Explorer Menu</a><br>
+VimTip637: <a href='http://vim.wikia.com/wiki/Execute_accidentally_inserted_commands'>Execute accidentally inserted commands</a><br>
+VimTip638: <a href='http://vim.wikia.com/wiki/Editing_ActiveState_Perl_batch_files'>Editing ActiveState Perl batch files</a><br>
+VimTip639: <a href='http://vim.wikia.com/wiki/Highlight_debug_blocks_in_programs'>Highlight debug blocks in programs</a><br>
+VimTip640: <a href='http://vim.wikia.com/wiki/Add_Vim_to_the_Windows_Explorer_context_menu'>Add Vim to the Windows Explorer context menu</a><br>
+VimTip641: <a href='http://vim.wikia.com/wiki/Highlighting_of_method_names_in_the_definition'>Highlighting of method names in the definition</a><br>
+VimTip642: <a href='http://vim.wikia.com/wiki/Use_K_to_easily_run_a_Windows_program_for_the_current_word'>Use K to easily run a Windows program for the current word</a><br>
+VimTip643: <a href='http://vim.wikia.com/wiki/Disable_built-in_command'>Disable built-in command</a><br>
+VimTip644: <a href='http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash'>Restoring indent after typing hash</a><br>
+VimTip645: <a href='http://vim.wikia.com/wiki/Enabling_Windows_shortcuts_for_gvim'>Enabling Windows shortcuts for gvim</a><br>
+VimTip646: <a href='http://vim.wikia.com/wiki/Moving_lines_up_or_down'>Moving lines up or down</a><br>
+VimTip647: <a href='http://vim.wikia.com/wiki/Insert_a_single_character'>Insert a single character</a><br>
+VimTip648: <a href='http://vim.wikia.com/wiki/Uniq_-_Removing_duplicate_lines'>Uniq - Removing duplicate lines</a><br>
+VimTip649: <a href='http://vim.wikia.com/wiki/Expand_existing_abbreviation'>Expand existing abbreviation</a><br>
+VimTip650: <a href='http://vim.wikia.com/wiki/Abbreviation_that_prompts_whether_to_expand_it_or_not'>Abbreviation that prompts whether to expand it or not</a><br>
+VimTip651: <a href='http://vim.wikia.com/wiki/Edit_gnupg-encrypted_files'>Edit gnupg-encrypted files</a><br>
+VimTip652: <a href='http://vim.wikia.com/wiki/Save_all_open_buffers_at_once'>Save all open buffers at once</a><br>
+VimTip653: <a href='http://vim.wikia.com/wiki/Continuing_doxygen_comments'>Continuing doxygen comments</a><br>
+VimTip654: <a href='http://vim.wikia.com/wiki/Special_characters_in_the_substitute_command'>Special characters in the substitute command</a><br>
+VimTip656: <a href='http://vim.wikia.com/wiki/Recursive_mappings'>Recursive mappings</a><br>
+VimTip658: <a href='http://vim.wikia.com/wiki/Switch_to_unit_test_module_for_Python'>Switch to unit test module for Python</a><br>
+VimTip659: <a href='http://vim.wikia.com/wiki/Collect_filenames_of_current_subtree'>Collect filenames of current subtree</a><br>
+VimTip660: <a href='http://vim.wikia.com/wiki/Comment_lines_in_different_filetypes'>Comment lines in different filetypes</a><br>
+VimTip662: <a href='http://vim.wikia.com/wiki/Quote_unquoted_HTML_attributes'>Quote unquoted HTML attributes</a><br>
+VimTip663: <a href='http://vim.wikia.com/wiki/Disable_beeping'>Disable beeping</a><br>
+VimTip665: <a href='http://vim.wikia.com/wiki/Hide_toolbar_or_menus_to_see_more_text'>Hide toolbar or menus to see more text</a><br>
+VimTip667: <a href='http://vim.wikia.com/wiki/Working_with_CSV_files'>Working with CSV files</a><br>
+VimTip669: <a href='http://vim.wikia.com/wiki/Nice_window_resizing'>Nice window resizing</a><br>
+VimTip670: <a href='http://vim.wikia.com/wiki/Delete_some_lines_with_some_exceptions'>Delete some lines with some exceptions</a><br>
+VimTip671: <a href='http://vim.wikia.com/wiki/Add_a_newline_after_given_patterns'>Add a newline after given patterns</a><br>
+VimTip672: <a href='http://vim.wikia.com/wiki/Buffer_bar_to_list_buffers'>Buffer bar to list buffers</a><br>
+VimTip673: <a href='http://vim.wikia.com/wiki/Prompted_quit_in_insert-mode'>Prompted quit in insert-mode</a><br>
+VimTip675: <a href='http://vim.wikia.com/wiki/How_to_turn_off_all_colors'>How to turn off all colors</a><br>
+VimTip676: <a href='http://vim.wikia.com/wiki/Use_shortcut_key_to_start_gvim_in_Windows'>Use shortcut key to start gvim in Windows</a><br>
+VimTip677: <a href='http://vim.wikia.com/wiki/Quick_way_to_insert_opening_and_closing_braces_for_programmers'>Quick way to insert opening and closing braces for programmers</a><br>
+VimTip678: <a href='http://vim.wikia.com/wiki/Running_diff'>Running diff</a><br>
+VimTip679: <a href='http://vim.wikia.com/wiki/Searching'>Searching</a><br>
+VimTip680: <a href='http://vim.wikia.com/wiki/Verbose_startup_while_avoiding_File_not_found'>Verbose startup while avoiding File not found</a><br>
+VimTip681: <a href='http://vim.wikia.com/wiki/Enhanced_command_window'>Enhanced command window</a><br>
+VimTip682: <a href='http://vim.wikia.com/wiki/Errorformat_for_Intel_ifort'>Errorformat for Intel ifort</a><br>
+VimTip683: <a href='http://vim.wikia.com/wiki/Integrate_gvim_with_Visual_Studio'>Integrate gvim with Visual Studio</a><br>
+VimTip684: <a href='http://vim.wikia.com/wiki/Preview_current_HTML_file'>Preview current HTML file</a><br>
+VimTip685: <a href='http://vim.wikia.com/wiki/Search_without_need_to_escape_slash'>Search without need to escape slash</a><br>
+VimTip686: <a href='http://vim.wikia.com/wiki/Easier_buffer_switching'>Easier buffer switching</a><br>
+VimTip687: <a href='http://vim.wikia.com/wiki/Mac_OS_X_clipboard_sharing'>Mac OS X clipboard sharing</a><br>
+VimTip688: <a href='http://vim.wikia.com/wiki/Temporarily_replace_grep_with_a_custom_program'>Temporarily replace grep with a custom program</a><br>
+VimTip689: <a href='http://vim.wikia.com/wiki/Word_count'>Word count</a><br>
+VimTip690: <a href='http://vim.wikia.com/wiki/Reloading_a_file_using_a_different_encoding'>Reloading a file using a different encoding</a><br>
+VimTip691: <a href='http://vim.wikia.com/wiki/Use_gf_to_open_a_file_via_its_URL'>Use gf to open a file via its URL</a><br>
+VimTip692: <a href='http://vim.wikia.com/wiki/Runtime_syntax_check_for_php'>Runtime syntax check for php</a><br>
+VimTip693: <a href='http://vim.wikia.com/wiki/Switch_color_schemes'>Switch color schemes</a><br>
+VimTip694: <a href='http://vim.wikia.com/wiki/Quick_save_to_a_temporary_file_before_more_edits'>Quick save to a temporary file before more edits</a><br>
+VimTip695: <a href='http://vim.wikia.com/wiki/Naviguer_dans_l%27aide_avec_un_clavier_AZERTY'>Naviguer dans l%27aide avec un clavier AZERTY</a><br>
+VimTip696: <a href='http://vim.wikia.com/wiki/Make_mouse_drag_not_select_text_or_go_into_visual_mode'>Make mouse drag not select text or go into visual mode</a><br>
+VimTip697: <a href='http://vim.wikia.com/wiki/French_character_maps'>French character maps</a><br>
+VimTip698: <a href='http://vim.wikia.com/wiki/Mbox_archive_emails'>Mbox archive emails</a><br>
+VimTip699: <a href='http://vim.wikia.com/wiki/Enable_servername_capability_in_vim/xterm'>Enable servername capability in vim</a><br>
+VimTip700: <a href='http://vim.wikia.com/wiki/Indenting_for_Java'>Indenting for Java</a><br>
+VimTip701: <a href='http://vim.wikia.com/wiki/Simple_code_beautifier'>Simple code beautifier</a><br>
+VimTip708: <a href='http://vim.wikia.com/wiki/Converting_LANG_to_UTF-8'>Converting LANG to UTF-8</a><br>
+VimTip709: <a href='http://vim.wikia.com/wiki/Simple_creation_of_scripts'>Simple creation of scripts</a><br>
+VimTip710: <a href='http://vim.wikia.com/wiki/Type_and_run_templates_instead_of_routine_code'>Type and run templates instead of routine code</a><br>
+VimTip711: <a href='http://vim.wikia.com/wiki/Tags_generation_for_current_file'>Tags generation for current file</a><br>
+VimTip712: <a href='http://vim.wikia.com/wiki/Reverse_letters'>Reverse letters</a><br>
+VimTip713: <a href='http://vim.wikia.com/wiki/Create_one_mapping_for_both_console_and_GUI'>Create one mapping for both console and GUI</a><br>
+VimTip714: <a href='http://vim.wikia.com/wiki/Version_independent_installation_of_Vim_on_Windows'>Version independent installation of Vim on Windows</a><br>
+VimTip715: <a href='http://vim.wikia.com/wiki/Running_diff'>Running diff</a><br>
+VimTip716: <a href='http://vim.wikia.com/wiki/Embedding_vim_in_Visual_Studio'>Embedding vim in Visual Studio</a><br>
+VimTip717: <a href='http://vim.wikia.com/wiki/Execute_a_shell_command_in_the_directory_shown_in_file_explorer'>Execute a shell command in the directory shown in file explorer</a><br>
+VimTip718: <a href='http://vim.wikia.com/wiki/Show_a_useful_title_on_exit_in_an_xterm'>Show a useful title on exit in an xterm</a><br>
+VimTip719: <a href='http://vim.wikia.com/wiki/Use_Python_to_build_project_in_Visual_Studio'>Use Python to build project in Visual Studio</a><br>
+VimTip720: <a href='http://vim.wikia.com/wiki/Short_mappings_for_common_tasks'>Short mappings for common tasks</a><br>
+VimTip724: <a href='http://vim.wikia.com/wiki/Underline_using_dashes_automatically'>Underline using dashes automatically</a><br>
+VimTip725: <a href='http://vim.wikia.com/wiki/Quick_mapping_for_backing_up_the_file'>Quick mapping for backing up the file</a><br>
+VimTip726: <a href='http://vim.wikia.com/wiki/How_to_obscure_text_instantaneously'>How to obscure text instantaneously</a><br>
+VimTip727: <a href='http://vim.wikia.com/wiki/Helpfiles_and_avoiding_E21_error_with_fileencoding'>Helpfiles and avoiding E21 error with fileencoding</a><br>
+VimTip732: <a href='http://vim.wikia.com/wiki/Quick_launch_html_and_other_Windows_documents'>Quick launch html and other Windows documents</a><br>
+VimTip733: <a href='http://vim.wikia.com/wiki/Python_-_check_syntax_and_run_script'>Python - check syntax and run script</a><br>
+VimTip734: <a href='http://vim.wikia.com/wiki/Fix_the_x_command_in_virtualedit_mode'>Fix the x command in virtualedit mode</a><br>
+VimTip735: <a href='http://vim.wikia.com/wiki/Show_fileencoding_and_bomb_in_the_status_line'>Show fileencoding and bomb in the status line</a><br>
+VimTip736: <a href='http://vim.wikia.com/wiki/Non-native_fileformat_for_your_statusline'>Non-native fileformat for your statusline</a><br>
+VimTip737: <a href='http://vim.wikia.com/wiki/Fine_tuning_syntax_colors'>Fine tuning syntax colors</a><br>
+VimTip738: <a href='http://vim.wikia.com/wiki/Fix_meta-keys_that_break_out_of_Insert_mode'>Fix meta-keys that break out of Insert mode</a><br>
+VimTip739: <a href='http://vim.wikia.com/wiki/Writing_a_valid_statusline'>Writing a valid statusline</a><br>
+VimTip741: <a href='http://vim.wikia.com/wiki/Syntax_folding_of_Python_files'>Syntax folding of Python files</a><br>
+VimTip742: <a href='http://vim.wikia.com/wiki/Change_filetype_based_on_directory_path'>Change filetype based on directory path</a><br>
+VimTip743: <a href='http://vim.wikia.com/wiki/Use_Alt-Mouse_to_select_blockwise'>Use Alt-Mouse to select blockwise</a><br>
+VimTip744: <a href='http://vim.wikia.com/wiki/Get_latest_releases_for_syntax_highlighting,_runtime,_plugins_etc'>Get latest releases for syntax highlighting, runtime, plugins etc</a><br>
+VimTip745: <a href='http://vim.wikia.com/wiki/Find_VIMRUNTIME_in_a_bash_script'>Find VIMRUNTIME in a bash script</a><br>
+VimTip746: <a href='http://vim.wikia.com/wiki/Configuring_the_cursor'>Configuring the cursor</a><br>
+VimTip747: <a href='http://vim.wikia.com/wiki/Get_latest_releases_for_syntax_highlighting,_runtime,_plugins_etc'>Get latest releases for syntax highlighting, runtime, plugins etc</a><br>
+VimTip748: <a href='http://vim.wikia.com/wiki/Get_bright_background_colors_in_Linux_console'>Get bright background colors in Linux console</a><br>
+VimTip749: <a href='http://vim.wikia.com/wiki/Uuencode_and_uudecode_text_in_Vim'>Uuencode and uudecode text in Vim</a><br>
+VimTip750: <a href='http://vim.wikia.com/wiki/Underline_using_dashes_automatically'>Underline using dashes automatically</a><br>
+VimTip751: <a href='http://vim.wikia.com/wiki/Go_to_line'>Go to line</a><br>
+VimTip752: <a href='http://vim.wikia.com/wiki/Make_C-Left_C-Right_behave_as_in_Windows'>Make C-Left C-Right behave as in Windows</a><br>
+VimTip753: <a href='http://vim.wikia.com/wiki/Make_File-Open_track_directory_of_current_file'>Make File-Open track directory of current file</a><br>
+VimTip754: <a href='http://vim.wikia.com/wiki/Highlighting_source_between_matching_curly_braces'>Highlighting source between matching curly braces</a><br>
+VimTip755: <a href='http://vim.wikia.com/wiki/Using_an_expression_in_substitute_command'>Using an expression in substitute command</a><br>
+VimTip757: <a href='http://vim.wikia.com/wiki/Sample_switch_between_number/nonumber'>Sample switch between number</a><br>
+VimTip758: <a href='http://vim.wikia.com/wiki/Search_and_sort_by_selection'>Search and sort by selection</a><br>
+VimTip759: <a href='http://vim.wikia.com/wiki/Selecting_your_pasted_text'>Selecting your pasted text</a><br>
+VimTip760: <a href='http://vim.wikia.com/wiki/Change_font_size_quickly'>Change font size quickly</a><br>
+VimTip761: <a href='http://vim.wikia.com/wiki/Review_code_effectively_using_quickfix'>Review code effectively using quickfix</a><br>
+VimTip762: <a href='http://vim.wikia.com/wiki/Integrate_with_FTPeel_on_Mac_OS_X'>Integrate with FTPeel on Mac OS X</a><br>
+VimTip763: <a href='http://vim.wikia.com/wiki/Drag_words_with_Ctrl-left/right'>Drag words with Ctrl-left</a><br>
+VimTip765: <a href='http://vim.wikia.com/wiki/Completion_using_a_syntax_file'>Completion using a syntax file</a><br>
+VimTip766: <a href='http://vim.wikia.com/wiki/Yank_last_line_and_trim_to_the_cursor'>Yank last line and trim to the cursor</a><br>
+VimTip767: <a href='http://vim.wikia.com/wiki/Multiple_commands_at_once'>Multiple commands at once</a><br>
+VimTip768: <a href='http://vim.wikia.com/wiki/Add/change_file_extension_in_current_buffer'>Add</a><br>
+VimTip769: <a href='http://vim.wikia.com/wiki/Highlight_current_line'>Highlight current line</a><br>
+VimTip770: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip771: <a href='http://vim.wikia.com/wiki/Paste_from_the_clipboard_into_a_new_vim'>Paste from the clipboard into a new vim</a><br>
+VimTip772: <a href='http://vim.wikia.com/wiki/Convert_between_hex_and_decimal'>Convert between hex and decimal</a><br>
+VimTip773: <a href='http://vim.wikia.com/wiki/Make_vim_and_gvim_have_the_same_colors'>Make vim and gvim have the same colors</a><br>
+VimTip774: <a href='http://vim.wikia.com/wiki/Gtk_gvim_and_fontconfig'>Gtk gvim and fontconfig</a><br>
+VimTip775: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_XWindows'>Map caps lock to escape in XWindows</a><br>
+VimTip776: <a href='http://vim.wikia.com/wiki/Deadkeys_/_Accented_Characters_and_Mutt_integration'>Deadkeys </a><br>
+VimTip778: <a href='http://vim.wikia.com/wiki/Speed_up_Python_coding'>Speed up Python coding</a><br>
+VimTip779: <a href='http://vim.wikia.com/wiki/OEM_to_ANSI_conversion'>OEM to ANSI conversion</a><br>
+VimTip781: <a href='http://vim.wikia.com/wiki/Change_the_Windows_Explorer_hotkey_for_Diff_with_Vim'>Change the Windows Explorer hotkey for Diff with Vim</a><br>
+VimTip782: <a href='http://vim.wikia.com/wiki/Jump_to_definition_of_entity_under_cursor'>Jump to definition of entity under cursor</a><br>
+VimTip783: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip784: <a href='http://vim.wikia.com/wiki/Word_under_cursor_for_command'>Word under cursor for command</a><br>
+VimTip785: <a href='http://vim.wikia.com/wiki/Toggle_between_tabs_and_spaces'>Toggle between tabs and spaces</a><br>
+VimTip786: <a href='http://vim.wikia.com/wiki/Translate_text_between_different_character_sets'>Translate text between different character sets</a><br>
+VimTip787: <a href='http://vim.wikia.com/wiki/Invoke_a_function_with_a_count_prefix'>Invoke a function with a count prefix</a><br>
+VimTip789: <a href='http://vim.wikia.com/wiki/Automatically_redate_file_headers'>Automatically redate file headers</a><br>
+VimTip790: <a href='http://vim.wikia.com/wiki/View_and_diff_MS_Word_files'>View and diff MS Word files</a><br>
+VimTip791: <a href='http://vim.wikia.com/wiki/Search_for_non-ASCII_characters'>Search for non-ASCII characters</a><br>
+VimTip792: <a href='http://vim.wikia.com/wiki/Preloading_registers'>Preloading registers</a><br>
+VimTip793: <a href='http://vim.wikia.com/wiki/Search_for_visually_selected_text'>Search for visually selected text</a><br>
+VimTip794: <a href='http://vim.wikia.com/wiki/Scripting_-_Indirectly_Referencing_Variables'>Scripting - Indirectly Referencing Variables</a><br>
+VimTip795: <a href='http://vim.wikia.com/wiki/Simulating_arrays_with_Vim'>Simulating arrays with Vim</a><br>
+VimTip796: <a href='http://vim.wikia.com/wiki/Search_only_over_a_visual_range'>Search only over a visual range</a><br>
+VimTip797: <a href='http://vim.wikia.com/wiki/All_folds_open_when_opening_a_file'>All folds open when opening a file</a><br>
+VimTip798: <a href='http://vim.wikia.com/wiki/Search_for_current_word_in_new_window'>Search for current word in new window</a><br>
+VimTip799: <a href='http://vim.wikia.com/wiki/Searching_for_files'>Searching for files</a><br>
+VimTip800: <a href='http://vim.wikia.com/wiki/Sorting_lines_in_a_file_based_on_the_number_of_words_in_each_line'>Sorting lines in a file based on the number of words in each line</a><br>
+VimTip801: <a href='http://vim.wikia.com/wiki/Fold_quickfix_list_on_directory_or_file_names'>Fold quickfix list on directory or file names</a><br>
+VimTip802: <a href='http://vim.wikia.com/wiki/Search_for_lines_not_containing_pattern_and_other_helpful_searches'>Search for lines not containing pattern and other helpful searches</a><br>
+VimTip803: <a href='http://vim.wikia.com/wiki/Saving_a_file'>Saving a file</a><br>
+VimTip804: <a href='http://vim.wikia.com/wiki/Single_tags_file_for_a_source_tree'>Single tags file for a source tree</a><br>
+VimTip805: <a href='http://vim.wikia.com/wiki/Use_gvim_as_an_external_editor_for_Windows_apps'>Use gvim as an external editor for Windows apps</a><br>
+VimTip806: <a href='http://vim.wikia.com/wiki/Always_keep_quickfix_window_at_specified_height'>Always keep quickfix window at specified height</a><br>
+VimTip807: <a href='http://vim.wikia.com/wiki/Backing_up_and_commenting_vimrc'>Backing up and commenting vimrc</a><br>
+VimTip808: <a href='http://vim.wikia.com/wiki/Replace_a_visual-block_of_text_with_another_such_block'>Replace a visual-block of text with another such block</a><br>
+VimTip809: <a href='http://vim.wikia.com/wiki/Use_gvim_as_an_external_editor_for_Linux_apps'>Use gvim as an external editor for Linux apps</a><br>
+VimTip810: <a href='http://vim.wikia.com/wiki/Highlight_long_lines'>Highlight long lines</a><br>
+VimTip812: <a href='http://vim.wikia.com/wiki/Keep_the_modified_flag_after_writing_to_a_file'>Keep the modified flag after writing to a file</a><br>
+VimTip813: <a href='http://vim.wikia.com/wiki/Reverse_order_of_lines'>Reverse order of lines</a><br>
+VimTip814: <a href='http://vim.wikia.com/wiki/Use_cygwin_shell'>Use cygwin shell</a><br>
+VimTip816: <a href='http://vim.wikia.com/wiki/JAVH_-_Just_another_Vim_Hacker'>JAVH - Just another Vim Hacker</a><br>
+VimTip817: <a href='http://vim.wikia.com/wiki/Non-blinking_block_cursor_in_a_Linux_console'>Non-blinking block cursor in a Linux console</a><br>
+VimTip818: <a href='http://vim.wikia.com/wiki/Integrate_Vim_diff_with_TortoiseCVS'>Integrate Vim diff with TortoiseCVS</a><br>
+VimTip819: <a href='http://vim.wikia.com/wiki/Minimize_and_restore_gvim_under_Windows_using_shortcut_keys'>Minimize and restore gvim under Windows using shortcut keys</a><br>
+VimTip822: <a href='http://vim.wikia.com/wiki/Add_Java_import_statements_automatically'>Add Java import statements automatically</a><br>
+VimTip823: <a href='http://vim.wikia.com/wiki/Add_your_note_files_to_Vim_help'>Add your note files to Vim help</a><br>
+VimTip824: <a href='http://vim.wikia.com/wiki/Use_a_smaller_font_for_vimdiff'>Use a smaller font for vimdiff</a><br>
+VimTip825: <a href='http://vim.wikia.com/wiki/Repeat_search_using_grep'>Repeat search using grep</a><br>
+VimTip826: <a href='http://vim.wikia.com/wiki/PHP_manual_in_Vim_help_format'>PHP manual in Vim help format</a><br>
+VimTip828: <a href='http://vim.wikia.com/wiki/Add_trailing_blanks_to_lines_for_easy_visual_blocks'>Add trailing blanks to lines for easy visual blocks</a><br>
+VimTip829: <a href='http://vim.wikia.com/wiki/Copy_and_paste_between_Vim_instances'>Copy and paste between Vim instances</a><br>
+VimTip830: <a href='http://vim.wikia.com/wiki/Using_netbeans_4_and_vim_for_java'>Using netbeans 4 and vim for java</a><br>
+VimTip831: <a href='http://vim.wikia.com/wiki/Search_patterns'>Search patterns</a><br>
+VimTip832: <a href='http://vim.wikia.com/wiki/Remembering_previous_deletes/yanks'>Remembering previous deletes</a><br>
+VimTip833: <a href='http://vim.wikia.com/wiki/Internet_search_for_the_current_word'>Internet search for the current word</a><br>
+VimTip834: <a href='http://vim.wikia.com/wiki/Word-wise_cut,_copy_and_paste'>Word-wise cut, copy and paste</a><br>
+VimTip835: <a href='http://vim.wikia.com/wiki/Have_Intellisense_search_current_directory'>Have Intellisense search current directory</a><br>
+VimTip837: <a href='http://vim.wikia.com/wiki/Load_files_from_list_of_filenames_in_a_text_file'>Load files from list of filenames in a text file</a><br>
+VimTip840: <a href='http://vim.wikia.com/wiki/Show_tags_in_a_separate_preview_window'>Show tags in a separate preview window</a><br>
+VimTip842: <a href='http://vim.wikia.com/wiki/C/C%2B%2B_function_abbreviations'>C</a><br>
+VimTip843: <a href='http://vim.wikia.com/wiki/Moving_between_buffers_using_mouse'>Moving between buffers using mouse</a><br>
+VimTip844: <a href='http://vim.wikia.com/wiki/Simple_Macros_to_quote_and_unquote_a_word'>Simple Macros to quote and unquote a word</a><br>
+VimTip846: <a href='http://vim.wikia.com/wiki/Ampersand_in_freebsd_shell_commands_to_view_LaTeX_files'>Ampersand in freebsd shell commands to view LaTeX files</a><br>
+VimTip847: <a href='http://vim.wikia.com/wiki/Open_same_file_read-only_in_second_Vim'>Open same file read-only in second Vim</a><br>
+VimTip848: <a href='http://vim.wikia.com/wiki/Installing_several_releases_in_parallel,_even_with_matchit'>Installing several releases in parallel, even with matchit</a><br>
+VimTip850: <a href='http://vim.wikia.com/wiki/Automatic_word_wrapping'>Automatic word wrapping</a><br>
+VimTip851: <a href='http://vim.wikia.com/wiki/Integrate_with_Mozilla_Thunderbird'>Integrate with Mozilla Thunderbird</a><br>
+VimTip852: <a href='http://vim.wikia.com/wiki/Make_support_for_NEC_V850_CA850_compilers'>Make support for NEC V850 CA850 compilers</a><br>
+VimTip853: <a href='http://vim.wikia.com/wiki/Write_a_date-stamped_backup_of_the_current_file'>Write a date-stamped backup of the current file</a><br>
+VimTip857: <a href='http://vim.wikia.com/wiki/Different_syntax_highlighting_within_regions_of_a_file'>Different syntax highlighting within regions of a file</a><br>
+VimTip858: <a href='http://vim.wikia.com/wiki/Setting_tags_when_working_with_multiple_source_branches'>Setting tags when working with multiple source branches</a><br>
+VimTip859: <a href='http://vim.wikia.com/wiki/Show_how_many_lines_between_matching_pairs'>Show how many lines between matching pairs</a><br>
+VimTip860: <a href='http://vim.wikia.com/wiki/Count_number_of_matches_of_a_pattern'>Count number of matches of a pattern</a><br>
+VimTip861: <a href='http://vim.wikia.com/wiki/Right_click_in_Windows_Explorer_to_open_gvim_in_explorer_mode'>Right click in Windows Explorer to open gvim in explorer mode</a><br>
+VimTip862: <a href='http://vim.wikia.com/wiki/How_to_toggle_between_all_vertical_and_all_horizontal_window_layout'>How to toggle between all vertical and all horizontal window layout</a><br>
+VimTip863: <a href='http://vim.wikia.com/wiki/Save_settings_between_Vim_sessions'>Save settings between Vim sessions</a><br>
+VimTip864: <a href='http://vim.wikia.com/wiki/Make_arrow_keys_work_in_visual_mode_under_Windows'>Make arrow keys work in visual mode under Windows</a><br>
+VimTip867: <a href='http://vim.wikia.com/wiki/Access_Python_Help'>Access Python Help</a><br>
+VimTip868: <a href='http://vim.wikia.com/wiki/Go_to_end-of-line_when_using_langmap'>Go to end-of-line when using langmap</a><br>
+VimTip869: <a href='http://vim.wikia.com/wiki/Opening_new_buffer_below_the_current'>Opening new buffer below the current</a><br>
+VimTip872: <a href='http://vim.wikia.com/wiki/Finding_phone_numbers'>Finding phone numbers</a><br>
+VimTip873: <a href='http://vim.wikia.com/wiki/Cycle_through_buffers_including_hidden_buffers'>Cycle through buffers including hidden buffers</a><br>
+VimTip874: <a href='http://vim.wikia.com/wiki/Fold_C-style_comments'>Fold C-style comments</a><br>
+VimTip875: <a href='http://vim.wikia.com/wiki/Using_bar_in_external_grep'>Using bar in external grep</a><br>
+VimTip876: <a href='http://vim.wikia.com/wiki/Selecting_blocks_of_paragraphs'>Selecting blocks of paragraphs</a><br>
+VimTip878: <a href='http://vim.wikia.com/wiki/Remove_unwanted_spaces'>Remove unwanted spaces</a><br>
+VimTip879: <a href='http://vim.wikia.com/wiki/Change_vimrc_with_auto_reload'>Change vimrc with auto reload</a><br>
+VimTip880: <a href='http://vim.wikia.com/wiki/Shebang_line_automatically_generated'>Shebang line automatically generated</a><br>
+VimTip882: <a href='http://vim.wikia.com/wiki/Learn_to_use_help'>Learn to use help</a><br>
+VimTip883: <a href='http://vim.wikia.com/wiki/Automatically_maximizing_gvim_in_KDE'>Automatically maximizing gvim in KDE</a><br>
+VimTip884: <a href='http://vim.wikia.com/wiki/Switch_color_schemes'>Switch color schemes</a><br>
+VimTip885: <a href='http://vim.wikia.com/wiki/Switching_between_different_statuslines'>Switching between different statuslines</a><br>
+VimTip886: <a href='http://vim.wikia.com/wiki/Add_Vim_to_Windows_Send_To_menu'>Add Vim to Windows Send To menu</a><br>
+VimTip888: <a href='http://vim.wikia.com/wiki/Load_multiple_files_with_a_single_command'>Load multiple files with a single command</a><br>
+VimTip889: <a href='http://vim.wikia.com/wiki/Set_gvim_font_in_MacOSX'>Set gvim font in MacOSX</a><br>
+VimTip891: <a href='http://vim.wikia.com/wiki/Copy_parts_of_filename_to_clipboard'>Copy parts of filename to clipboard</a><br>
+VimTip892: <a href='http://vim.wikia.com/wiki/Keep_incremental_backups_of_edited_files'>Keep incremental backups of edited files</a><br>
+VimTip893: <a href='http://vim.wikia.com/wiki/Align_numbers_at_decimal_point'>Align numbers at decimal point</a><br>
+VimTip894: <a href='http://vim.wikia.com/wiki/Regex-based_text_alignment'>Regex-based text alignment</a><br>
+VimTip895: <a href='http://vim.wikia.com/wiki/Maps,_Commands,_and_Functions_-_some_examples_of_their_interplay'>Maps, Commands, and Functions - some examples of their interplay</a><br>
+VimTip896: <a href='http://vim.wikia.com/wiki/Lookup_the_city_and_state_of_a_given_US_Zip_code_using_TCL'>Lookup the city and state of a given US Zip code using TCL</a><br>
+VimTip897: <a href='http://vim.wikia.com/wiki/Some_tips_on_saving_the_document'>Some tips on saving the document</a><br>
+VimTip898: <a href='http://vim.wikia.com/wiki/Disable_beeping'>Disable beeping</a><br>
+VimTip899: <a href='http://vim.wikia.com/wiki/Capitalize_words_and_regions_easily'>Capitalize words and regions easily</a><br>
+VimTip900: <a href='http://vim.wikia.com/wiki/Insert_comment_boxes_in_your_code'>Insert comment boxes in your code</a><br>
+VimTip901: <a href='http://vim.wikia.com/wiki/Text_objects_for_strings'>Text objects for strings</a><br>
+VimTip902: <a href='http://vim.wikia.com/wiki/Easily_change_the_path_option'>Easily change the path option</a><br>
+VimTip903: <a href='http://vim.wikia.com/wiki/Capitalize_words_in_insert_and_normal_modes_without_moving_the_cursor'>Capitalize words in insert and normal modes without moving the cursor</a><br>
+VimTip904: <a href='http://vim.wikia.com/wiki/Convenience_wrapper_for_setline'>Convenience wrapper for setline</a><br>
+VimTip905: <a href='http://vim.wikia.com/wiki/Remember_my_buffers'>Remember my buffers</a><br>
+VimTip906: <a href='http://vim.wikia.com/wiki/Toggle_auto-indenting_for_code_paste'>Toggle auto-indenting for code paste</a><br>
+VimTip907: <a href='http://vim.wikia.com/wiki/Keep_passwords_in_encrypted_file'>Keep passwords in encrypted file</a><br>
+VimTip908: <a href='http://vim.wikia.com/wiki/Move_cursor_up/down_virtually_in_insert_mode'>Move cursor up</a><br>
+VimTip909: <a href='http://vim.wikia.com/wiki/Easy_indenting_in_insert_and_normal_mode_with_no_cursor_displacement'>Easy indenting in insert and normal mode with no cursor displacement</a><br>
+VimTip910: <a href='http://vim.wikia.com/wiki/Upload_web_files_from_Vim_using_Python'>Upload web files from Vim using Python</a><br>
+VimTip911: <a href='http://vim.wikia.com/wiki/How_to_make_fileencoding_work_in_the_modeline'>How to make fileencoding work in the modeline</a><br>
+VimTip912: <a href='http://vim.wikia.com/wiki/Smart_abbreviation'>Smart abbreviation</a><br>
+VimTip913: <a href='http://vim.wikia.com/wiki/Delete_files_with_a_Vim_command'>Delete files with a Vim command</a><br>
+VimTip914: <a href='http://vim.wikia.com/wiki/The_perfect_programming_font'>The perfect programming font</a><br>
+VimTip915: <a href='http://vim.wikia.com/wiki/Using_g_instead_of_substitute'>Using g instead of substitute</a><br>
+VimTip916: <a href='http://vim.wikia.com/wiki/View_only_what_you_are_editing'>View only what you are editing</a><br>
+VimTip917: <a href='http://vim.wikia.com/wiki/Easy_word_and_page_selection_and_deletion_in_gvim'>Easy word and page selection and deletion in gvim</a><br>
+VimTip918: <a href='http://vim.wikia.com/wiki/Making_a_list_of_numbers'>Making a list of numbers</a><br>
+VimTip919: <a href='http://vim.wikia.com/wiki/Moving_by_screen_lines_instead_of_file_lines'>Moving by screen lines instead of file lines</a><br>
+VimTip920: <a href='http://vim.wikia.com/wiki/Quick_generic_option_toggling'>Quick generic option toggling</a><br>
+VimTip922: <a href='http://vim.wikia.com/wiki/Launch_lynx_to_get_info_for_the_current_word'>Launch lynx to get info for the current word</a><br>
+VimTip923: <a href='http://vim.wikia.com/wiki/Sort_lines_by_a_specified_word_number'>Sort lines by a specified word number</a><br>
+VimTip925: <a href='http://vim.wikia.com/wiki/Not_So_Quick_generic_option_toggling'>Not So Quick generic option toggling</a><br>
+VimTip926: <a href='http://vim.wikia.com/wiki/QT_Help_from_Vim'>QT Help from Vim</a><br>
+VimTip928: <a href='http://vim.wikia.com/wiki/Using_command-line_history'>Using command-line history</a><br>
+VimTip929: <a href='http://vim.wikia.com/wiki/Finding_your_way_around_in_an_installshield_project_XML_file'>Finding your way around in an installshield project XML file</a><br>
+VimTip930: <a href='http://vim.wikia.com/wiki/Pasting_code_with_syntax_coloring_in_emails'>Pasting code with syntax coloring in emails</a><br>
+VimTip931: <a href='http://vim.wikia.com/wiki/STL_help_using_tags_-_C%2B%2B_Standard_Template_Library'>STL help using tags - C%2B%2B Standard Template Library</a><br>
+VimTip933: <a href='http://vim.wikia.com/wiki/Search_the_web_for_text_selected_in_Vim'>Search the web for text selected in Vim</a><br>
+VimTip934: <a href='http://vim.wikia.com/wiki/Vim-sessions_under_Windows'>Vim-sessions under Windows</a><br>
+VimTip936: <a href='http://vim.wikia.com/wiki/Quick_insert_character_at_end-of-line'>Quick insert character at end-of-line</a><br>
+VimTip937: <a href='http://vim.wikia.com/wiki/Quickly_look_up_Vim_help'>Quickly look up Vim help</a><br>
+VimTip939: <a href='http://vim.wikia.com/wiki/Single_config_file_for_Vim_on_Windows_with_Cygwin'>Single config file for Vim on Windows with Cygwin</a><br>
+VimTip940: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip941: <a href='http://vim.wikia.com/wiki/Adding_MPI_and_PVM_syntax_highlighting'>Adding MPI and PVM syntax highlighting</a><br>
+VimTip944: <a href='http://vim.wikia.com/wiki/Send_buffer_to_interpreter_in_a_new_xterm'>Send buffer to interpreter in a new xterm</a><br>
+VimTip945: <a href='http://vim.wikia.com/wiki/Run_Vim_command_on_current_C/C%2B%2B/Java_function'>Run Vim command on current C</a><br>
+VimTip946: <a href='http://vim.wikia.com/wiki/VisVim_for_Visual_Studio'>VisVim for Visual Studio</a><br>
+VimTip948: <a href='http://vim.wikia.com/wiki/Correct_format-flowed_email_function'>Correct format-flowed email function</a><br>
+VimTip949: <a href='http://vim.wikia.com/wiki/Integrate_Pylint_and_Pychecker_support'>Integrate Pylint and Pychecker support</a><br>
+VimTip950: <a href='http://vim.wikia.com/wiki/Search_multiple_buffers_for_next_match'>Search multiple buffers for next match</a><br>
+VimTip952: <a href='http://vim.wikia.com/wiki/Refresh_screen_while_typing_a_command'>Refresh screen while typing a command</a><br>
+VimTip953: <a href='http://vim.wikia.com/wiki/Short_mappings_for_common_tasks'>Short mappings for common tasks</a><br>
+VimTip954: <a href='http://vim.wikia.com/wiki/Restore_state_of_edited_files_when_reopened'>Restore state of edited files when reopened</a><br>
+VimTip955: <a href='http://vim.wikia.com/wiki/Easily_switch_between_two_styles_of_color_scheme'>Easily switch between two styles of color scheme</a><br>
+VimTip957: <a href='http://vim.wikia.com/wiki/Prevent_a_second_instance_of_Vim_from_starting'>Prevent a second instance of Vim from starting</a><br>
+VimTip958: <a href='http://vim.wikia.com/wiki/Execute_sybase-sql_queries_and_see_the_result_in_a_split_window'>Execute sybase-sql queries and see the result in a split window</a><br>
+VimTip960: <a href='http://vim.wikia.com/wiki/Copy_an_Entire_Buffer_to_the_Clipboard'>Copy an Entire Buffer to the Clipboard</a><br>
+VimTip961: <a href='http://vim.wikia.com/wiki/Search_through_files'>Search through files</a><br>
+VimTip962: <a href='http://vim.wikia.com/wiki/Incremental_backup_in_central_backup_directory'>Incremental backup in central backup directory</a><br>
+VimTip964: <a href='http://vim.wikia.com/wiki/GNU/Linux_clipboard_copy/paste_with_xclip'>GNU</a><br>
+VimTip965: <a href='http://vim.wikia.com/wiki/GNU_Screen_integration'>GNU Screen integration</a><br>
+VimTip966: <a href='http://vim.wikia.com/wiki/Multi-line_abbreviations'>Multi-line abbreviations</a><br>
+VimTip967: <a href='http://vim.wikia.com/wiki/Fast_access_to_the_first_nine_buffers'>Fast access to the first nine buffers</a><br>
+VimTip968: <a href='http://vim.wikia.com/wiki/Custom_keyword_completion'>Custom keyword completion</a><br>
+VimTip969: <a href='http://vim.wikia.com/wiki/Highlight_simple_Python_syntax_errors'>Highlight simple Python syntax errors</a><br>
+VimTip970: <a href='http://vim.wikia.com/wiki/Vi_key_bindings_in_gtk'>Vi key bindings in gtk</a><br>
+VimTip971: <a href='http://vim.wikia.com/wiki/Making_a_list_of_numbers'>Making a list of numbers</a><br>
+VimTip972: <a href='http://vim.wikia.com/wiki/Run_native-Windows_Vim_from_cygwin_without_a_wrapper'>Run native-Windows Vim from cygwin without a wrapper</a><br>
+VimTip973: <a href='http://vim.wikia.com/wiki/Use_the_same_runtime_files_for_native-Windows_Vim_and_cygwin_Vim'>Use the same runtime files for native-Windows Vim and cygwin Vim</a><br>
+VimTip974: <a href='http://vim.wikia.com/wiki/Integrate_gvim_with_RedHat_Source-Navigator'>Integrate gvim with RedHat Source-Navigator</a><br>
+VimTip975: <a href='http://vim.wikia.com/wiki/Su-write'>Su-write</a><br>
+VimTip976: <a href='http://vim.wikia.com/wiki/List_buffers_sorted_by_name'>List buffers sorted by name</a><br>
+VimTip977: <a href='http://vim.wikia.com/wiki/Fix_indentation'>Fix indentation</a><br>
+VimTip978: <a href='http://vim.wikia.com/wiki/Cobol_editing_with_Vim'>Cobol editing with Vim</a><br>
+VimTip979: <a href='http://vim.wikia.com/wiki/Short_mappings_for_common_tasks'>Short mappings for common tasks</a><br>
+VimTip981: <a href='http://vim.wikia.com/wiki/Commenting_out_a_range_of_lines'>Commenting out a range of lines</a><br>
+VimTip982: <a href='http://vim.wikia.com/wiki/Insert_newline_without_entering_insert_mode'>Insert newline without entering insert mode</a><br>
+VimTip983: <a href='http://vim.wikia.com/wiki/Numbering_lines_and_interpolating_sequences'>Numbering lines and interpolating sequences</a><br>
+VimTip984: <a href='http://vim.wikia.com/wiki/Accessing_the_system_clipboard'>Accessing the system clipboard</a><br>
+VimTip985: <a href='http://vim.wikia.com/wiki/Open_file_under_cursor'>Open file under cursor</a><br>
+VimTip986: <a href='http://vim.wikia.com/wiki/Execute_external_programs_asynchronously_under_Windows'>Execute external programs asynchronously under Windows</a><br>
+VimTip987: <a href='http://vim.wikia.com/wiki/Easy_floating_point_arithmetic'>Easy floating point arithmetic</a><br>
+VimTip988: <a href='http://vim.wikia.com/wiki/Surround_selection_with_text'>Surround selection with text</a><br>
+VimTip989: <a href='http://vim.wikia.com/wiki/Word_wrap_without_line_breaks'>Word wrap without line breaks</a><br>
+VimTip990: <a href='http://vim.wikia.com/wiki/Repeat_last_colon_command'>Repeat last colon command</a><br>
+VimTip991: <a href='http://vim.wikia.com/wiki/Make_views_automatic'>Make views automatic</a><br>
+VimTip992: <a href='http://vim.wikia.com/wiki/Using_abbreviations'>Using abbreviations</a><br>
+VimTip994: <a href='http://vim.wikia.com/wiki/Manipulate_quoted_strings'>Manipulate quoted strings</a><br>
+VimTip995: <a href='http://vim.wikia.com/wiki/Resize_window_when_showing/hiding_line_numbers'>Resize window when showing</a><br>
+VimTip996: <a href='http://vim.wikia.com/wiki/Fast_jump_to_line_that_matches_a_regular_expression'>Fast jump to line that matches a regular expression</a><br>
+VimTip997: <a href='http://vim.wikia.com/wiki/Saving_file_made_easy'>Saving file made easy</a><br>
+VimTip998: <a href='http://vim.wikia.com/wiki/Put_boxes_around_comments_in_code'>Put boxes around comments in code</a><br>
+VimTip999: <a href='http://vim.wikia.com/wiki/Maximize_current_window'>Maximize current window</a><br>
+VimTip1001: <a href='http://vim.wikia.com/wiki/Save_buffer_without_changing_Last_Modified_attribute'>Save buffer without changing Last Modified attribute</a><br>
+VimTip1002: <a href='http://vim.wikia.com/wiki/Reverse_order_of_lines'>Reverse order of lines</a><br>
+VimTip1003: <a href='http://vim.wikia.com/wiki/Windows_file_associations'>Windows file associations</a><br>
+VimTip1004: <a href='http://vim.wikia.com/wiki/Optionally_open_matching_or_selected_tag_in_full_height_vertical_window'>Optionally open matching or selected tag in full height vertical window</a><br>
+VimTip1005: <a href='http://vim.wikia.com/wiki/HTML_entities'>HTML entities</a><br>
+VimTip1007: <a href='http://vim.wikia.com/wiki/Disable_F1_built-in_help_key'>Disable F1 built-in help key</a><br>
+VimTip1008: <a href='http://vim.wikia.com/wiki/Toggle_to_open_or_close_the_quickfix_window'>Toggle to open or close the quickfix window</a><br>
+VimTip1009: <a href='http://vim.wikia.com/wiki/Quickly_change_word_or_line'>Quickly change word or line</a><br>
+VimTip1010: <a href='http://vim.wikia.com/wiki/Change_C%2B%2B_comments_to_C_comments'>Change C%2B%2B comments to C comments</a><br>
+VimTip1011: <a href='http://vim.wikia.com/wiki/Replace_a_word_with_yanked_text'>Replace a word with yanked text</a><br>
+VimTip1012: <a href='http://vim.wikia.com/wiki/Quoted_Printable_to_Plain'>Quoted Printable to Plain</a><br>
+VimTip1014: <a href='http://vim.wikia.com/wiki/Visual_selection_of_indent_block'>Visual selection of indent block</a><br>
+VimTip1015: <a href='http://vim.wikia.com/wiki/Preview_current_HTML_file'>Preview current HTML file</a><br>
+VimTip1016: <a href='http://vim.wikia.com/wiki/Moving_through_camel_case_words'>Moving through camel case words</a><br>
+VimTip1017: <a href='http://vim.wikia.com/wiki/Highlight_text_inside_matching_parentheses'>Highlight text inside matching parentheses</a><br>
+VimTip1018: <a href='http://vim.wikia.com/wiki/Look_up_tags_using_regular_expressions'>Look up tags using regular expressions</a><br>
+VimTip1019: <a href='http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash'>Restoring indent after typing hash</a><br>
+VimTip1020: <a href='http://vim.wikia.com/wiki/Auto_end-quote_html/xml_attribute_values_as_you_type_in_insert_mode'>Auto end-quote html</a><br>
+VimTip1021: <a href='http://vim.wikia.com/wiki/Use_glimpse_from_within_Vim'>Use glimpse from within Vim</a><br>
+VimTip1022: <a href='http://vim.wikia.com/wiki/Folding_with_Regular_Expression'>Folding with Regular Expression</a><br>
+VimTip1023: <a href='http://vim.wikia.com/wiki/Go_to_alternate_file_or_next_file_if_no_alternate'>Go to alternate file or next file if no alternate</a><br>
+VimTip1025: <a href='http://vim.wikia.com/wiki/PHP_editing'>PHP editing</a><br>
+VimTip1026: <a href='http://vim.wikia.com/wiki/Resize_xterm_when_running_vimdiff'>Resize xterm when running vimdiff</a><br>
+VimTip1028: <a href='http://vim.wikia.com/wiki/Read_tag_files_from_all_directories_in_your_path'>Read tag files from all directories in your path</a><br>
+VimTip1029: <a href='http://vim.wikia.com/wiki/Use_the_last-inserted-text_register'>Use the last-inserted-text register</a><br>
+VimTip1030: <a href='http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file'>Diff current buffer and the original file</a><br>
+VimTip1031: <a href='http://vim.wikia.com/wiki/Vim_inside_Java'>Vim inside Java</a><br>
+VimTip1032: <a href='http://vim.wikia.com/wiki/Decode_MIME_text_using_Perl_in_Vim'>Decode MIME text using Perl in Vim</a><br>
+VimTip1033: <a href='http://vim.wikia.com/wiki/Toggling_yes-no'>Toggling yes-no</a><br>
+VimTip1035: <a href='http://vim.wikia.com/wiki/View_NFO-files_correctly'>View NFO-files correctly</a><br>
+VimTip1036: <a href='http://vim.wikia.com/wiki/Change_the_color_scheme'>Change the color scheme</a><br>
+VimTip1037: <a href='http://vim.wikia.com/wiki/Vim-sessions_under_Windows'>Vim-sessions under Windows</a><br>
+VimTip1039: <a href='http://vim.wikia.com/wiki/How_to_stop_auto_indenting'>How to stop auto indenting</a><br>
+VimTip1041: <a href='http://vim.wikia.com/wiki/Snippets_for_JavaScript,_HTML_and_Python'>Snippets for JavaScript, HTML and Python</a><br>
+VimTip1042: <a href='http://vim.wikia.com/wiki/Use_maven_with_quickfix'>Use maven with quickfix</a><br>
+VimTip1043: <a href='http://vim.wikia.com/wiki/Joining_two_lines_of_text_based_on_pattern'>Joining two lines of text based on pattern</a><br>
+VimTip1045: <a href='http://vim.wikia.com/wiki/Great_wildmode/wildmenu_and_console_mouse'>Great wildmode</a><br>
+VimTip1046: <a href='http://vim.wikia.com/wiki/Whitespace_hungry_backspace/delete'>Whitespace hungry backspace</a><br>
+VimTip1048: <a href='http://vim.wikia.com/wiki/Add_classname_based_on_filename_while_in_input_mode'>Add classname based on filename while in input mode</a><br>
+VimTip1050: <a href='http://vim.wikia.com/wiki/Move_comment_line_to_end_of_next_line'>Move comment line to end of next line</a><br>
+VimTip1051: <a href='http://vim.wikia.com/wiki/Use_the_buffer_menu_in_gvim'>Use the buffer menu in gvim</a><br>
+VimTip1052: <a href='http://vim.wikia.com/wiki/Autoselect_the_right_compiler_using_the_filetype'>Autoselect the right compiler using the filetype</a><br>
+VimTip1053: <a href='http://vim.wikia.com/wiki/Lookup_word_in_dict'>Lookup word in dict</a><br>
+VimTip1054: <a href='http://vim.wikia.com/wiki/Modified_undo_behavior'>Modified undo behavior</a><br>
+VimTip1055: <a href='http://vim.wikia.com/wiki/Faster_directory_browsing_from_command_line'>Faster directory browsing from command line</a><br>
+VimTip1058: <a href='http://vim.wikia.com/wiki/Selecting_changes_in_diff_mode'>Selecting changes in diff mode</a><br>
+VimTip1059: <a href='http://vim.wikia.com/wiki/Save_each_line_in_separate_numbered_files'>Save each line in separate numbered files</a><br>
+VimTip1061: <a href='http://vim.wikia.com/wiki/SmartHome_and_SmartEnd_over_wrapped_lines'>SmartHome and SmartEnd over wrapped lines</a><br>
+VimTip1063: <a href='http://vim.wikia.com/wiki/Redirect_g_search_output'>Redirect g search output</a><br>
+VimTip1064: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip1065: <a href='http://vim.wikia.com/wiki/Mighty_Mouse'>Mighty Mouse</a><br>
+VimTip1066: <a href='http://vim.wikia.com/wiki/Quickly_adding_and_deleting_empty_lines'>Quickly adding and deleting empty lines</a><br>
+VimTip1068: <a href='http://vim.wikia.com/wiki/Adding_Vim_to_MS-Windows_File_Explorer_Menu'>Adding Vim to MS-Windows File Explorer Menu</a><br>
+VimTip1070: <a href='http://vim.wikia.com/wiki/Inline_integer_arithmetic'>Inline integer arithmetic</a><br>
+VimTip1071: <a href='http://vim.wikia.com/wiki/Simple_placeholders'>Simple placeholders</a><br>
+VimTip1072: <a href='http://vim.wikia.com/wiki/Shadow_your_comments_to_see_the_code'>Shadow your comments to see the code</a><br>
+VimTip1073: <a href='http://vim.wikia.com/wiki/Match_valid_IP_address'>Match valid IP address</a><br>
+VimTip1074: <a href='http://vim.wikia.com/wiki/Detect_encoding_from_the_charset_specified_in_HTML_files'>Detect encoding from the charset specified in HTML files</a><br>
+VimTip1076: <a href='http://vim.wikia.com/wiki/Convert_between_hex_and_decimal'>Convert between hex and decimal</a><br>
+VimTip1077: <a href='http://vim.wikia.com/wiki/Move_function_parameters_with_macro'>Move function parameters with macro</a><br>
+VimTip1083: <a href='http://vim.wikia.com/wiki/Map_caps_lock_to_escape_in_Windows'>Map caps lock to escape in Windows</a><br>
+VimTip1084: <a href='http://vim.wikia.com/wiki/Setting_Clearcase_View_as_the_title_of_the_gvim_window'>Setting Clearcase View as the title of the gvim window</a><br>
+VimTip1087: <a href='http://vim.wikia.com/wiki/Quick_reference_of_current_function'>Quick reference of current function</a><br>
+VimTip1088: <a href='http://vim.wikia.com/wiki/Find_and_edit_any_file_in_a_directory_using_tag-like_pattern_matching'>Find and edit any file in a directory using tag-like pattern matching</a><br>
+VimTip1090: <a href='http://vim.wikia.com/wiki/Get_inline_help_for_PHP_functions'>Get inline help for PHP functions</a><br>
+VimTip1091: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip1092: <a href='http://vim.wikia.com/wiki/Keep_SQL-PLUS_command_history_under_Windows'>Keep SQL-PLUS command history under Windows</a><br>
+VimTip1093: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip1103: <a href='http://vim.wikia.com/wiki/Fix_scrolling_when_using_Trackpoint'>Fix scrolling when using Trackpoint</a><br>
+VimTip1107: <a href='http://vim.wikia.com/wiki/J2ME_development'>J2ME development</a><br>
+VimTip1108: <a href='http://vim.wikia.com/wiki/Replace_selected_shell_command_with_full_path_when_editing_scripts'>Replace selected shell command with full path when editing scripts</a><br>
+VimTip1109: <a href='http://vim.wikia.com/wiki/Maintain_cursor_and_screen_position'>Maintain cursor and screen position</a><br>
+VimTip1110: <a href='http://vim.wikia.com/wiki/Toggle_gvim_window_size'>Toggle gvim window size</a><br>
+VimTip1111: <a href='http://vim.wikia.com/wiki/Map_semicolon_to_colon'>Map semicolon to colon</a><br>
+VimTip1112: <a href='http://vim.wikia.com/wiki/Listing_buffers'>Listing buffers</a><br>
+VimTip1114: <a href='http://vim.wikia.com/wiki/Step_increment_and_replace'>Step increment and replace</a><br>
+VimTip1117: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip1118: <a href='http://vim.wikia.com/wiki/Repeating_an_ex_command_on_multiple_blocks'>Repeating an ex command on multiple blocks</a><br>
+VimTip1119: <a href='http://vim.wikia.com/wiki/Use_Vim_like_an_IDE'>Use Vim like an IDE</a><br>
+VimTip1120: <a href='http://vim.wikia.com/wiki/Remove_annoyance_with_syntax_highlighting_when_starting_a_string'>Remove annoyance with syntax highlighting when starting a string</a><br>
+VimTip1124: <a href='http://vim.wikia.com/wiki/How_to_stop_auto_indenting'>How to stop auto indenting</a><br>
+VimTip1126: <a href='http://vim.wikia.com/wiki/Automatically_set_screen_title'>Automatically set screen title</a><br>
+VimTip1127: <a href='http://vim.wikia.com/wiki/Fast_one_session_mapping'>Fast one session mapping</a><br>
+VimTip1128: <a href='http://vim.wikia.com/wiki/Detect_non-Unicode_Xterms'>Detect non-Unicode Xterms</a><br>
+VimTip1129: <a href='http://vim.wikia.com/wiki/Get_Alt_key_to_work_in_terminal'>Get Alt key to work in terminal</a><br>
+VimTip1130: <a href='http://vim.wikia.com/wiki/Format_a_code_block'>Format a code block</a><br>
+VimTip1131: <a href='http://vim.wikia.com/wiki/Format_only_long_lines'>Format only long lines</a><br>
+VimTip1132: <a href='http://vim.wikia.com/wiki/Easy_block_selection_with_mouse'>Easy block selection with mouse</a><br>
+VimTip1133: <a href='http://vim.wikia.com/wiki/Load_my_script_only_once'>Load my script only once</a><br>
+VimTip1134: <a href='http://vim.wikia.com/wiki/Read_base64_raw_string/email_in_Vim'>Read base64 raw string</a><br>
+VimTip1141: <a href='http://vim.wikia.com/wiki/List_lines_with_current_search_pattern_highlighted'>List lines with current search pattern highlighted</a><br>
+VimTip1142: <a href='http://vim.wikia.com/wiki/Repeat_last_command_and_put_cursor_at_start_of_change'>Repeat last command and put cursor at start of change</a><br>
+VimTip1146: <a href='http://vim.wikia.com/wiki/Project_browsing_using_find'>Project browsing using find</a><br>
+VimTip1147: <a href='http://vim.wikia.com/wiki/Use_a_function_key_as_map_leader'>Use a function key as map leader</a><br>
+VimTip1148: <a href='http://vim.wikia.com/wiki/Unique_sorting'>Unique sorting</a><br>
+VimTip1149: <a href='http://vim.wikia.com/wiki/Use_balloonexpr_effectively'>Use balloonexpr effectively</a><br>
+VimTip1150: <a href='http://vim.wikia.com/wiki/Syntax_folding_for_Java'>Syntax folding for Java</a><br>
+VimTip1151: <a href='http://vim.wikia.com/wiki/Search_visually'>Search visually</a><br>
+VimTip1153: <a href='http://vim.wikia.com/wiki/Apply_range_to_any_command_that_does_not_accept_ranges'>Apply range to any command that does not accept ranges</a><br>
+VimTip1154: <a href='http://vim.wikia.com/wiki/Auto_copy_the_mouse_selection'>Auto copy the mouse selection</a><br>
+VimTip1155: <a href='http://vim.wikia.com/wiki/Set_options_with_automatic_escaping_of_spaces'>Set options with automatic escaping of spaces</a><br>
+VimTip1156: <a href='http://vim.wikia.com/wiki/View_Source_from_Internet_Explorer_in_gvim'>View Source from Internet Explorer in gvim</a><br>
+VimTip1157: <a href='http://vim.wikia.com/wiki/Internet_search_for_the_current_word'>Internet search for the current word</a><br>
+VimTip1158: <a href='http://vim.wikia.com/wiki/Duplicate_previous_line_word_by_word'>Duplicate previous line word by word</a><br>
+VimTip1159: <a href='http://vim.wikia.com/wiki/Prevent_frequent_commands_from_slowing_things_down'>Prevent frequent commands from slowing things down</a><br>
+VimTip1160: <a href='http://vim.wikia.com/wiki/Auto_save_files_when_focus_is_lost'>Auto save files when focus is lost</a><br>
+VimTip1161: <a href='http://vim.wikia.com/wiki/Windo_and_restore_current_window'>Windo and restore current window</a><br>
+VimTip1162: <a href='http://vim.wikia.com/wiki/Automatically_append_closing_characters'>Automatically append closing characters</a><br>
+VimTip1164: <a href='http://vim.wikia.com/wiki/Measure_time_taken_to_execute_a_command'>Measure time taken to execute a command</a><br>
+VimTip1166: <a href='http://vim.wikia.com/wiki/Sort_lines'>Sort lines</a><br>
+VimTip1167: <a href='http://vim.wikia.com/wiki/Prevent_escape_from_moving_the_cursor_one_character_to_the_left'>Prevent escape from moving the cursor one character to the left</a><br>
+VimTip1168: <a href='http://vim.wikia.com/wiki/Folding_for_plain_text_files_based_on_indentation'>Folding for plain text files based on indentation</a><br>
+VimTip1171: <a href='http://vim.wikia.com/wiki/Introduce_variable'>Introduce variable</a><br>
+VimTip1172: <a href='http://vim.wikia.com/wiki/Vim_FAQ_and_other_documentation'>Vim FAQ and other documentation</a><br>
+VimTip1173: <a href='http://vim.wikia.com/wiki/Spelling_suggestions_anywhere,_even_in_console_mode'>Spelling suggestions anywhere, even in console mode</a><br>
+VimTip1174: <a href='http://vim.wikia.com/wiki/Pasting_code_with_syntax_coloring_in_emails'>Pasting code with syntax coloring in emails</a><br>
+VimTip1178: <a href='http://vim.wikia.com/wiki/Make_an_HTML_anchor_and_href_tag'>Make an HTML anchor and href tag</a><br>
+VimTip1180: <a href='http://vim.wikia.com/wiki/Search_for_lines_not_containing_pattern_and_other_helpful_searches'>Search for lines not containing pattern and other helpful searches</a><br>
+VimTip1181: <a href='http://vim.wikia.com/wiki/Using_PuTTY_pscp_with_Vim'>Using PuTTY pscp with Vim</a><br>
+VimTip1182: <a href='http://vim.wikia.com/wiki/File_explorer'>File explorer</a><br>
+VimTip1183: <a href='http://vim.wikia.com/wiki/Insert-mode_only_Caps_Lock'>Insert-mode only Caps Lock</a><br>
+VimTip1185: <a href='http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file'>Set working directory to the current file</a><br>
+VimTip1188: <a href='http://vim.wikia.com/wiki/Browsing_programs_with_tags'>Browsing programs with tags</a><br>
+VimTip1189: <a href='http://vim.wikia.com/wiki/Maintain_multiple_versions_of_gvim_in_Windows'>Maintain multiple versions of gvim in Windows</a><br>
+VimTip1190: <a href='http://vim.wikia.com/wiki/Source_searching_for_programmers'>Source searching for programmers</a><br>
+VimTip1193: <a href='http://vim.wikia.com/wiki/Syntax_highlighting_for_HTML_with_embedded_Javascript'>Syntax highlighting for HTML with embedded Javascript</a><br>
+VimTip1194: <a href='http://vim.wikia.com/wiki/Navigate_to_the_next_open_fold'>Navigate to the next open fold</a><br>
+VimTip1195: <a href='http://vim.wikia.com/wiki/Reload_the_same_file_in_different_encoding'>Reload the same file in different encoding</a><br>
+VimTip1196: <a href='http://vim.wikia.com/wiki/Replace_a_word_with_yanked_text'>Replace a word with yanked text</a><br>
+VimTip1197: <a href='http://vim.wikia.com/wiki/Mapping_to_enter_colon_commands'>Mapping to enter colon commands</a><br>
+VimTip1198: <a href='http://vim.wikia.com/wiki/Automatic_scrolling_of_text'>Automatic scrolling of text</a><br>
+VimTip1199: <a href='http://vim.wikia.com/wiki/Unconditional_linewise_or_characterwise_paste'>Unconditional linewise or characterwise paste</a><br>
+VimTip1200: <a href='http://vim.wikia.com/wiki/View_PHP_documentation_for_current_word'>View PHP documentation for current word</a><br>
+VimTip1202: <a href='http://vim.wikia.com/wiki/Go_away_and_come_back'>Go away and come back</a><br>
+VimTip1203: <a href='http://vim.wikia.com/wiki/Set_up_vtreeexplorer_and_taglist_on_left'>Set up vtreeexplorer and taglist on left</a><br>
+VimTip1204: <a href='http://vim.wikia.com/wiki/Send_to_default_printer_with_no_prompts_under_Windows'>Send to default printer with no prompts under Windows</a><br>
+VimTip1206: <a href='http://vim.wikia.com/wiki/Remove_up_to_the_nth_slash_to_clean_file_lists'>Remove up to the nth slash to clean file lists</a><br>
+VimTip1212: <a href='http://vim.wikia.com/wiki/Open_file_under_cursor'>Open file under cursor</a><br>
+VimTip1213: <a href='http://vim.wikia.com/wiki/Better_indent_support_for_php_with_html'>Better indent support for php with html</a><br>
+VimTip1215: <a href='http://vim.wikia.com/wiki/Resize_splits_more_quickly'>Resize splits more quickly</a><br>
+VimTip1217: <a href='http://vim.wikia.com/wiki/Get_a_shell_command_for_changing_to_the_current_directory'>Get a shell command for changing to the current directory</a><br>
+VimTip1218: <a href='http://vim.wikia.com/wiki/Quick_peek_at_files'>Quick peek at files</a><br>
+VimTip1220: <a href='http://vim.wikia.com/wiki/Use_vi_shortcuts_in_terminal'>Use vi shortcuts in terminal</a><br>
+VimTip1221: <a href='http://vim.wikia.com/wiki/Alternative_tab_navigation'>Alternative tab navigation</a><br>
+VimTip1224: <a href='http://vim.wikia.com/wiki/Toggle_spellcheck_with_function_keys'>Toggle spellcheck with function keys</a><br>
+VimTip1225: <a href='http://vim.wikia.com/wiki/Launch_files_in_new_tabs_under_Windows'>Launch files in new tabs under Windows</a><br>
+VimTip1226: <a href='http://vim.wikia.com/wiki/Use_tab_key_to_switch_windows_and_current_file_path'>Use tab key to switch windows and current file path</a><br>
+VimTip1227: <a href='http://vim.wikia.com/wiki/Vim-Shell_embeds_a_terminal_in_Vim'>Vim-Shell embeds a terminal in Vim</a><br>
+VimTip1228: <a href='http://vim.wikia.com/wiki/Improve_completion_popup_menu'>Improve completion popup menu</a><br>
+VimTip1229: <a href='http://vim.wikia.com/wiki/Source_current_file_when_editing_a_script'>Source current file when editing a script</a><br>
+VimTip1230: <a href='http://vim.wikia.com/wiki/Execute_command_on_each_file_in_a_list'>Execute command on each file in a list</a><br>
+VimTip1231: <a href='http://vim.wikia.com/wiki/Set_indent_parameters_for_Python_files'>Set indent parameters for Python files</a><br>
+VimTip1232: <a href='http://vim.wikia.com/wiki/Time_your_Vim_commands'>Time your Vim commands</a><br>
+VimTip1233: <a href='http://vim.wikia.com/wiki/Using_tab_pages'>Using tab pages</a><br>
+VimTip1234: <a href='http://vim.wikia.com/wiki/Find_files_in_subdirectories'>Find files in subdirectories</a><br>
+VimTip1235: <a href='http://vim.wikia.com/wiki/Scientific_calculator'>Scientific calculator</a><br>
+VimTip1237: <a href='http://vim.wikia.com/wiki/Simplifying_regular_expressions_using_magic_and_no-magic'>Simplifying regular expressions using magic and no-magic</a><br>
+VimTip1238: <a href='http://vim.wikia.com/wiki/Make_buffer_modifiable_state_match_file_readonly_state'>Make buffer modifiable state match file readonly state</a><br>
+VimTip1240: <a href='http://vim.wikia.com/wiki/Automatically_position_the_cursor_when_editing_email_messages'>Automatically position the cursor when editing email messages</a><br>
+VimTip1242: <a href='http://vim.wikia.com/wiki/Using_tab_pages'>Using tab pages</a><br>
+VimTip1244: <a href='http://vim.wikia.com/wiki/Preview_output_from_interpreter_in_new_window'>Preview output from interpreter in new window</a><br>
+VimTip1245: <a href='http://vim.wikia.com/wiki/Correcting_accented_characters'>Correcting accented characters</a><br>
+VimTip1247: <a href='http://vim.wikia.com/wiki/Tabclose_instead_of_quit-all'>Tabclose instead of quit-all</a><br>
+VimTip1249: <a href='http://vim.wikia.com/wiki/Easy_playback_of_recorded_keys'>Easy playback of recorded keys</a><br>
+VimTip1251: <a href='http://vim.wikia.com/wiki/AES256_encryption_in_Vim'>AES256 encryption in Vim</a><br>
+VimTip1253: <a href='http://vim.wikia.com/wiki/Integrate_gvim_with_Visual_Studio'>Integrate gvim with Visual Studio</a><br>
+VimTip1257: <a href='http://vim.wikia.com/wiki/Any_word_completion'>Any word completion</a><br>
+VimTip1259: <a href='http://vim.wikia.com/wiki/Edit_Java_jar_and_other_files'>Edit Java jar and other files</a><br>
+VimTip1260: <a href='http://vim.wikia.com/wiki/Edit_file_in_existing_vim_automatically'>Edit file in existing vim automatically</a><br>
+VimTip1261: <a href='http://vim.wikia.com/wiki/Using_your_vim_on_different_xterms_with_colors'>Using your vim on different xterms with colors</a><br>
+VimTip1262: <a href='http://vim.wikia.com/wiki/Git_grep'>Git grep</a><br>
+VimTip1265: <a href='http://vim.wikia.com/wiki/Use_Return_and_Delete_keys_in_normal_mode_like_in_insert_mode'>Use Return and Delete keys in normal mode like in insert mode</a><br>
+VimTip1266: <a href='http://vim.wikia.com/wiki/Newlines_and_nulls_in_Vim_script'>Newlines and nulls in Vim script</a><br>
+VimTip1267: <a href='http://vim.wikia.com/wiki/Show_current_function_name_in_C_programs'>Show current function name in C programs</a><br>
+VimTip1268: <a href='http://vim.wikia.com/wiki/Copy_and_paste_between_sessions_using_a_temporary_file'>Copy and paste between sessions using a temporary file</a><br>
+VimTip1269: <a href='http://vim.wikia.com/wiki/Indent_text_object'>Indent text object</a><br>
+VimTip1272: <a href='http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim'>Mapping fast keycodes in terminal Vim</a><br>
+VimTip1274: <a href='http://vim.wikia.com/wiki/Highlight_some_whitespace_characters'>Highlight some whitespace characters</a><br>
+VimTip1279: <a href='http://vim.wikia.com/wiki/Highlight_current_line'>Highlight current line</a><br>
+VimTip1280: <a href='http://vim.wikia.com/wiki/Edit_and_organize_several_remote_files_easily'>Edit and organize several remote files easily</a><br>
+VimTip1282: <a href='http://vim.wikia.com/wiki/Open_SVN_diff_window'>Open SVN diff window</a><br>
+VimTip1284: <a href='http://vim.wikia.com/wiki/Backspace_and_delete_problems'>Backspace and delete problems</a><br>
+VimTip1285: <a href='http://vim.wikia.com/wiki/Replace_a_builtin_command_using_cabbrev'>Replace a builtin command using cabbrev</a><br>
+VimTip1286: <a href='http://vim.wikia.com/wiki/Use_gvim_for_diff_under_TortoiseCVS'>Use gvim for diff under TortoiseCVS</a><br>
+VimTip1287: <a href='http://vim.wikia.com/wiki/Change_statusline_color_to_show_insert_or_normal_mode'>Change statusline color to show insert or normal mode</a><br>
+VimTip1288: <a href='http://vim.wikia.com/wiki/Forcing_UTF-8_Vim_to_read_Latin1_as_Latin1'>Forcing UTF-8 Vim to read Latin1 as Latin1</a><br>
+VimTip1289: <a href='http://vim.wikia.com/wiki/How_to_print_full_screen_width_messages'>How to print full screen width messages</a><br>
+VimTip1290: <a href='http://vim.wikia.com/wiki/Fix_broken_arrow_key_navigation_in_insert_mode'>Fix broken arrow key navigation in insert mode</a><br>
+VimTip1291: <a href='http://vim.wikia.com/wiki/Desert_color_scheme_with_Vim_in_PuTTY'>Desert color scheme with Vim in PuTTY</a><br>
+VimTip1292: <a href='http://vim.wikia.com/wiki/Uniq_-_Removing_duplicate_lines'>Uniq - Removing duplicate lines</a><br>
+VimTip1293: <a href='http://vim.wikia.com/wiki/Highlight_current_line'>Highlight current line</a><br>
+VimTip1294: <a href='http://vim.wikia.com/wiki/Ignore_white_space_in_vimdiff'>Ignore white space in vimdiff</a><br>
+VimTip1295: <a href='http://vim.wikia.com/wiki/Select_tab_page_with_a_key'>Select tab page with a key</a><br>
+VimTip1296: <a href='http://vim.wikia.com/wiki/Display_the_name_of_the_function_you_are_editing'>Display the name of the function you are editing</a><br>
+VimTip1297: <a href='http://vim.wikia.com/wiki/Display_last_viewed_text_lines_at_top_of_new_shell'>Display last viewed text lines at top of new shell</a><br>
+VimTip1298: <a href='http://vim.wikia.com/wiki/Run_Matlab_script_under_Windows'>Run Matlab script under Windows</a><br>
+VimTip1299: <a href='http://vim.wikia.com/wiki/Autocmd_to_update_ctags_file'>Autocmd to update ctags file</a><br>
+VimTip1300: <a href='http://vim.wikia.com/wiki/List_changes_to_the_current_file'>List changes to the current file</a><br>
+VimTip1301: <a href='http://vim.wikia.com/wiki/Associate_files_with_no_extension_to_Vim_under_Windows'>Associate files with no extension to Vim under Windows</a><br>
+VimTip1302: <a href='http://vim.wikia.com/wiki/Custom_resizing_on_the_spot'>Custom resizing on the spot</a><br>
+VimTip1303: <a href='http://vim.wikia.com/wiki/Pasting_registers'>Pasting registers</a><br>
+VimTip1304: <a href='http://vim.wikia.com/wiki/Delete_a_pair_of_XML/HTML_tags'>Delete a pair of XML</a><br>
+VimTip1305: <a href='http://vim.wikia.com/wiki/Define_your_own_colors'>Define your own colors</a><br>
+VimTip1308: <a href='http://vim.wikia.com/wiki/Patch_to_conceal_parts_of_lines'>Patch to conceal parts of lines</a><br>
+VimTip1309: <a href='http://vim.wikia.com/wiki/Safari_style_keybindings_for_tab_navigation'>Safari style keybindings for tab navigation</a><br>
+VimTip1311: <a href='http://vim.wikia.com/wiki/Compile_a_separate_copy_of_Vim_for_Python_coding'>Compile a separate copy of Vim for Python coding</a><br>
+VimTip1312: <a href='http://vim.wikia.com/wiki/256_colors_in_vim'>256 colors in vim</a><br>
+VimTip1314: <a href='http://vim.wikia.com/wiki/Launch_files_in_new_tabs_under_Windows'>Launch files in new tabs under Windows</a><br>
+VimTip1317: <a href='http://vim.wikia.com/wiki/Open_every_buffer_in_its_own_tabpage'>Open every buffer in its own tabpage</a><br>
+VimTip1319: <a href='http://vim.wikia.com/wiki/Add_html_tags_with_substitute'>Add html tags with substitute</a><br>
+VimTip1320: <a href='http://vim.wikia.com/wiki/Search_for_a_C-style_for_statement'>Search for a C-style for statement</a><br>
+VimTip1321: <a href='http://vim.wikia.com/wiki/Fold_a_C_sharp_region'>Fold a C sharp region</a><br>
+VimTip1322: <a href='http://vim.wikia.com/wiki/Insert_current_directory_name'>Insert current directory name</a><br>
+VimTip1323: <a href='http://vim.wikia.com/wiki/Invert_the_number_row_keys_for_faster_typing'>Invert the number row keys for faster typing</a><br>
+VimTip1324: <a href='http://vim.wikia.com/wiki/Avoid_the_escape_key'>Avoid the escape key</a><br>
+VimTip1326: <a href='http://vim.wikia.com/wiki/Map_extra_keys_on_non_US_keyboards'>Map extra keys on non US keyboards</a><br>
+VimTip1327: <a href='http://vim.wikia.com/wiki/Restoring_indent_after_typing_hash'>Restoring indent after typing hash</a><br>
+VimTip1330: <a href='http://vim.wikia.com/wiki/Folding'>Folding</a><br>
+VimTip1332: <a href='http://vim.wikia.com/wiki/Using_remote_editing_with_knetattach'>Using remote editing with knetattach</a><br>
+VimTip1333: <a href='http://vim.wikia.com/wiki/Have_focus_on_left_tab_after_tabclose'>Have focus on left tab after tabclose</a><br>
+VimTip1334: <a href='http://vim.wikia.com/wiki/Use_ijkl_to_move_the_cursor_and_h_to_insert'>Use ijkl to move the cursor and h to insert</a><br>
+VimTip1335: <a href='http://vim.wikia.com/wiki/Run_a_command_in_multiple_buffers'>Run a command in multiple buffers</a><br>
+VimTip1336: <a href='http://vim.wikia.com/wiki/Open_Windows_Explorer_showing_directory_of_current_buffer'>Open Windows Explorer showing directory of current buffer</a><br>
+VimTip1338: <a href='http://vim.wikia.com/wiki/See_man_pages_by_gview'>See man pages by gview</a><br>
+VimTip1341: <a href='http://vim.wikia.com/wiki/Power_K'>Power K</a><br>
+VimTip1343: <a href='http://vim.wikia.com/wiki/Diff_the_current_buffer_with_another_file'>Diff the current buffer with another file</a><br>
+VimTip1347: <a href='http://vim.wikia.com/wiki/Using_tab_pages'>Using tab pages</a><br>
+VimTip1348: <a href='http://vim.wikia.com/wiki/Using_Vim_key_bindings_while_typing_non-latin1_text'>Using Vim key bindings while typing non-latin1 text</a><br>
+VimTip1349: <a href='http://vim.wikia.com/wiki/Calculator_Editing'>Calculator Editing</a><br>
+VimTip1354: <a href='http://vim.wikia.com/wiki/Online_documentation_for_word_under_cursor'>Online documentation for word under cursor</a><br>
+VimTip1356: <a href='http://vim.wikia.com/wiki/Open_PDF_files'>Open PDF files</a><br>
+VimTip1359: <a href='http://vim.wikia.com/wiki/Calculator_and_code_evaluation_using_Perl'>Calculator and code evaluation using Perl</a><br>
+VimTip1361: <a href='http://vim.wikia.com/wiki/Disable_automatic_comment_insertion'>Disable automatic comment insertion</a><br>
+VimTip1363: <a href='http://vim.wikia.com/wiki/Capture_all_keys'>Capture all keys</a><br>
+VimTip1366: <a href='http://vim.wikia.com/wiki/Pretty-formatting_XML'>Pretty-formatting XML</a><br>
+VimTip1369: <a href='http://vim.wikia.com/wiki/Preserve_missing_end-of-line_at_end_of_text_files'>Preserve missing end-of-line at end of text files</a><br>
+VimTip1370: <a href='http://vim.wikia.com/wiki/Tracking_clipboard_changes'>Tracking clipboard changes</a><br>
+VimTip1373: <a href='http://vim.wikia.com/wiki/Get_shortened_messages_from_using_echomsg'>Get shortened messages from using echomsg</a><br>
+VimTip1375: <a href='http://vim.wikia.com/wiki/Avoid_scrolling_when_switch_buffers'>Avoid scrolling when switch buffers</a><br>
+VimTip1376: <a href='http://vim.wikia.com/wiki/Syntax_folding_of_Vim_scripts'>Syntax folding of Vim scripts</a><br>
+VimTip1377: <a href='http://vim.wikia.com/wiki/Context_sensitive_access_to_MSDN_help'>Context sensitive access to MSDN help</a><br>
+VimTip1378: <a href='http://vim.wikia.com/wiki/Change_the_color_scheme_to_show_where_you_are'>Change the color scheme to show where you are</a><br>
+VimTip1379: <a href='http://vim.wikia.com/wiki/Make_echo_seen_when_it_would_otherwise_disappear_and_go_unseen'>Make echo seen when it would otherwise disappear and go unseen</a><br>
+VimTip1380: <a href='http://vim.wikia.com/wiki/Highlight_cursor_line_after_cursor_jump'>Highlight cursor line after cursor jump</a><br>
+VimTip1381: <a href='http://vim.wikia.com/wiki/Highlight_special_filetype_docs'>Highlight special filetype docs</a><br>
+VimTip1382: <a href='http://vim.wikia.com/wiki/Auto_spelling_correction_using_abbreviations'>Auto spelling correction using abbreviations</a><br>
+VimTip1384: <a href='http://vim.wikia.com/wiki/Xterm256_color_names_for_console_Vim'>Xterm256 color names for console Vim</a><br>
+VimTip1385: <a href='http://vim.wikia.com/wiki/Disable_the_%22Hit_any_key_to_close_this_window%22_message_in_remote_editing'>Disable the %22Hit any key to close this window%22 message in remote editing</a><br>
+VimTip1386: <a href='http://vim.wikia.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE'>Make Vim completion popup menu work just like in an IDE</a><br>
+VimTip1388: <a href='http://vim.wikia.com/wiki/Vim_and_ocaml_interpreter'>Vim and ocaml interpreter</a><br>
+VimTip1389: <a href='http://vim.wikia.com/wiki/Trailing_white_space_aware_Delete_key'>Trailing white space aware Delete key</a><br>
+VimTip1390: <a href='http://vim.wikia.com/wiki/Using_Vim_with_the_Dvorak_keyboard_layout'>Using Vim with the Dvorak keyboard layout</a><br>
+VimTip1391: <a href='http://vim.wikia.com/wiki/Enable_paren_matching_over_whole_file'>Enable paren matching over whole file</a><br>
+VimTip1392: <a href='http://vim.wikia.com/wiki/Shell_script_to_use_grep_with_gvim'>Shell script to use grep with gvim</a><br>
+VimTip1393: <a href='http://vim.wikia.com/wiki/Automatically_create_tmp_or_backup_directories'>Automatically create tmp or backup directories</a><br>
+VimTip1413: <a href='http://vim.wikia.com/wiki/Make_tar_of_all_files_in_vim_buffer'>Make tar of all files in vim buffer</a><br>
+VimTip1431: <a href='http://vim.wikia.com/wiki/Manage_a_tasklist_of_to-do_code_snippets'>Manage a tasklist of to-do code snippets</a><br>
+VimTip1432: <a href='http://vim.wikia.com/wiki/File_search_similar_to_cmd-t_in_TextMate'>File search similar to cmd-t in TextMate</a><br>
+VimTip1434: <a href='http://vim.wikia.com/wiki/Autoconvert_leading_eight_spaces_to_tab_when_type_or_paste_in_Makefile'>Autoconvert leading eight spaces to tab when type or paste in Makefile</a><br>
+VimTip1435: <a href='http://vim.wikia.com/wiki/Use_recording_to_easily_add_function_skeletons_from_prototypes'>Use recording to easily add function skeletons from prototypes</a><br>
+VimTip1436: <a href='http://vim.wikia.com/wiki/Wrap_function_calls_in_a_print_statement'>Wrap function calls in a print statement</a><br>
+VimTip1437: <a href='http://vim.wikia.com/wiki/Using_Vim_with_the_Dvorak_keyboard_layout'>Using Vim with the Dvorak keyboard layout</a><br>
+VimTip1438: <a href='http://vim.wikia.com/wiki/Using_parameterized_snippet_inserts'>Using parameterized snippet inserts</a><br>
+VimTip1439: <a href='http://vim.wikia.com/wiki/Using_vim_as_an_IDE_all_in_one'>Using vim as an IDE all in one</a><br>
+VimTip1440: <a href='http://vim.wikia.com/wiki/Launch_files_in_new_tabs_under_Windows'>Launch files in new tabs under Windows</a><br>
+VimTip1454: <a href='http://vim.wikia.com/wiki/Show_what_function_the_cursor_is_in'>Show what function the cursor is in</a><br>
+VimTip1455: <a href='http://vim.wikia.com/wiki/Jumps_to_a_local/global_definition_by_same_key'>Jumps to a local</a><br>
+VimTip1456: <a href='http://vim.wikia.com/wiki/Cache_user-preferred_option_values_for_later_reset'>Cache user-preferred option values for later reset</a><br>
+VimTip1458: <a href='http://vim.wikia.com/wiki/Accelerated_motion'>Accelerated motion</a><br>
+VimTip1463: <a href='http://vim.wikia.com/wiki/Moving_lines_up_or_down'>Moving lines up or down</a><br>
+VimTip1465: <a href='http://vim.wikia.com/wiki/Introduction_to_display_editing_using_vi'>Introduction to display editing using vi</a><br>
+VimTip1468: <a href='http://vim.wikia.com/wiki/Backward_search_for_LaTeX_documents'>Backward search for LaTeX documents</a><br>
+VimTip1469: <a href='http://vim.wikia.com/wiki/Ctrl-N_completion_for_XML/XSLT_attributes'>Ctrl-N completion for XML</a><br>
+VimTip1470: <a href='http://vim.wikia.com/wiki/Status_line_to_display_more_information'>Status line to display more information</a><br>
+VimTip1472: <a href='http://vim.wikia.com/wiki/Show_file_modification_time_on_status_bar'>Show file modification time on status bar</a><br>
+VimTip1479: <a href='http://vim.wikia.com/wiki/Convert_between_hex_and_decimal'>Convert between hex and decimal</a><br>
+VimTip1483: <a href='http://vim.wikia.com/wiki/Show_file_modification_time_and_more_on_status_bar'>Show file modification time and more on status bar</a><br>
+VimTip1484: <a href='http://vim.wikia.com/wiki/When_jumping_on_a_tag,_automatically_split_the_window_if_the_current_buffer_has_been_modified'>When jumping on a tag, automatically split the window if the current buffer has been modified</a><br>
+VimTip1486: <a href='http://vim.wikia.com/wiki/Omni_completion_popup_menu'>Omni completion popup menu</a><br>
+VimTip1490: <a href='http://vim.wikia.com/wiki/Bookmark_files'>Bookmark files</a><br>
+VimTip1491: <a href='http://vim.wikia.com/wiki/Call_TortoiseSVN_commands_from_within_Vim'>Call TortoiseSVN commands from within Vim</a><br>
+VimTip1495: <a href='http://vim.wikia.com/wiki/Wrap_a_visual_selection_in_an_HTML_tag'>Wrap a visual selection in an HTML tag</a><br>
+VimTip1498: <a href='http://vim.wikia.com/wiki/Delete_words_in_a_different_way'>Delete words in a different way</a><br>
+VimTip1499: <a href='http://vim.wikia.com/wiki/Jump_back_to_spell_checked_words'>Jump back to spell checked words</a><br>
+VimTip1500: <a href='http://vim.wikia.com/wiki/Open_files_in_same_window_under_Mac_OS_X'>Open files in same window under Mac OS X</a><br>
+VimTip1501: <a href='http://vim.wikia.com/wiki/Substitute_last_search'>Substitute last search</a><br>
+VimTip1504: <a href='http://vim.wikia.com/wiki/External_commands_on_Windows'>External commands on Windows</a><br>
+VimTip1505: <a href='http://vim.wikia.com/wiki/Version_Control_for_Vimfiles'>Version Control for Vimfiles</a><br>
+VimTip1506: <a href='http://vim.wikia.com/wiki/Swap_LHS_and_RHS_of_an_Assignment_statement'>Swap LHS and RHS of an Assignment statement</a><br>
+VimTip1507: <a href='http://vim.wikia.com/wiki/Decrease_chances_of_file_corruption_in_case_of_computer_crash'>Decrease chances of file corruption in case of computer crash</a><br>
+VimTip1508: <a href='http://vim.wikia.com/wiki/Create_patch_for_currently_editing_file'>Create patch for currently editing file</a><br>
+VimTip1509: <a href='http://vim.wikia.com/wiki/Automatically_create_and_update_cscope_database'>Automatically create and update cscope database</a><br>
+VimTip1510: <a href='http://vim.wikia.com/wiki/Keep_your_vimrc_file_clean'>Keep your vimrc file clean</a><br>
+VimTip1511: <a href='http://vim.wikia.com/wiki/In_line_copy_and_paste_to_system_clipboard'>In line copy and paste to system clipboard</a><br>
+VimTip1512: <a href='http://vim.wikia.com/wiki/Search_and_replace_in_multiple_buffers'>Search and replace in multiple buffers</a><br>
+VimTip1513: <a href='http://vim.wikia.com/wiki/Changing_all_HTML_tags_to_lowercase'>Changing all HTML tags to lowercase</a><br>
+VimTip1514: <a href='http://vim.wikia.com/wiki/Dosini_files'>Dosini files</a><br>
+VimTip1515: <a href='http://vim.wikia.com/wiki/Key_maps_using_the_Alt_modifier'>Key maps using the Alt modifier</a><br>
+VimTip1516: <a href='http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_1)'>Mapping keys in Vim - Tutorial (Part 1)</a><br>
+VimTip1517: <a href='http://vim.wikia.com/wiki/Swap_file_%22...%22already_exists!_-_so_diff_it'>Swap file %22...%22already exists! - so diff it</a><br>
+VimTip1518: <a href='http://vim.wikia.com/wiki/Improved_hex_editing'>Improved hex editing</a><br>
+VimTip1519: <a href='http://vim.wikia.com/wiki/Making_CapsLock_work_in_Vim'>Making CapsLock work in Vim</a><br>
+VimTip1520: <a href='http://vim.wikia.com/wiki/Set_options_or_named_registers_with_let'>Set options or named registers with let</a><br>
+VimTip1521: <a href='http://vim.wikia.com/wiki/Automatically_Update_Copyright_Notice_in_Files'>Automatically Update Copyright Notice in Files</a><br>
+VimTip1522: <a href='http://vim.wikia.com/wiki/Displaying_the_current_Vim_environment'>Displaying the current Vim environment</a><br>
+VimTip1523: <a href='http://vim.wikia.com/wiki/Highlight_long_lines'>Highlight long lines</a><br>
+VimTip1525: <a href='http://vim.wikia.com/wiki/Formatting_paragraphs_in_LaTeX:_an_%22environment-aware_gqap%22'>Formatting paragraphs in LaTeX: an %22environment-aware gqap%22</a><br>
+VimTip1526: <a href='http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_2)'>Mapping keys in Vim - Tutorial (Part 2)</a><br>
+VimTip1527: <a href='http://vim.wikia.com/wiki/PHP_editing'>PHP editing</a><br>
+VimTip1528: <a href='http://vim.wikia.com/wiki/Quick_yank_and_paste'>Quick yank and paste</a><br>
+VimTip1529: <a href='http://vim.wikia.com/wiki/Mkdir_on_edit_if_needed'>Mkdir on edit if needed</a><br>
+VimTip1530: <a href='http://vim.wikia.com/wiki/Search_in_current_function'>Search in current function</a><br>
+VimTip1531: <a href='http://vim.wikia.com/wiki/Word_frequency_statistics_for_a_file'>Word frequency statistics for a file</a><br>
+VimTip1532: <a href='http://vim.wikia.com/wiki/Fix_errors_that_relate_to_reading_or_creating_files_in_the_temp_or_tmp_environment_on_an_MS_Windows_PC'>Fix errors that relate to reading or creating files in the temp or tmp environment on an MS Windows PC</a><br>
+VimTip1533: <a href='http://vim.wikia.com/wiki/Vim_Doclet'>Vim Doclet</a><br>
+VimTip1534: <a href='http://vim.wikia.com/wiki/Check_your_syntax_files_for_configurable_options'>Check your syntax files for configurable options</a><br>
+VimTip1535: <a href='http://vim.wikia.com/wiki/Use_:next_to_search_for_files_in_the_current_directory'>Use :next to search for files in the current directory</a><br>
+VimTip1536: <a href='http://vim.wikia.com/wiki/Automatically_fitting_a_quickfix_window_height'>Automatically fitting a quickfix window height</a><br>
+VimTip1537: <a href='http://vim.wikia.com/wiki/Easier_buffer_switching'>Easier buffer switching</a><br>
+VimTip1538: <a href='http://vim.wikia.com/wiki/Automatic_Commenting_of_Preprocessor_Directives_in_C'>Automatic Commenting of Preprocessor Directives in C</a><br>
+VimTip1539: <a href='http://vim.wikia.com/wiki/Exchanging_adjacent_words'>Exchanging adjacent words</a><br>
+VimTip1540: <a href='http://vim.wikia.com/wiki/To_switch_back_to_normal_mode_automatically_after_inaction'>To switch back to normal mode automatically after inaction</a><br>
+VimTip1541: <a href='http://vim.wikia.com/wiki/PHP_editing'>PHP editing</a><br>
+VimTip1542: <a href='http://vim.wikia.com/wiki/Vim_On_Vista'>Vim On Vista</a><br>
+VimTip1543: <a href='http://vim.wikia.com/wiki/Find_in_files_within_Vim'>Find in files within Vim</a><br>
+VimTip1544: <a href='http://vim.wikia.com/wiki/Generate_accessor_and_setter_methods_from_variable_names'>Generate accessor and setter methods from variable names</a><br>
+VimTip1545: <a href='http://vim.wikia.com/wiki/Folding_of_find_locate_tar-tf_output'>Folding of find locate tar-tf output</a><br>
+VimTip1546: <a href='http://vim.wikia.com/wiki/Automatically_add_Python_paths_to_Vim_path'>Automatically add Python paths to Vim path</a><br>
+VimTip1547: <a href='http://vim.wikia.com/wiki/Customize_text_for_closed_folds'>Customize text for closed folds</a><br>
+VimTip1548: <a href='http://vim.wikia.com/wiki/Continue_omnicompletion_for_python_modules'>Continue omnicompletion for python modules</a><br>
+VimTip1549: <a href='http://vim.wikia.com/wiki/Execute_external_programs_asynchronously_under_Windows'>Execute external programs asynchronously under Windows</a><br>
+VimTip1550: <a href='http://vim.wikia.com/wiki/Compiling_LaTeX_from_Vim'>Compiling LaTeX from Vim</a><br>
+VimTip1551: <a href='http://vim.wikia.com/wiki/IPython_integration'>IPython integration</a><br>
+VimTip1552: <a href='http://vim.wikia.com/wiki/Launch_files_in_new_tabs_under_Unix'>Launch files in new tabs under Unix</a><br>
+VimTip1553: <a href='http://vim.wikia.com/wiki/Remap_join_to_merge_comment_lines'>Remap join to merge comment lines</a><br>
+VimTip1554: <a href='http://vim.wikia.com/wiki/Move_current_window_between_tabs'>Move current window between tabs</a><br>
+VimTip1555: <a href='http://vim.wikia.com/wiki/Creating_new_text_objects'>Creating new text objects</a><br>
+VimTip1556: <a href='http://vim.wikia.com/wiki/Mapping_keys_in_Vim_-_Tutorial_(Part_3)'>Mapping keys in Vim - Tutorial (Part 3)</a><br>
+VimTip1557: <a href='http://vim.wikia.com/wiki/Filter_buffer_on_a_search_result'>Filter buffer on a search result</a><br>
+VimTip1558: <a href='http://vim.wikia.com/wiki/Overload_a_key_with_multiple_handlers'>Overload a key with multiple handlers</a><br>
+VimTip1559: <a href='http://vim.wikia.com/wiki/Provide_script-accessible_version_info_in_your_plugins'>Provide script-accessible version info in your plugins</a><br>
+VimTip1560: <a href='http://vim.wikia.com/wiki/Using_bash_completion_with_ctags_and_Vim'>Using bash completion with ctags and Vim</a><br>
+VimTip1561: <a href='http://vim.wikia.com/wiki/Creating_your_own_syntax_files'>Creating your own syntax files</a><br>
+VimTip1562: <a href='http://vim.wikia.com/wiki/Comfortable_handling_of_registers'>Comfortable handling of registers</a><br>
+VimTip1563: <a href='http://vim.wikia.com/wiki/Create_new_subroutines'>Create new subroutines</a><br>
+VimTip1564: <a href='http://vim.wikia.com/wiki/VimLock_mode_to_enter_numbers'>VimLock mode to enter numbers</a><br>
+VimTip1565: <a href='http://vim.wikia.com/wiki/Edit_MoinMoin_wiki_files_with_folding'>Edit MoinMoin wiki files with folding</a><br>
+VimTip1566: <a href='http://vim.wikia.com/wiki/Return_to_previous_indent'>Return to previous indent</a><br>
+VimTip1567: <a href='http://vim.wikia.com/wiki/Use_eval_to_create_dynamic_templates'>Use eval to create dynamic templates</a><br>
+VimTip1568: <a href='http://vim.wikia.com/wiki/File_no_longer_available_-_mark_buffer_modified'>File no longer available - mark buffer modified</a><br>
+VimTip1569: <a href='http://vim.wikia.com/wiki/Restore_screen_size_and_position'>Restore screen size and position</a><br>
+VimTip1570: <a href='http://vim.wikia.com/wiki/Commenting_with_opfunc'>Commenting with opfunc</a><br>
+VimTip1571: <a href='http://vim.wikia.com/wiki/Quickly_switch_between_pager-like_and_editor-like_scroll'>Quickly switch between pager-like and editor-like scroll</a><br>
+VimTip1572: <a href='http://vim.wikia.com/wiki/Highlight_multiple_words'>Highlight multiple words</a><br>
+VimTip1573: <a href='http://vim.wikia.com/wiki/Showing_syntax_highlight_group_in_statusline'>Showing syntax highlight group in statusline</a><br>
+VimTip1574: <a href='http://vim.wikia.com/wiki/Get_the_correct_indent_for_new_lines_despite_blank_lines'>Get the correct indent for new lines despite blank lines</a><br>
+VimTip1575: <a href='http://vim.wikia.com/wiki/Errorformats'>Errorformats</a><br>
+VimTip1576: <a href='http://vim.wikia.com/wiki/Using_vim_color_schemes_with_Putty'>Using vim color schemes with Putty</a><br>
+VimTip1577: <a href='http://vim.wikia.com/wiki/Record_a_recursive_macro'>Record a recursive macro</a><br>
+VimTip1578: <a href='http://vim.wikia.com/wiki/Where_to_download_Vim'>Where to download Vim</a><br>
+VimTip1579: <a href='http://vim.wikia.com/wiki/Vim_on_Freenode'>Vim on Freenode</a><br>
+VimTip1580: <a href='http://vim.wikia.com/wiki/New_to_Vim'>New to Vim</a><br>
+VimTip1581: <a href='http://vim.wikia.com/wiki/Tutorial'>Tutorial</a><br>
+VimTip1582: <a href='http://vim.wikia.com/wiki/Vim_IRC_FAQ'>Vim IRC FAQ</a><br>
+VimTip1583: <a href='http://vim.wikia.com/wiki/Edit_gpg_encrypted_files'>Edit gpg encrypted files</a><br>
+VimTip1584: <a href='http://vim.wikia.com/wiki/Visual_selection'>Visual selection</a><br>
+VimTip1585: <a href='http://vim.wikia.com/wiki/File_format'>File format</a><br>
+VimTip1586: <a href='http://vim.wikia.com/wiki/Quick_tips'>Quick tips</a><br>
+VimTip1587: <a href='http://vim.wikia.com/wiki/Change_font'>Change font</a><br>
+VimTip1588: <a href='http://vim.wikia.com/wiki/Debug_unexpected_option_settings'>Debug unexpected option settings</a><br>
+VimTip1589: <a href='http://vim.wikia.com/wiki/Environment_variables'>Environment variables</a><br>
+VimTip1590: <a href='http://vim.wikia.com/wiki/Editing_a_hard_link_to_a_file'>Editing a hard link to a file</a><br>
+VimTip1591: <a href='http://vim.wikia.com/wiki/Omni_completion'>Omni completion</a><br>
+VimTip1592: <a href='http://vim.wikia.com/wiki/Super_retab'>Super retab</a><br>
+VimTip1593: <a href='http://vim.wikia.com/wiki/Smart_paste'>Smart paste</a><br>
+VimTip1594: <a href='http://vim.wikia.com/wiki/Command_line_file_name_completion'>Command line file name completion</a><br>
+VimTip1595: <a href='http://vim.wikia.com/wiki/Restore_the_cursor_position_after_undoing_text_change_made_by_a_script'>Restore the cursor position after undoing text change made by a script</a><br>
+VimTip1596: <a href='http://vim.wikia.com/wiki/Using_elinks_with_netrw'>Using elinks with netrw</a><br>
+VimTip1597: <a href='http://vim.wikia.com/wiki/Copy_or_change_search_hit'>Copy or change search hit</a><br>
+VimTip1598: <a href='http://vim.wikia.com/wiki/Detect_window_creation_with_WinEnter'>Detect window creation with WinEnter</a><br>
+VimTip1599: <a href='http://vim.wikia.com/wiki/Display_output_of_shell_commands_in_new_window'>Display output of shell commands in new window</a><br>
+VimTip1600: <a href='http://vim.wikia.com/wiki/Edit_a_file_or_jump_to_it_if_already_open'>Edit a file or jump to it if already open</a><br>
+VimTip1601: <a href='http://vim.wikia.com/wiki/Using_VimBall_with_make'>Using VimBall with make</a><br>
+VimTip1602: <a href='http://vim.wikia.com/wiki/Converting_variables_to_or_from_camel_case'>Converting variables to or from camel case</a><br>
+VimTip1603: <a href='http://vim.wikia.com/wiki/Recreate_tempfile_directory'>Recreate tempfile directory</a><br>
+VimTip1604: <a href='http://vim.wikia.com/wiki/Indenting_for_Qt_C%2B%2B'>Indenting for Qt C%2B%2B</a><br>
+VimTip1605: <a href='http://vim.wikia.com/wiki/Compiling_LaTeX_from_Vim'>Compiling LaTeX from Vim</a><br>
+VimTip1606: <a href='http://vim.wikia.com/wiki/Filetype.vim'>Filetype.vim</a><br>
+VimTip1607: <a href='http://vim.wikia.com/wiki/Subversion_developer_cindent_options'>Subversion developer cindent options</a><br>
+VimTip1608: <a href='http://vim.wikia.com/wiki/C%2B%2B_code_completion'>C%2B%2B code completion</a><br>
+VimTip1609: <a href='http://vim.wikia.com/wiki/Print_to_a_Postscript_file'>Print to a Postscript file</a><br>
+VimTip1610: <a href='http://vim.wikia.com/wiki/Create_LaTeX_Tables'>Create LaTeX Tables</a><br>
+VimTip1611: <a href='http://vim.wikia.com/wiki/Ranges'>Ranges</a><br>
+VimTip1612: <a href='http://vim.wikia.com/wiki/Timer_to_execute_commands_periodically'>Timer to execute commands periodically</a><br>
+VimTip1613: <a href='http://vim.wikia.com/wiki/Hex_dump'>Hex dump</a><br>
+VimTip1614: <a href='http://vim.wikia.com/wiki/Using_Git_from_Vim'>Using Git from Vim</a><br>
+VimTip1615: <a href='http://vim.wikia.com/wiki/View_text_file_in_two_columns'>View text file in two columns</a><br>
+VimTip1616: <a href='http://vim.wikia.com/wiki/User_input_from_a_script'>User input from a script</a><br>
+VimTip1617: <a href='http://vim.wikia.com/wiki/Quickfix_and_doxygen'>Quickfix and doxygen</a><br>
+VimTip1618: <a href='http://vim.wikia.com/wiki/Auto_tags_by_project.vim'>Auto tags by project.vim</a><br>
+VimTip1619: <a href='http://vim.wikia.com/wiki/Using_GUI_color_settings_in_a_terminal'>Using GUI color settings in a terminal</a><br>
+VimTip1620: <a href='http://vim.wikia.com/wiki/Indent_C_blocks_where_braces_are_opened_and_closed_on_a_single_line'>Indent C blocks where braces are opened and closed on a single line</a><br>
+VimTip1621: <a href='http://vim.wikia.com/wiki/Editing_crontab'>Editing crontab</a><br>
+VimTip1622: <a href='http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes'>Change cursor shape in different modes</a><br>
+VimTip1623: <a href='http://vim.wikia.com/wiki/Using_the_Windows_clipboard_in_Cygwin_Vim'>Using the Windows clipboard in Cygwin Vim</a><br>
+VimTip1624: <a href='http://vim.wikia.com/wiki/Going_to_the_nth-from-last_window'>Going to the nth-from-last window</a><br>
+VimTip1625: <a href='http://vim.wikia.com/wiki/Group_matching_lines'>Group matching lines</a><br>
+VimTip1626: <a href='http://vim.wikia.com/wiki/Indent_with_tabs,_align_with_spaces'>Indent with tabs, align with spaces</a><br>
+VimTip1627: <a href='http://vim.wikia.com/wiki/Reload_file_without_losing_undo_history'>Reload file without losing undo history</a><br>
+VimTip1628: <a href='http://vim.wikia.com/wiki/Example_vimrc'>Example vimrc</a><br>
+VimTip1629: <a href='http://vim.wikia.com/wiki/WYSIWYG_graphics_editing'>WYSIWYG graphics editing</a><br>
+VimTip1630: <a href='http://vim.wikia.com/wiki/Quick_tips_for_using_tab_pages'>Quick tips for using tab pages</a><br>
+VimTip1631: <a href='http://vim.wikia.com/wiki/Clojure_Tips'>Clojure Tips</a><br>
+VimTip1632: <a href='http://vim.wikia.com/wiki/Reversing_order_of_blocks_of_text'>Reversing order of blocks of text</a><br>
+VimTip1633: <a href='http://vim.wikia.com/wiki/Auto_execute_yuicompressor'>Auto execute yuicompressor</a><br>
+VimTip1634: <a href='http://vim.wikia.com/wiki/Auto_closing_an_HTML_tag'>Auto closing an HTML tag</a><br>
+VimTip1635: <a href='http://vim.wikia.com/wiki/JavaFX_indent_plugin'>JavaFX indent plugin</a><br>
+VimTip1636: <a href='http://vim.wikia.com/wiki/Always_start_on_first_line_of_git_commit_message'>Always start on first line of git commit message</a><br>
+VimTip1637: <a href='http://vim.wikia.com/wiki/Synchronize_configuration_to_many_computers'>Synchronize configuration to many computers</a><br>
+VimTip1638: <a href='http://vim.wikia.com/wiki/Cscope'>Cscope</a><br>
+VimTip1639: <a href='http://vim.wikia.com/wiki/Automatically_sort_Quickfix_list'>Automatically sort Quickfix list</a><br>
+VimTip1640: <a href='http://vim.wikia.com/wiki/Show_tab_number_in_your_tab_line'>Show tab number in your tab line</a><br>
+VimTip1641: <a href='http://vim.wikia.com/wiki/Bash_file_encoding_alias'>Bash file encoding alias</a><br>
+VimTip1642: <a href='http://vim.wikia.com/wiki/Bulk_rename_files_with_Vim'>Bulk rename files with Vim</a><br>
+VimTip1643: <a href='http://vim.wikia.com/wiki/Using_undo_branches'>Using undo branches</a><br>
+VimTip1644: <a href='http://vim.wikia.com/wiki/Text_object_for_formulas_in_Latex'>Text object for formulas in Latex</a><br>
+VimTip1645: <a href='http://vim.wikia.com/wiki/Vim-sessions_under_Mac'>Vim-sessions under Mac</a><br>
+VimTip1646: <a href='http://vim.wikia.com/wiki/Quick_command_in_insert_mode'>Quick command in insert mode</a><br>
+VimTip1647: <a href='http://vim.wikia.com/wiki/Auctex-style_environment_creation_in_LaTeX'>Auctex-style environment creation in LaTeX</a><br>
+VimTip1648: <a href='http://vim.wikia.com/wiki/Restore_the_last_used_mode_when_switching_tabpages'>Restore the last used mode when switching tabpages</a><br>
+VimTip1649: <a href='http://vim.wikia.com/wiki/Project_specific_settings'>Project specific settings</a><br>
+VimTip1650: <a href='http://vim.wikia.com/wiki/Build_Python-enabled_Vim_on_Windows_with_MinGW'>Build Python-enabled Vim on Windows with MinGW</a><br>
+VimTip1651: <a href='http://vim.wikia.com/wiki/Keep_folds_closed_while_inserting_text'>Keep folds closed while inserting text</a><br>
+VimTip1652: <a href='http://vim.wikia.com/wiki/Launch_remote_batch_jobs_and_view_results_in_Vim'>Launch remote batch jobs and view results in Vim</a><br>
+VimTip1653: <a href='http://vim.wikia.com/wiki/Getting_the_Vim_source_with_Mercurial'>Getting the Vim source with Mercurial</a><br>
+VimTip1654: <a href='http://vim.wikia.com/wiki/Display_UTF-8_characters_in_Mac_Quicklook'>Display UTF-8 characters in Mac Quicklook</a><br>
+VimTip1655: <a href='http://vim.wikia.com/wiki/Using_terminal_Vim_as_an_external_editor'>Using terminal Vim as an external editor</a><br>
+VimTip1656: <a href='http://vim.wikia.com/wiki/Automatically_refresh_display_of_html_on_saving_file'>Automatically refresh display of html on saving file</a><br>
+VimTip1657: <a href='http://vim.wikia.com/wiki/Auto_compile_Javascript_with_Closure'>Auto compile Javascript with Closure</a><br>
+VimTip1658: <a href='http://vim.wikia.com/wiki/Installing_on_Solaris'>Installing on Solaris</a><br>
+VimTip1659: <a href='http://vim.wikia.com/wiki/EP3_Syntax_File'>EP3 Syntax File</a><br>
+VimTip1660: <a href='http://vim.wikia.com/wiki/Create_underlines,_overlines,_and_strikethroughs_using_combining_characters'>Create underlines, overlines, and strikethroughs using combining characters</a><br>
+VimTip1661: <a href='http://vim.wikia.com/wiki/Insert_multiple_lines'>Insert multiple lines</a><br>
+VimTip1662: <a href='http://vim.wikia.com/wiki/Automatically_reload_files_with_mixed_line-endings_in_DOS_fileformat'>Automatically reload files with mixed line-endings in DOS fileformat</a><br>
+VimTip1663: <a href='http://vim.wikia.com/wiki/Buffers'>Buffers</a><br>
+VimTip1664: <a href='http://vim.wikia.com/wiki/Insert_image_size_into_html_tag'>Insert image size into html tag</a><br>
+VimTip1665: <a href='http://vim.wikia.com/wiki/Using_ZSH_completion_with_ctags_and_Vim'>Using ZSH completion with ctags and Vim</a><br>
+VimTip1666: <a href='http://vim.wikia.com/wiki/Jump_between_methods_in_C%2B%2B'>Jump between methods in C%2B%2B</a><br>
+VimTip1667: <a href='http://vim.wikia.com/wiki/Combine_quickfix_steps'>Combine quickfix steps</a><br>
+VimTip1668: <a href='http://vim.wikia.com/wiki/Autoloading_Cscope_Database'>Autoloading Cscope Database</a><br>
+VimTip1669: <a href='http://vim.wikia.com/wiki/Searching_for_files_in_a_directory_listing'>Searching for files in a directory listing</a><br>
+VimTip1670: <a href='http://vim.wikia.com/wiki/Switching_between_different_versions_of_Vim_on_Windows'>Switching between different versions of Vim on Windows</a><br>
+VimTip1671: <a href='http://vim.wikia.com/wiki/A_better_gm_command'>A better gm command</a><br>
+VimTip1672: <a href='http://vim.wikia.com/wiki/Searching_for_expressions_which_include_slashes'>Searching for expressions which include slashes</a><br>
+VimTip1673: <a href='http://vim.wikia.com/wiki/Build_Vim_in_Windows_with_Visual_Studio'>Build Vim in Windows with Visual Studio</a><br>
+VimTip1674: <a href='http://vim.wikia.com/wiki/Jump_to_a_random_line'>Jump to a random line</a><br>
+VimTip1675: <a href='http://vim.wikia.com/wiki/Remove_diacritical_signs_from_characters'>Remove diacritical signs from characters</a><br>
+VimTip1676: <a href='http://vim.wikia.com/wiki/Troubleshooting'>Troubleshooting</a><br>
+VimTip1677: <a href='http://vim.wikia.com/wiki/Restore_missing_gvim_menu_bar_under_GNOME'>Restore missing gvim menu bar under GNOME</a><br>
+VimTip1678: <a href='http://vim.wikia.com/wiki/Compiling_LaTeX_from_Vim'>Compiling LaTeX from Vim</a><br>
+
+
+    <br>
+     <table width='100%' class="topmiddle">
+     <tr>
+          <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='NUMBERS_TABLE'></tbody></table></td>
+          <td width='30%' class="topleft"><ul class='nobull' id='NUMBERS'></ul></td>
+     </tr>
+     </table>
+</div>
 <div id="tabs-212">
      <table width='100%' class="topmiddle">
      <tr>
@@ -1545,7 +3024,7 @@ function getParameterByName(name, url) {
      <table width='100%' class="topmiddle">
      <tr>
           <td width='70%' class="topmiddle"><table width='100%' class="topmiddle" cellpadding=2 cellspacing=2><tbody id='AD_TABLE'></tbody></table></td>
-          <td width='30%' class="topleft"><ul class='nobull' id='DEV'></ul></td>
+          <td width='30%' class="topleft"><ul class='nobull' id='AD'></ul></td>
      </tr>
      </table>
 

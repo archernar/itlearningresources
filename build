@@ -5,11 +5,35 @@ trap 'rm -f "$Tmp" >/dev/null 2>&1' 0
 trap "exit 2" 1 2 3 13 15
 rm $Tmp  >/dev/null 2>&1
 
+network() {
+             IP="192.168.1.1"
+             fping -c1 -t300 $IP 2>/dev/null 1>/dev/null
+             if [ $? -eq 0 ] ; then
+                  NOTHING=0
+             else
+                  NOTHING=0
+                  printf "Network Down\n"
+                 # exit 1
+             fi
+             return true;
+}
 putfile() {
-             print $1
-             aws --profile MESTESHOME s3                   cp ./$1 s3://www.itlearningresources.com/$1  --acl public-read
-             aws --profile MESTESHOME s3                   cp ./$1 s3://www.awslearningresources.com/$1 --acl public-read
-             # aws --profile EBS s3                        cp ./$1 s3://docsaws/$1                      --acl public-read
+             IP="192.168.1.1"
+             fping -c1 -t300 $IP 2>/dev/null 1>/dev/null
+             if [ $? -eq 0 ] ; then
+                  NOTHING=0
+                  printf "Network Up\n"
+                  print $1
+                  aws --profile MESTESHOME s3                   cp ./$1 s3://www.itlearningresources.com/$1  --acl public-read
+                  aws --profile MESTESHOME s3                   cp ./$1 s3://www.awslearningresources.com/$1 --acl public-read
+                  # aws --profile EBS s3                        cp ./$1 s3://docsaws/$1                      --acl public-read
+             else
+                  NOTHING=0
+                  printf "Network Down\n"
+                  print $1
+                  aws --profile MESTESHOME s3                   cp ./$1 s3://www.itlearningresources.com/$1  --acl public-read
+                  aws --profile MESTESHOME s3                   cp ./$1 s3://www.awslearningresources.com/$1 --acl public-read
+             fi
              return true;
 }
 
@@ -24,17 +48,42 @@ if [ $# -eq 0 ] ; then
                  putfile "TitleLookupObject.js"
 fi
 
-while getopts "adlqzpn" arg
+while getopts "fadlqzpn" arg
 do
 	case $arg in
             n)
                  putfile "ahab.html"
                  ;;
             p)
+                 yui-compressor --type js -o plugins.min.js plugins.js
+                 putfile "plugins.min.js"
+                 ;;
+            l)
+                 yui-compressor --type js -o learn.min.js learn.js
+                 putfile "learn.min.js"
+                 putfile "learn.js"
+                 ;;
+            f)
+                 yui-compressor --type js -o learn.min.js learn.js
+                 yui-compressor --type js -o plugins.min.js plugins.js
+                 yui-compressor --type js -o vjs.min.js vjs.js
+                 yui-compressor --type js -o FeedEk.min.js FeedEk.js
+
+                 putfile "learn_dev.html"
+                 putfile "learn.js"
+                 putfile "learn.min.js"
+                 putfile "bootstrap.css"
                  putfile "plugins.js"
+                 putfile "plugins.min.js"
+                 putfile "vjs.js"
+                 putfile "vjs.min.js"
+                 putfile "jquery331min.js"
+                 putfile "hal.jpg"
+                 putfile "con.png"
+                 putfile "FeedEk.js"
+                 putfile "FeedEk.min.js"
                  ;;
             z)
-                 aws --profile MESTESHOME s3 cp ./learn_dev.html s3://www.awslearningresources.com/learn.html  --acl public-read
                  yui-compressor --type js -o learn.min.js learn.js
                  yui-compressor --type js -o plugins.min.js plugins.js
                  yui-compressor --type js -o vjs.min.js vjs.js
@@ -45,11 +94,12 @@ do
                  cat video.css       >> learn.css
                  cat theme.css       >> learn.css
                  cat backtotop.css   >> learn.css
-                 yui-compressor --type css -o learn.min.css learn.css
 
-
+                 cp learn_dev.html learn.html
+                 network
                  putfile "learn.js"
                  putfile "learn.min.js"
+                 putfile "learn.html"
                  putfile "learn_dev.html"
                  putfile "bootstrap.css"
                  putfile "plugins.js"
@@ -63,7 +113,9 @@ do
                  putfile "FeedEk.min.js"
                  ;;
             a)
+                 yui-compressor --type js -o learn.min.js learn.js
                  putfile "learn_dev.html"
+                 putfile "learn.min.js"
                  ;;
             d)
                  aws --profile MESTESHOME s3 cp ./learn_dev.html s3://www.awslearningresources.com/learn.html  --acl public-read
@@ -73,9 +125,6 @@ do
                  putfile "plugins.js"
                  putfile "learn_style.css"
                  putfile "TitleLookupObject.js"
-                 ;;
-            l)
-                 putfile "learn.js"
                  ;;
             q)
                  putfile "learn_dev.html"
